@@ -3,6 +3,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:bewise/data/response/whoami_response.dart';
+import 'package:bewise/data/models/product_model.dart';
+
 class ApiService {
   final String baseUrl = dotenv.env['API_BASE_URL']!;
 
@@ -145,6 +147,69 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
     throw Exception('Error updating avatar: $e');
   }
 }
+
+ Future<Product> getProductById(int id, String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/products/$id'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data']['product'];
+      return Product.fromJson(data);
+    } else {
+      throw Exception('Failed to fetch product');
+    }
+  }
+
+ Future<List<Map<String, dynamic>>> getProductsByCategory(int categoryId, String token) async {
+  final response = await http.get(
+    Uri.parse('$baseUrl/products/category/$categoryId'),
+    headers: {'Authorization': 'Bearer $token'},
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return List<Map<String, dynamic>>.from(data['data']['products']);
+  } else {
+    throw Exception('Failed to load products');
+  }
+}
+
+
+
+
+  Future<List<Product>> searchProducts(String name, int page, int limit, String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/products/search?name=$name&page=$page&limit=$limit'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data']['products'] as List;
+      return data.map((product) => Product.fromJson(product)).toList();
+    } else {
+      throw Exception('Failed to search products');
+    }
+  }
+
+  Future<Product> scanProduct(String barcode, String token) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/products/scan'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'barcode': barcode}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data']['product'];
+      return Product.fromJson(data);
+    } else {
+      throw Exception('Failed to scan product');
+    }
+  }
 
 
 }
