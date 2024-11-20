@@ -11,9 +11,7 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = false; 
   String? _errorMessage; 
 
-  AuthProvider(this.apiService) {
-    _initialize();
-  }
+  AuthProvider(this.apiService);
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -21,7 +19,7 @@ class AuthProvider extends ChangeNotifier {
   User? get user => _user;
   String? get token => _token;
 
-  Future<void> _initialize() async {
+  Future<void> initialize() async {
     final sessionManager = SessionManager();
     _token = await sessionManager.getToken();
     if (_token != null) {
@@ -36,7 +34,6 @@ class AuthProvider extends ChangeNotifier {
         );
       }
     }
-    notifyListeners();
   }
 
   Future<void> login(String email, String password) async {
@@ -107,50 +104,40 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchUserData() async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-
-  try {
-    if (_token == null) {
-      final sessionManager = SessionManager();
-      _token = await sessionManager.getToken();
+   Future<void> fetchUserData() async {
+    try {
       if (_token == null) {
-        throw Exception('No token found');
+        final sessionManager = SessionManager();
+        _token = await sessionManager.getToken();
+        if (_token == null) {
+          throw Exception('No token found');
+        }
       }
+
+      final whoAmIResponse = await apiService.getWhoAmI(_token!);
+      _user = User(
+        id: whoAmIResponse.userId,
+        email: whoAmIResponse.email,
+        name: whoAmIResponse.name,
+        gender: whoAmIResponse.gender,
+        avatarLink: whoAmIResponse.avatarLink,
+      );
+
+      // Simpan data pengguna ke SessionManager
+      final sessionManager = SessionManager();
+      await sessionManager.saveSession(
+        _token!,
+        _user!.id,
+        _user!.name,
+        _user!.email,
+        gender: _user!.gender,
+        avatarLink: _user!.avatarLink,
+      );
+    } catch (error) {
+      _errorMessage = error.toString();
+      print("Error fetching user data: $_errorMessage");
     }
-
-    final whoAmIResponse = await apiService.getWhoAmI(_token!);
-    _user = User(
-      id: whoAmIResponse.userId,
-      email: whoAmIResponse.email,
-      name: whoAmIResponse.name,
-      gender: whoAmIResponse.gender,
-      avatarLink: whoAmIResponse.avatarLink,
-    );
-
-    // Simpan data pengguna ke SessionManager
-    final sessionManager = SessionManager(); // Buat instance
-await sessionManager.saveSession(
-  _token!,
-  _user!.id,
-  _user!.name,
-  _user!.email,
-  gender: _user!.gender,
-  avatarLink: _user!.avatarLink,
-);
-
-
-    print("User data fetched: ${_user?.name}");
-  } catch (error) {
-    _errorMessage = error.toString();
-    print("Error fetching user data: $_errorMessage");
-  } finally {
-    _isLoading = false;
-    notifyListeners();
   }
-}
 
  // Update Profile
   Future<void> updateProfile(String name, String gender) async {

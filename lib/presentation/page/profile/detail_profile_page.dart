@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 import 'package:bewise/data/providers/auth_provider.dart';
+import 'package:bewise/presentation/page/profile/profile_page.dart';
 
 class DetailProfilePage extends StatefulWidget {
   const DetailProfilePage({Key? key}) : super(key: key);
@@ -212,9 +213,21 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
 
               // Tombol Simpan
               ElevatedButton(
-                onPressed: _saveProfile,
-                child: const Text('Simpan'),
-              ),
+  onPressed: () async {
+    // Panggil fungsi _saveProfile untuk menyimpan data
+    await _saveProfile();
+
+    // Setelah berhasil menyimpan, arahkan ke halaman ProfilePage
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfilePage(), // Ganti dengan nama class ProfilePage Anda
+      ),
+    );
+  },
+  child: const Text('Simpan'),
+),
+
             ],
           ),
         ),
