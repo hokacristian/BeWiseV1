@@ -1,3 +1,4 @@
+import 'package:bewise/presentation/page/auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bewise/core/constans/colors.dart';
@@ -99,27 +100,30 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // Tombol Daftar
                   CustomButtonWidget(
-                    text: 'Daftar',
-                    isLoading: authProvider.isLoading,
-                    onPressed: () async {
-                      await authProvider.register(
-                        _nameController.text.trim(),
-                        _emailController.text.trim(),
-                        _passwordController.text.trim(),
-                      );
+  text: 'Daftar',
+  isLoading: authProvider.isLoading,
+  onPressed: () async {
+    await authProvider.register(
+      _nameController.text.trim(),
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
 
-                      if (authProvider.errorMessage == null) {
-                        // Navigasi ke halaman login jika registrasi berhasil
-                        Navigator.pop(context);
-                      } else {
-                        // Tampilkan snackbar jika terjadi error
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(authProvider.errorMessage!),
-                          ),
-                        );
-                      }
-                    },
+    if (authProvider.errorMessage == null) {
+      // Navigasi ke halaman login jika berhasil
+      Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+    } else {
+      // Tampilkan error jika ada
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.errorMessage!),
+        ),
+      );
+    }
+  },
                     backgroundColor: AppColors.lightBlue,
                     textColor: AppColors.textPrimary,
                   ),
@@ -166,7 +170,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
                     },
                     child: Text(
                       'Masuk Di sini',

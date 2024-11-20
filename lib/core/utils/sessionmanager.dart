@@ -9,8 +9,14 @@ class SessionManager {
   static const String _userAvatarLinkKey = 'user_avatar_link';
 
   // Save session
-  Future<void> saveSession(String token, int userId, String userName, String userEmail,
-      {String? gender, String? avatarLink}) async {
+   Future<void> saveSession(
+    String token,
+    int userId,
+    String userName,
+    String userEmail, {
+    String? gender,
+    String? avatarLink,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
     await prefs.setInt(_userIdKey, userId);
@@ -31,7 +37,7 @@ class SessionManager {
   }
 
   // Get user details
-  Future<Map<String, dynamic>?> getUserDetails() async {
+   Future<Map<String, dynamic>?> getUserDetails() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(_userIdKey)) return null;
 
