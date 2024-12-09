@@ -84,7 +84,6 @@ class ProductProvider extends ChangeNotifier {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
-
     try {
       if (token == null) throw Exception('Token is not available');
       final result = await apiService.scanProduct(barcode, token!);

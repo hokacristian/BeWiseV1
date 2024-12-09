@@ -7,7 +7,9 @@ class CustomButtonWidget extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final Color? textColor;
-  final Widget? icon; // Add this parameter for the icon
+  final Widget? icon;
+  final double? iconHeight; // Tinggi ikon
+  final double? iconWidth; // Lebar ikonF // Add this parameter for the icon
 
   const CustomButtonWidget({
     required this.text,
@@ -16,6 +18,8 @@ class CustomButtonWidget extends StatelessWidget {
     this.backgroundColor,
     this.textColor = Colors.white,
     this.icon,
+    this.iconHeight, // Tambahkan height
+    this.iconWidth, // Tambahkan width
   });
 
   @override
@@ -36,8 +40,14 @@ class CustomButtonWidget extends StatelessWidget {
           : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (icon != null) icon!, // Display the icon if provided
-                if (icon != null) SizedBox(width: 8), // Add spacing between icon and text
+                if (icon != null)
+                  SizedBox(
+                    height: iconHeight ?? 24.0, // Default height 24
+                    width: iconWidth ?? 24.0, // Default width 24
+                    child: icon, // Gunakan ikon yang diberikan
+                  ), // Display the icon if provided
+                if (icon != null)
+                  SizedBox(width: 12), // Add spacing between icon and text
                 Text(
                   text,
                   style: TextStyle(

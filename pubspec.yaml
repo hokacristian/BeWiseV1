@@ -87,6 +87,7 @@ flutter:
   - assets/img/icon_person.svg
   - assets/img/icon_scan.svg
   - assets/img/default_foto.png
+  - assets/img/google.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

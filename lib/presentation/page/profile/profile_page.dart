@@ -40,10 +40,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profil'),
-        backgroundColor: Colors.green,
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Profil'),
+      //   backgroundColor: Colors.green,
+      // ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           if (authProvider.isLoading) {
