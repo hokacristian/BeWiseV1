@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bewise/data/providers/product_provider.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
+import 'package:bewise/presentation/page/product/detail_product_page.dart';
 
 class CategoryProductPage extends StatelessWidget {
   final int categoryId;
@@ -39,19 +40,30 @@ class CategoryProductPage extends StatelessWidget {
                   );
                 }
                 return GridView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemCount: provider.products.length,
-                  itemBuilder: (context, index) {
-                    final product = provider.products[index];
-                    return ProductCard(product: product);
-                  },
-                );
+  padding: const EdgeInsets.all(16.0),
+  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+    crossAxisSpacing: 10,
+    mainAxisSpacing: 10,
+    childAspectRatio: 0.7,
+  ),
+        itemCount: provider.products.length,
+        itemBuilder: (context, index) {
+          final product = provider.products[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailPage(productId: product.id),
+                ),
+              );
+            },
+            child: ProductCard(product: product),
+          );
+        },
+      );
+
               },
             );
           }

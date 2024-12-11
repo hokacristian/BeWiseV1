@@ -32,24 +32,18 @@ class ProductProvider extends ChangeNotifier {
 
   // Fetch product by ID
   Future<void> fetchProductById(int id) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      if (token == null) {
-        await _initializeToken();
-        if (token == null) throw Exception('Token is not available');
-      }
-      final result = await apiService.getProductById(id, token!);
-      _product = Product.fromJson(result.toJson());
-    } catch (error) {
-      _errorMessage = error.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  try {
+    if (token == null) {
+      await _initializeToken();
+      if (token == null) throw Exception('Token is not available');
     }
+    final result = await apiService.getProductById(id, token!);
+    _product = Product.fromJson(result.toJson());
+  } catch (error) {
+    _errorMessage = error.toString();
   }
+}
+
 
   // Fetch products by category
   Future<void> fetchProductsByCategory(int categoryId) async {
