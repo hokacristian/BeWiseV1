@@ -43,6 +43,8 @@ dependencies:
   provider: ^6.1.2
   flutter_svg: ^2.0.14
   path: ^1.8.1
+  skeletonizer: ^1.4.2
+
 
 
 

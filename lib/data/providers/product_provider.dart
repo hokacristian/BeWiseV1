@@ -112,6 +112,44 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
+  // Fetch scan histories
+Future<void> fetchScanHistories(int page, int limit) async {
+  _isLoading = true;
+  _errorMessage = null;
+
+  try {
+    if (token == null) {
+      await _initializeToken();
+      if (token == null) throw Exception('Token is not available');
+    }
+
+    // Ambil semua riwayat
+    final historiesResponse = await apiService.getHistories(page, limit, token!);
+
+    // Ambil produk berdasarkan ID dari riwayat
+    final List<Product> products = [];
+    for (var history in historiesResponse) {
+      try {
+        final product = await apiService.getProductById(history['product_id'], token!);
+        products.add(product);
+      } catch (e) {
+        print('Error fetching product with ID ${history['product_id']}: $e');
+      }
+    }
+
+    _products = products; // Tetap menyimpan semua produk sesuai riwayat
+  } catch (error) {
+    _errorMessage = error.toString();
+    print('Error fetching histories: $error');
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+
+
+
+
   // Set token for API requests (optional if manual update is needed)
   Future<void> setToken(String newToken) async {
     final sessionManager = SessionManager();
