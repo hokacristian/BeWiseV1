@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/presentation/page/product/category_product_page.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,9 +29,7 @@ class _HomePageState extends State<HomePage> {
         future: _fetchUserFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return _buildSkeleton(); // Menampilkan skeleton saat data sedang diambil
           } else if (snapshot.hasError) {
             return Center(
               child: Text('Error: ${snapshot.error}'),
@@ -43,6 +42,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Konten utama jika data berhasil dimuat
   Widget _buildContent(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final user = authProvider.user;
@@ -76,8 +76,7 @@ class _HomePageState extends State<HomePage> {
               CircleAvatar(
                 radius: 30,
                 backgroundImage: NetworkImage(
-                  user?.avatarLink ??
-                      'https://example.com/default-avatar.png',
+                  user?.avatarLink ?? 'https://example.com/default-avatar.png',
                 ),
               ),
             ],
@@ -134,6 +133,105 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Skeleton Loading saat data sedang dimuat
+  Widget _buildSkeleton() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Skeleton Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Skeletonizer(
+                    enabled: true,
+                    child: Container(
+                      width: 100,
+                      height: 20,
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Skeletonizer(
+                    enabled: true,
+                    child: Container(
+                      width: 150,
+                      height: 25,
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                ],
+              ),
+              Skeletonizer(
+                enabled: true,
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.grey[300],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // Skeleton Search Bar
+          Skeletonizer(
+            enabled: true,
+            child: Container(
+              height: 50,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Skeleton Categories Title
+          Skeletonizer(
+            enabled: true,
+            child: Container(
+              height: 20,
+              width: 100,
+              color: Colors.grey[300],
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Skeleton Grid for Categories
+          Expanded(
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 1.2,
+              ),
+              itemCount: 6, // Jumlah kategori skeleton
+              itemBuilder: (context, index) {
+                return Skeletonizer(
+                  enabled: true,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Button untuk kategori
   Widget _buildCategoryButton(
       BuildContext context, String name, int categoryId, IconData icon) {
     return GestureDetector(
