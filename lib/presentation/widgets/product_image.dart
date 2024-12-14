@@ -5,7 +5,7 @@ class ProductImage extends StatelessWidget {
   final String imageUrl;
   final Label? label;
 
-  const ProductImage({required this.imageUrl, this.label, Key? key}) : super(key: key);
+  const ProductImage({required this.imageUrl, this.label, super.key});
 
   @override
   Widget build(BuildContext context) {

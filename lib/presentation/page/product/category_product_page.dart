@@ -8,7 +8,7 @@ import 'package:bewise/presentation/page/product/detail_product_page.dart';
 class CategoryProductPage extends StatelessWidget {
   final int categoryId;
 
-  const CategoryProductPage({required this.categoryId, Key? key}) : super(key: key);
+  const CategoryProductPage({required this.categoryId, super.key});
 
   @override
   Widget build(BuildContext context) {

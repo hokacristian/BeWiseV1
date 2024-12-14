@@ -5,10 +5,15 @@ import 'package:bewise/data/services/api_service.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/data/providers/product_provider.dart';
 import 'presentation/page/onboarding/splash_screen.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   // Load environment variables
   await dotenv.load(fileName: 'assets/env/.env');
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const MyApp());
 }
 

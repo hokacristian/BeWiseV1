@@ -4,6 +4,8 @@ import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/presentation/page/product/category_product_page.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }

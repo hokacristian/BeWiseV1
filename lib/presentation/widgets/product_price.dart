@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PriceInfo extends StatelessWidget {
   final int price;
 
-  const PriceInfo({required this.price, Key? key}) : super(key: key);
+  const PriceInfo({required this.price, super.key});
 
   @override
   Widget build(BuildContext context) {

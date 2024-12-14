@@ -12,6 +12,8 @@ import 'package:bewise/presentation/page/auth/register_page.dart';
 import 'package:bewise/presentation/page/auth/forget_password_page.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -25,19 +27,34 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: AppColors.brokenWhite,
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           return Stack(
             children: [
               // Konten utama
               SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    // Tambahkan tombol kembali di bagian atas
                     Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back, color: Colors.black),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16), // Padding tambahan di bawah tombol kembali
+                    const Align(
                       alignment: Alignment.center,
-                      
                       child: Text(
                         AppStrings.loginTittle,
                         style: TextStyle(
@@ -48,8 +65,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 6),
-                    Text(
+                    const SizedBox(height: 6),
+                    const Text(
                       AppStrings.loginText,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -59,9 +76,9 @@ class _LoginPageState extends State<LoginPage> {
                         fontFamily: 'Poppins',
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // Email Input
-                    Text(
+                    const Text(
                       'Email',
                       style: TextStyle(
                         fontSize: 14,
@@ -70,15 +87,15 @@ class _LoginPageState extends State<LoginPage> {
                         fontFamily: 'Poppins',
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     InputFieldWidget(
                       controller: _emailController,
                       fillColor: AppColors.grey,
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // Password Input
-                    Text(
+                    const Text(
                       'Kata Sandi',
                       style: TextStyle(
                         fontSize: 14,
@@ -87,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                         fontFamily: 'Poppins',
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     InputFieldWidget(
                       controller: _passwordController,
                       fillColor: AppColors.grey,
@@ -115,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => ForgetPasswordPage()),
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           'Lupa Password',
                           style: TextStyle(
                             color: AppColors.lightBlue,
@@ -126,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // Login Button
                     CustomButtonWidget(
                       text: 'Masuk',
@@ -164,8 +181,8 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       backgroundColor: AppColors.yellow,
                     ),
-                    SizedBox(height: 10),
-                    Center(
+                    const SizedBox(height: 10),
+                    const Center(
                       child: Text(
                         'atau',
                         style: TextStyle(
@@ -175,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     CustomButtonWidget(
                       backgroundColor: AppColors.secondary,
                       text: 'Masuk dengan Google',
@@ -185,20 +202,19 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       icon: SvgPicture.asset('assets/img/google.svg'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
               // Footer di bagian bawah layar
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment
-                        .center, // Pusatkan elemen secara horizontal
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Belum punya akun?',
                         style: TextStyle(
                           fontFamily: 'Poppins',
@@ -214,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => RegisterPage()),
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           'Daftar Di sini',
                           style: TextStyle(
                             color: AppColors.lightBlue,

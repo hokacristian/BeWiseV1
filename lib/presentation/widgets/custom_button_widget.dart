@@ -10,7 +10,7 @@ class CustomButtonWidget extends StatelessWidget {
   final double? iconHeight; // Tinggi ikon
   final double? iconWidth; // Lebar ikonF // Add this parameter for the icon
 
-  const CustomButtonWidget({
+  const CustomButtonWidget({super.key, 
     required this.text,
     required this.onPressed,
     this.isLoading = false,
@@ -27,7 +27,7 @@ class CustomButtonWidget extends StatelessWidget {
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
-        padding: EdgeInsets.symmetric(vertical: 15),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -46,7 +46,7 @@ class CustomButtonWidget extends StatelessWidget {
                     child: icon, // Gunakan ikon yang diberikan
                   ), // Display the icon if provided
                 if (icon != null)
-                  SizedBox(width: 12), // Add spacing between icon and text
+                  const SizedBox(width: 12), // Add spacing between icon and text
                 Text(
                   text,
                   style: TextStyle(

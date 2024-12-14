@@ -5,7 +5,7 @@ import 'package:bewise/data/models/product_model.dart';
 class ProductCard extends StatelessWidget {
   final Product product;
 
-  const ProductCard({required this.product, Key? key}) : super(key: key);
+  const ProductCard({required this.product, super.key});
 
   @override
   Widget build(BuildContext context) {

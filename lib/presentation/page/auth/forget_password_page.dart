@@ -6,6 +6,8 @@ import 'package:bewise/core/widgets/input_field_widget.dart';
 import 'package:bewise/presentation/widgets/custom_button_widget.dart';
 
 class ForgetPasswordPage extends StatefulWidget {
+  const ForgetPasswordPage({super.key});
+
   @override
   _ForgetPasswordPageState createState() => _ForgetPasswordPageState();
 }
@@ -40,9 +42,9 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                   ),
                   const SizedBox(height: 20),
                   // Email Input
-                  Text(
+                  const Text(
                     'Email',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,

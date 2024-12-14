@@ -4,7 +4,7 @@ import 'package:bewise/data/models/product_model.dart';
 class NutritionFacts extends StatelessWidget {
   final NutritionFact? nutritionFact;
 
-  const NutritionFacts({this.nutritionFact, Key? key}) : super(key: key);
+  const NutritionFacts({this.nutritionFact, super.key});
 
   @override
   Widget build(BuildContext context) {

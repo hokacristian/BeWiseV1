@@ -8,7 +8,7 @@ import 'package:bewise/presentation/widgets/product_nutrition.dart';
 class ProductDetailPage extends StatefulWidget {
   final int productId;
 
-  const ProductDetailPage({required this.productId, Key? key}) : super(key: key);
+  const ProductDetailPage({required this.productId, super.key});
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
