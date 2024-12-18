@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bewise/core/constans/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -121,7 +119,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Positioned(
-            top: 220, left: 16, right: 16, child: _buildCategorySection())
+            top: 220, left: 16, right: 16, child: _buildCategorySection()),
       ],
     );
   }
@@ -141,76 +139,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildCategorySection() {
-    final categories = [
-      {'name': 'Teh', 'image': 'assets/img/icon_tea.svg'},
-      {'name': 'Soda', 'image': 'assets/img/icon_soda.svg'},
-      {'name': 'Susu', 'image': 'assets/img/icon_susu.svg'},
-      {'name': 'Snack', 'image': 'assets/img/icon_snack.svg'},
-      {'name': 'Roti', 'image': 'assets/img/icon_roti.svg'},
-      {'name': 'Semua', 'image': 'assets/img/icon_all.svg'},
-    ];
-
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ConstrainedBox(
-          constraints:
-              const BoxConstraints(maxHeight: 400), // Batasi tinggi GridView
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-            ),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 55,
-                    width: 55,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: SvgPicture.asset(
-                      categories[index]['image']!,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    categories[index]['name']!,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Skeleton Loading saat data sedang dimuat
   Widget _buildSkeleton() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -308,6 +236,112 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+Widget _buildCategorySection() {
+  final List<String> categoryNames = [
+    'Teh',
+    'Soda',
+    'Susu',
+    'Snack',
+    'Roti',
+    'Semua',
+  ];
+
+  final List<String> categoryImages = [
+    'assets/img/icon_tea.svg',
+    'assets/img/icon_soda.svg',
+    'assets/img/icon_susu.svg',
+    'assets/img/icon_snack.svg',
+    'assets/img/icon_roti.svg',
+    'assets/img/icon_all.svg',
+  ];
+
+  return Center(
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 400),
+        child: GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+          ),
+          itemCount: categoryNames.length,
+          itemBuilder: (context, index) {
+            return _buildCategoryButtonWithImage(
+              context,
+              categoryNames[index],
+              index, // Menggunakan index sebagai ID
+              categoryImages[index], // Gambar SVG
+            );
+          },
+        ),
+      ),
+    ),
+  );
+}
+
+// Fungsi baru yang menggunakan gambar SVG
+Widget _buildCategoryButtonWithImage(
+    BuildContext context, String name, int categoryId, String imagePath) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CategoryProductPage(categoryId: categoryId),
+        ),
+      );
+    },
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.3),
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 55,
+            width: 55,
+            child: SvgPicture.asset(
+              imagePath,
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            name,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
   Widget _buildBanner() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -330,134 +364,103 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-Widget _buildBestChoiceSection() {
-  final bestChoices = [
-    {'name': 'Teh Botol', 'image': 'assets/img/teh_botol.png', 'price': 'Rp 10.000 - 12.000'},
-    {'name': 'Soda', 'image': 'assets/img/soda.png', 'price': 'Rp 8.000 - 10.000'},
-    {'name': 'Susu', 'image': 'assets/img/susu.png', 'price': 'Rp 12.000 - 15.000'},
-  ];
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      // Judul
-      const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
-        child: Text(
-          'Pilihan Terbaik',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+  Widget _buildBestChoiceSection() {
+    final List<String> productNames = ['Teh Botol', 'Soda', 'Susu'];
+    final List<String> productImages = [
+      'assets/img/icon_tea.svg',
+      'assets/img/icon_soda.svg',
+      'assets/img/icon_soda.svg',
+    ];
+    final List<String> productPrices = [
+      'Rp 10.000 - 12.000',
+      'Rp 8.000 - 10.000',
+      'Rp 12.000 - 15.000',
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Judul
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            'Pilihan Terbaik',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-      const SizedBox(height: 10),
-      
-      // ListView untuk Pilihan Terbaik
-      SizedBox(
-        height: 200,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: bestChoices.length,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          itemBuilder: (context, index) {
-            return Container(
-              margin: const EdgeInsets.only(right: 12),
-              width: 150,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    blurRadius: 6,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Gambar produk
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                    child: Image.asset(
-                      bestChoices[index]['image']!,
-                      height: 100,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  // Detail produk
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          bestChoices[index]['name']!,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          bestChoices[index]['price']!,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-    ],
-  );
-}
+        const SizedBox(height: 10),
 
-  // Button untuk kategori
-  Widget _buildCategoryButton(
-      BuildContext context, String name, int categoryId, IconData icon) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CategoryProductPage(categoryId: categoryId),
+        // ListView untuk Pilihan Terbaik
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: productNames.length,
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.only(right: 12),
+                width: 150,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Gambar produk
+                    ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
+                      child: SvgPicture.asset(
+                        productImages[index],
+                        height: 100,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // Detail produk
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            productNames[index],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            productPrices[index],
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 30, color: Colors.blue),
-            const SizedBox(height: 5),
-            Text(
-              name,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
