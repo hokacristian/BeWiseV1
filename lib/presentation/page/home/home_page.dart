@@ -1,4 +1,8 @@
+import 'dart:math';
+
+import 'package:bewise/core/constans/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/presentation/page/product/category_product_page.dart';
@@ -18,13 +22,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    _fetchUserFuture = authProvider.fetchUserData(); // Future diinisialisasi di initState
+    _fetchUserFuture =
+        authProvider.fetchUserData(); // Future diinisialisasi di initState
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[50],
+      backgroundColor: AppColors.brokenWhite,
       body: FutureBuilder<void>(
         future: _fetchUserFuture,
         builder: (context, snapshot) {
@@ -44,91 +49,163 @@ class _HomePageState extends State<HomePage> {
 
   // Konten utama jika data berhasil dimuat
   Widget _buildContent(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final user = authProvider.user;
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(), // Efek scroll yang smooth
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          _buildHeader(),
+          const SizedBox(height: 190),
+          _buildBanner(),
+          const SizedBox(height: 20),
+          _buildBestChoiceSection()
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final user = authProvider.user;
+    return Stack(
+      clipBehavior: Clip.none, // Memastikan konten tidak terpotong
+      children: [
+        // Header
+        Container(
+          width: double.infinity,
+          height: 300,
+          decoration: const BoxDecoration(
+            color: AppColors.lightBlue,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 50, 16, 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '👋 Haloo!',
-                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        '👋 Haloo!',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        user?.name ?? 'User',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    user?.name ?? 'User',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(
+                      user?.avatarLink ??
+                          'https://example.com/default-avatar.png',
                     ),
                   ),
                 ],
               ),
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(
-                  user?.avatarLink ?? 'https://example.com/default-avatar.png',
-                ),
-              ),
+              const SizedBox(height: 20),
+              _buildSearchBar(),
             ],
           ),
-          const SizedBox(height: 20),
+        ),
+        Positioned(
+            top: 220, left: 16, right: 16, child: _buildCategorySection())
+      ],
+    );
+  }
 
-          // Search Bar
-          TextField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: 'Cari apapun',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
+  Widget _buildSearchBar() {
+    return TextField(
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.grey[200],
+        hintText: 'Cari apapun',
+        prefixIcon: const Icon(Icons.search, color: Colors.grey),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
 
-          // Categories
-          const Text(
-            'Kategori',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
+  Widget _buildCategorySection() {
+    final categories = [
+      {'name': 'Teh', 'image': 'assets/img/icon_tea.svg'},
+      {'name': 'Soda', 'image': 'assets/img/icon_soda.svg'},
+      {'name': 'Susu', 'image': 'assets/img/icon_susu.svg'},
+      {'name': 'Snack', 'image': 'assets/img/icon_snack.svg'},
+      {'name': 'Roti', 'image': 'assets/img/icon_roti.svg'},
+      {'name': 'Semua', 'image': 'assets/img/icon_all.svg'},
+    ];
 
-          // Grid View for Categories
-          Expanded(
-            child: GridView(
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 1.2,
-              ),
-              children: [
-                _buildCategoryButton(context, 'Teh', 1, Icons.local_drink),
-                _buildCategoryButton(context, 'Soda', 2, Icons.local_cafe),
-                _buildCategoryButton(context, 'Susu', 3, Icons.free_breakfast),
-                _buildCategoryButton(context, 'Snack', 4, Icons.fastfood),
-                _buildCategoryButton(context, 'Roti', 5, Icons.bakery_dining),
-                _buildCategoryButton(context, 'Semua', 0, Icons.all_inclusive),
-              ],
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
+          ],
+        ),
+        child: ConstrainedBox(
+          constraints:
+              const BoxConstraints(maxHeight: 400), // Batasi tinggi GridView
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+            ),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 55,
+                    width: 55,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: SvgPicture.asset(
+                      categories[index]['image']!,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    categories[index]['name']!,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-        ],
+        ),
       ),
     );
   }
@@ -230,6 +307,120 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Widget _buildBanner() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      width: double.infinity,
+      height: 180,
+      decoration: BoxDecoration(
+        color: Colors.blue[50], // Warna latar belakang banner
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        image: const DecorationImage(
+          image: AssetImage('assets/img/banner.png'), // Gambar banner
+          fit: BoxFit.cover, // Mengatur agar gambar menutupi container
+        ),
+      ),
+    );
+  }
+Widget _buildBestChoiceSection() {
+  final bestChoices = [
+    {'name': 'Teh Botol', 'image': 'assets/img/teh_botol.png', 'price': 'Rp 10.000 - 12.000'},
+    {'name': 'Soda', 'image': 'assets/img/soda.png', 'price': 'Rp 8.000 - 10.000'},
+    {'name': 'Susu', 'image': 'assets/img/susu.png', 'price': 'Rp 12.000 - 15.000'},
+  ];
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Judul
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Text(
+          'Pilihan Terbaik',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      const SizedBox(height: 10),
+      
+      // ListView untuk Pilihan Terbaik
+      SizedBox(
+        height: 200,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: bestChoices.length,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          itemBuilder: (context, index) {
+            return Container(
+              margin: const EdgeInsets.only(right: 12),
+              width: 150,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Gambar produk
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    child: Image.asset(
+                      bestChoices[index]['image']!,
+                      height: 100,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  // Detail produk
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          bestChoices[index]['name']!,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          bestChoices[index]['price']!,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    ],
+  );
+}
 
   // Button untuk kategori
   Widget _buildCategoryButton(
