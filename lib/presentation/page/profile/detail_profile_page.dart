@@ -9,7 +9,7 @@ import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/presentation/page/profile/profile_page.dart';
 
 class DetailProfilePage extends StatefulWidget {
-  const DetailProfilePage({Key? key}) : super(key: key);
+  const DetailProfilePage({super.key});
 
   @override
   State<DetailProfilePage> createState() => _DetailProfilePageState();
@@ -221,7 +221,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => ProfilePage(), // Ganti dengan nama class ProfilePage Anda
+        builder: (context) => const ProfilePage(), // Ganti dengan nama class ProfilePage Anda
       ),
     );
   },

@@ -43,6 +43,8 @@ dependencies:
   provider: ^6.1.2
   flutter_svg: ^2.0.14
   path: ^1.8.1
+  skeletonizer: ^1.4.2
+
 
 
 
@@ -87,6 +89,16 @@ flutter:
   - assets/img/icon_person.svg
   - assets/img/icon_scan.svg
   - assets/img/default_foto.png
+  - assets/img/google.svg
+  - assets/img/news.jpg
+  - assets/img/banner.svg
+  - assets/img/banner.png
+  - assets/img/icon_tea.svg
+  - assets/img/icon_soda.svg
+  - assets/img/icon_susu.svg
+  - assets/img/icon_snack.svg
+  - assets/img/icon_roti.svg
+  - assets/img/icon_all.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

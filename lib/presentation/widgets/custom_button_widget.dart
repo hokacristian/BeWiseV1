@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Import flutter_svg package
 
 class CustomButtonWidget extends StatelessWidget {
   final String text;
@@ -7,15 +6,19 @@ class CustomButtonWidget extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final Color? textColor;
-  final Widget? icon; // Add this parameter for the icon
+  final Widget? icon;
+  final double? iconHeight; // Tinggi ikon
+  final double? iconWidth; // Lebar ikonF // Add this parameter for the icon
 
-  const CustomButtonWidget({
+  const CustomButtonWidget({super.key, 
     required this.text,
     required this.onPressed,
     this.isLoading = false,
     this.backgroundColor,
     this.textColor = Colors.white,
     this.icon,
+    this.iconHeight, // Tambahkan height
+    this.iconWidth, // Tambahkan width
   });
 
   @override
@@ -24,7 +27,7 @@ class CustomButtonWidget extends StatelessWidget {
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
-        padding: EdgeInsets.symmetric(vertical: 15),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -36,8 +39,14 @@ class CustomButtonWidget extends StatelessWidget {
           : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (icon != null) icon!, // Display the icon if provided
-                if (icon != null) SizedBox(width: 8), // Add spacing between icon and text
+                if (icon != null)
+                  SizedBox(
+                    height: iconHeight ?? 24.0, // Default height 24
+                    width: iconWidth ?? 24.0, // Default width 24
+                    child: icon, // Gunakan ikon yang diberikan
+                  ), // Display the icon if provided
+                if (icon != null)
+                  const SizedBox(width: 12), // Add spacing between icon and text
                 Text(
                   text,
                   style: TextStyle(

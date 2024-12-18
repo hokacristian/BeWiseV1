@@ -8,7 +8,7 @@ class InputFieldWidget extends StatelessWidget {
   final TextInputType? keyboardType;
   final Widget? suffixIcon;
 
-  const InputFieldWidget({
+  const InputFieldWidget({super.key, 
     required this.controller,
     this.labelText,
     this.fillColor,
@@ -26,9 +26,11 @@ class InputFieldWidget extends StatelessWidget {
         filled: true,
         fillColor: fillColor ?? Colors.white,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6.0),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderRadius:
+              BorderRadius.circular(12.0), // Atur besar rounded di sini
+          borderSide: BorderSide.none, // Hilangkan garis outline
         ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         suffixIcon: suffixIcon,
       ),
       obscureText: obscureText,
