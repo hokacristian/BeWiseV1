@@ -99,6 +99,8 @@ flutter:
   - assets/img/icon_snack.svg
   - assets/img/icon_roti.svg
   - assets/img/icon_all.svg
+  - assets/img/flashlight.svg
+  - assets/img/gallery.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

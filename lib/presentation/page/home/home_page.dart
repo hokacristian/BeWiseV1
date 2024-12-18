@@ -306,7 +306,7 @@ Widget _buildCategoryButtonWithImage(
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.white.withOpacity(0.3),
             blurRadius: 5,
             offset: const Offset(0, 3),
           ),
@@ -333,55 +333,6 @@ Widget _buildCategoryButtonWithImage(
     ),
   );
 }
-
-
-// Fungsi baru yang menggunakan gambar SVG
-// Widget _buildCategoryButtonWithImage(
-//     BuildContext context, String name, int categoryId, String imagePath) {
-//   return GestureDetector(
-//     onTap: () {
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => CategoryProductPage(categoryId: categoryId),
-//         ),
-//       );
-//     },
-//     child: Container(
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(10),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.white.withOpacity(0.3),
-//             blurRadius: 5,
-//             offset: const Offset(0, 3),
-//           ),
-//         ],
-//       ),
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           SizedBox(
-//             height: 55,
-//             width: 55,
-//             child: SvgPicture.asset(
-//               imagePath,
-//               fit: BoxFit.contain,
-//             ),
-//           ),
-//           const SizedBox(height: 5),
-//           Text(
-//             name,
-//             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
-
-
   Widget _buildBanner() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),

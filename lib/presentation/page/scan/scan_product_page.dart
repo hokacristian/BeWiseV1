@@ -1,3 +1,4 @@
+import 'package:bewise/core/constans/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart' as mobilescanner;
 import 'package:image_picker/image_picker.dart';
@@ -5,7 +6,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:google_ml_kit/google_ml_kit.dart' as mlkit; // Import Google ML Kit
+import 'package:google_ml_kit/google_ml_kit.dart'
+    as mlkit; // Import Google ML Kit
 import 'package:bewise/data/providers/product_provider.dart';
 import 'package:bewise/presentation/page/product/detail_product_page.dart';
 
@@ -21,7 +23,8 @@ class _ScanProductPageState extends State<ScanProductPage> {
   bool isFlashOn = false;
   XFile? _selectedImage;
 
-  final mobilescanner.MobileScannerController cameraController = mobilescanner.MobileScannerController();
+  final mobilescanner.MobileScannerController cameraController =
+      mobilescanner.MobileScannerController();
   final ImagePicker _imagePicker = ImagePicker();
 
   @override
@@ -33,89 +36,181 @@ class _ScanProductPageState extends State<ScanProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Pindai Produk',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            cameraController.dispose();
-            Navigator.of(context).pop();
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              isFlashOn ? Icons.flash_on : Icons.flash_off,
-              color: Colors.white,
+      backgroundColor: AppColors.brokenWhite,
+      appBar: _buildAppBar(),
+      body: Column(
+        children: [
+          Expanded(child: _buildCameraOrImage()),
+          const SizedBox(height: 20),
+          _buildInformationMessage(),
+        ],
+      ),
+    );
+  }
+
+  /// Build AppBar
+  AppBar _buildAppBar() {
+    return AppBar(
+      backgroundColor: AppColors.brokenWhite,
+      elevation: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.black),
+        onPressed: () {
+          cameraController.dispose();
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
+  /// Build Kamera atau Gambar dari Galeri
+  Widget _buildCameraOrImage() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0), // Tambahkan padding di sekitar Stack
+      child: Stack(
+        children: [
+          // Kamera atau gambar dari galeri
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: _selectedImage == null
+                  ? mobilescanner.MobileScanner(
+                      controller: cameraController,
+                      onDetect: (barcodeCapture) async {
+                        if (hasScanned) return;
+
+                        final List<mobilescanner.Barcode> barcodes =
+                            barcodeCapture.barcodes;
+                        for (final barcode in barcodes) {
+                          final String? code = barcode.rawValue;
+                          if (code != null) {
+                            setState(() {
+                              hasScanned = true;
+                              isLoading = true;
+                              scannedBarcode = code;
+                            });
+                            cameraController.stop();
+                            await _fetchProductData(code);
+                            break;
+                          }
+                        }
+                      },
+                    )
+                  : Image.file(
+                      File(_selectedImage!.path),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
             ),
-            onPressed: () {
-              setState(() {
-                isFlashOn = !isFlashOn;
-              });
-              cameraController.toggleTorch();
-            },
           ),
-          IconButton(
-            icon: Icon(Icons.image, color: Colors.white),
-            onPressed: _pickImageFromGallery,
+
+          // Tombol Trigger ke Detail Product
+          if (_selectedImage != null)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 23),
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.withOpacity(0.7),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                  ),
+                  onPressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    await _scanImageFromGallery(); // Pindai gambar untuk barcode
+                  },
+                  icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
+                  label: const Text(
+                    "Lihat Detail Produk",
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                      color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+
+          // Tombol Galeri di Kiri Bawah
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: GestureDetector(
+              onTap: _pickImageFromGallery,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.7),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.image, color: Colors.white, size: 30),
+              ),
+            ),
+          ),
+
+          // Tombol Flash di Kanan Bawah
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  isFlashOn = !isFlashOn;
+                });
+                cameraController.toggleTorch();
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.7),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isFlashOn ? Icons.flash_on : Icons.flash_off,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Expanded(
-                  child: _selectedImage == null
-                      ? mobilescanner.MobileScanner(
-                          controller: cameraController,
-                          onDetect: (barcodeCapture) async {
-                            if (hasScanned) return;
+    );
+  }
 
-                            final List<mobilescanner.Barcode> barcodes = barcodeCapture.barcodes;
-                            for (final barcode in barcodes) {
-                              final String? code = barcode.rawValue;
-                              if (code != null) {
-                                setState(() {
-                                  hasScanned = true;
-                                  isLoading = true;
-                                  scannedBarcode = code;
-                                });
-                                cameraController.stop();
-                                await _fetchProductData(code);
-                                break;
-                              }
-                            }
-                          },
-                        )
-                      : Image.file(
-                          File(_selectedImage!.path),
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  "Arahkan kamera ke barcode atau pilih gambar dari galeri.",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20),
-                _selectedImage != null
-                    ? ElevatedButton(
-                        onPressed: _scanImageFromGallery,
-                        child: Text("Pindai dari Gambar"))
-                    : SizedBox.shrink(),
-              ],
-            ),
+  /// Build Pesan Informasi
+  Widget _buildInformationMessage() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 25, 16, 25),
+      decoration: const BoxDecoration(
+        color: AppColors.lightBlue,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: const Text(
+        "Silakan pindai barcode di kemasan untuk mendapatkan informasi lebih lanjut.",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w600,
+        ),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
   Future<void> _pickImageFromGallery() async {
-    final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+    final XFile? image =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         _selectedImage = image;
@@ -126,11 +221,14 @@ class _ScanProductPageState extends State<ScanProductPage> {
   Future<void> _scanImageFromGallery() async {
     if (_selectedImage == null) return;
 
-    final mlkit.InputImage inputImage = mlkit.InputImage.fromFilePath(_selectedImage!.path);
-    final mlkit.BarcodeScanner barcodeScanner = mlkit.GoogleMlKit.vision.barcodeScanner();
+    final mlkit.InputImage inputImage =
+        mlkit.InputImage.fromFilePath(_selectedImage!.path);
+    final mlkit.BarcodeScanner barcodeScanner =
+        mlkit.GoogleMlKit.vision.barcodeScanner();
 
     try {
-      final List<mlkit.Barcode> barcodes = await barcodeScanner.processImage(inputImage);
+      final List<mlkit.Barcode> barcodes =
+          await barcodeScanner.processImage(inputImage);
       if (barcodes.isNotEmpty) {
         final String? code = barcodes.first.rawValue;
         if (code != null) {
@@ -158,7 +256,8 @@ class _ScanProductPageState extends State<ScanProductPage> {
   }
 
   Future<void> _fetchProductData(String barcode) async {
-    final productProvider = Provider.of<ProductProvider>(context, listen: false);
+    final productProvider =
+        Provider.of<ProductProvider>(context, listen: false);
 
     try {
       await productProvider.scanProduct(barcode);
