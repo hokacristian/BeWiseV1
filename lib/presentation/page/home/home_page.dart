@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   // Konten utama jika data berhasil dimuat
   Widget _buildContent(BuildContext context) {
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(), // Efek scroll yang smooth
+      // physics: const BouncingScrollPhysics(), // Efek scroll yang smooth
       child: Column(
         children: [
           // Header
@@ -237,22 +237,14 @@ class _HomePageState extends State<HomePage> {
   }
 
 Widget _buildCategorySection() {
-  final List<String> categoryNames = [
-    'Teh',
-    'Soda',
-    'Susu',
-    'Snack',
-    'Roti',
-    'Semua',
-  ];
-
-  final List<String> categoryImages = [
-    'assets/img/icon_tea.svg',
-    'assets/img/icon_soda.svg',
-    'assets/img/icon_susu.svg',
-    'assets/img/icon_snack.svg',
-    'assets/img/icon_roti.svg',
-    'assets/img/icon_all.svg',
+  // List kategori dengan ID, nama, dan path gambar
+  final List<Map<String, dynamic>> categories = [
+    {'id': 1, 'name': 'Teh', 'image': 'assets/img/icon_tea.svg'},
+    {'id': 2, 'name': 'Soda', 'image': 'assets/img/icon_soda.svg'},
+    {'id': 3, 'name': 'Susu', 'image': 'assets/img/icon_susu.svg'},
+    {'id': 4, 'name': 'Snack', 'image': 'assets/img/icon_snack.svg'},
+    {'id': 5, 'name': 'Roti', 'image': 'assets/img/icon_roti.svg'},
+    {'id': 0, 'name': 'Semua', 'image': 'assets/img/icon_all.svg'},
   ];
 
   return Center(
@@ -280,13 +272,13 @@ Widget _buildCategorySection() {
             crossAxisSpacing: 20,
             mainAxisSpacing: 20,
           ),
-          itemCount: categoryNames.length,
+          itemCount: categories.length,
           itemBuilder: (context, index) {
             return _buildCategoryButtonWithImage(
               context,
-              categoryNames[index],
-              index, // Menggunakan index sebagai ID
-              categoryImages[index], // Gambar SVG
+              categories[index]['name'] as String, // Nama kategori
+              categories[index]['id'] as int, // ID kategori
+              categories[index]['image'] as String, // Gambar kategori
             );
           },
         ),
@@ -295,11 +287,12 @@ Widget _buildCategorySection() {
   );
 }
 
-// Fungsi baru yang menggunakan gambar SVG
+// Fungsi untuk membuat tombol kategori
 Widget _buildCategoryButtonWithImage(
     BuildContext context, String name, int categoryId, String imagePath) {
   return GestureDetector(
     onTap: () {
+      print('Navigasi ke Category ID: $categoryId'); // Debugging
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -313,7 +306,7 @@ Widget _buildCategoryButtonWithImage(
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.grey.withOpacity(0.3),
             blurRadius: 5,
             offset: const Offset(0, 3),
           ),
@@ -340,6 +333,53 @@ Widget _buildCategoryButtonWithImage(
     ),
   );
 }
+
+
+// Fungsi baru yang menggunakan gambar SVG
+// Widget _buildCategoryButtonWithImage(
+//     BuildContext context, String name, int categoryId, String imagePath) {
+//   return GestureDetector(
+//     onTap: () {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => CategoryProductPage(categoryId: categoryId),
+//         ),
+//       );
+//     },
+//     child: Container(
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(10),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.white.withOpacity(0.3),
+//             blurRadius: 5,
+//             offset: const Offset(0, 3),
+//           ),
+//         ],
+//       ),
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           SizedBox(
+//             height: 55,
+//             width: 55,
+//             child: SvgPicture.asset(
+//               imagePath,
+//               fit: BoxFit.contain,
+//             ),
+//           ),
+//           const SizedBox(height: 5),
+//           Text(
+//             name,
+//             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+//           ),
+//         ],
+//       ),
+//     ),
+//   );
+// }
 
 
   Widget _buildBanner() {
