@@ -101,6 +101,12 @@ flutter:
   - assets/img/icon_all.svg
   - assets/img/flashlight.svg
   - assets/img/gallery.svg
+  - assets/img/score_a.svg
+  - assets/img/score_b.svg
+  - assets/img/score_c.svg
+  - assets/img/score_d.svg
+  - assets/img/score_e.svg
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

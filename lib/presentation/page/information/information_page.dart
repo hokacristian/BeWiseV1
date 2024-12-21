@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:bewise/presentation/widgets/score_card_a.dart';
+
 
 class InformationPage extends StatelessWidget {
   const InformationPage({super.key});
@@ -7,13 +9,13 @@ class InformationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Info Page'),
+        title:  Text('Info Page'),
       ),
-      body: const Center(
-        child: Text(
-          'Welcome to Info Page',
-          style: TextStyle(fontSize: 24),
-        ),
+      body: ListView(
+        padding:  EdgeInsets.all(16),
+        children:  [
+          ScoreCardA(),  // Panggil widget A
+        ],
       ),
     );
   }

@@ -209,14 +209,18 @@ class _ScanProductPageState extends State<ScanProductPage> {
   }
 
   Future<void> _pickImageFromGallery() async {
-    final XFile? image =
-        await _imagePicker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _selectedImage = image;
-      });
-    }
+  final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+  if (image != null) {
+    setState(() {
+      _selectedImage = image;
+      isLoading = true;  // Tampilkan loader saat proses berlangsung
+    });
+
+    // Setelah memilih gambar, langsung jalankan pemindaian barcode
+    await _scanImageFromGallery();
   }
+}
+
 
   Future<void> _scanImageFromGallery() async {
     if (_selectedImage == null) return;
