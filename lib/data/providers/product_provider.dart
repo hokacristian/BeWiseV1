@@ -153,7 +153,7 @@ Future<void> fetchScanHistories(int page, int limit) async {
   // Set token for API requests (optional if manual update is needed)
   Future<void> setToken(String newToken) async {
     final sessionManager = SessionManager();
-    await sessionManager.saveSession(newToken, 0, '', ''); // Dummy user data for session
+    await sessionManager.saveSession(newToken, 0, '', '', '', gender: null, avatarLink: null);
     token = newToken;
     notifyListeners();
   }

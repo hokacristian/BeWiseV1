@@ -17,15 +17,16 @@ class DetailProfilePage extends StatefulWidget {
 
 class _DetailProfilePageState extends State<DetailProfilePage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  File? _selectedImage;
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();  File? _selectedImage;
   String? _gender;
 
   @override
-  void initState() {
+ void initState() {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    _nameController.text = authProvider.user?.name ?? '';
+    _firstNameController.text = authProvider.user?.firstName ?? '';
+    _lastNameController.text = authProvider.user?.lastName ?? '';
     _gender = authProvider.user?.gender;
   }
 
@@ -87,7 +88,11 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
       if (_selectedImage != null) {
         await authProvider.updateAvatar(_selectedImage!.path); // Update avatar
       }
-      await authProvider.updateProfile(_nameController.text, _gender ?? 'Pria'); // Update nama dan gender
+      await authProvider.updateProfile(
+          _firstNameController.text,
+          _lastNameController.text,
+          _gender ?? 'Pria',
+        );
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profil berhasil diperbarui')),
@@ -145,17 +150,26 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
 
               // Nama
               TextFormField(
-                controller: _nameController,
+                controller: _firstNameController,
                 decoration: const InputDecoration(
-                  labelText: 'Nama',
+                  labelText: 'Nama Depan',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Nama tidak boleh kosong';
+                    return 'Nama depan tidak boleh kosong';
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                controller: _lastNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nama Belakang',
+                  border: OutlineInputBorder(),
+                ),
               ),
               const SizedBox(height: 16),
 

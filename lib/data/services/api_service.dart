@@ -27,26 +27,25 @@ class ApiService {
   }
 
 
-  Future<Map<String, dynamic>> register(String name, String email, String password) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/register'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({"name": name, "email": email, "password": password}),
-  );
+  Future<Map<String, dynamic>> register(String firstName, String lastName, String email, String password) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/register'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({"first_name": firstName, "last_name": lastName, "email": email, "password": password}),
+    );
 
-  // Parsing response body
-  final data = jsonDecode(response.body);
+    final data = jsonDecode(response.body);
 
-  if (response.statusCode == 201) { // Menggunakan status code 201 sebagai tanda sukses
-    if (data['status'] == true) {
-      return data; // Kembalikan data jika berhasil
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      if (data['status'] == true) {
+        return data['data']['user'];
+      } else {
+        throw Exception(data['message'] ?? 'Registration failed');
+      }
     } else {
-      throw Exception(data['message'] ?? 'Registration failed');
+      throw Exception(data['message'] ?? 'Failed to register');
     }
-  } else {
-    throw Exception(data['message'] ?? 'Failed to register');
   }
-}
 
 
   Future<Map<String, dynamic>> forgotPassword(String email) async {
@@ -68,20 +67,20 @@ class ApiService {
   }
 
 Future<WhoAmIResponse> getWhoAmI(String token) async {
-  final response = await http.get(
-    Uri.parse('$baseUrl/whoami'),
-    headers: {'Authorization': 'Bearer $token'},
-  );
+    final response = await http.get(
+      Uri.parse('$baseUrl/whoami'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body)['data'];
-    return WhoAmIResponse.fromJson(data);
-  } else {
-    throw Exception('Failed to fetch user data');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'];
+      return WhoAmIResponse.fromJson(data);
+    } else {
+      throw Exception('Failed to fetch user data');
+    }
   }
-}
 
- Future<Map<String, dynamic>> updateProfile(String token, String name, String gender) async {
+ Future<Map<String, dynamic>> updateProfile(String token, String firstName, String lastName, String gender) async {
     final response = await http.patch(
       Uri.parse('$baseUrl/profile'),
       headers: {
@@ -89,7 +88,8 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        "name": name,
+        "first_name": firstName,
+        "last_name": lastName,
         "gender": gender,
       }),
     );
@@ -97,7 +97,7 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data['status'] == true) {
-        return data;
+        return data['data'];
       } else {
         throw Exception(data['message'] ?? 'Failed to update profile');
       }

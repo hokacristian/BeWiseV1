@@ -15,7 +15,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
@@ -24,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.brokenWhite,
-      resizeToAvoidBottomInset: false, // Mencegah konten bergeser saat keyboard muncul
+      resizeToAvoidBottomInset: false,
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           return Stack(
@@ -34,7 +35,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Tombol Kembali
                     Align(
                       alignment: Alignment.topLeft,
                       child: IconButton(
@@ -46,7 +46,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Header
                     const Align(
                       alignment: Alignment.center,
                       child: Text(
@@ -72,10 +71,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Input Nama
+                    // Input Nama Depan
                     _buildInputField(
-                      label: 'Nama',
-                      controller: _nameController,
+                      label: 'Nama Depan',
+                      controller: _firstNameController,
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Input Nama Belakang
+                    _buildInputField(
+                      label: 'Nama Belakang',
+                      controller: _lastNameController,
                     ),
                     const SizedBox(height: 10),
 
@@ -113,19 +119,18 @@ class _RegisterPageState extends State<RegisterPage> {
                       isLoading: authProvider.isLoading,
                       onPressed: () async {
                         await authProvider.register(
-                          _nameController.text.trim(),
+                          _firstNameController.text.trim(),
+                          _lastNameController.text.trim(),
                           _emailController.text.trim(),
                           _passwordController.text.trim(),
                         );
 
                         if (authProvider.errorMessage == null) {
-                          // Navigasi ke halaman login jika berhasil
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const LoginPage()),
                           );
                         } else {
-                          // Tampilkan error jika ada
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(authProvider.errorMessage!),
@@ -138,7 +143,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Separator
                     const Center(
                       child: Text(
                         'atau',
@@ -151,7 +155,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Tombol Daftar dengan Google
                     CustomButtonWidget(
                       backgroundColor: AppColors.secondary,
                       text: 'Daftar dengan Google',
@@ -168,7 +171,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
-              // Footer tetap di bagian bawah layar
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(

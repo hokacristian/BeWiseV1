@@ -160,12 +160,12 @@ class _LoginPageState extends State<LoginPage> {
                           await _sessionManager.saveSession(
                             authProvider.token!,
                             authProvider.user!.id,
-                            authProvider.user!.name,
+                            authProvider.user!.firstName,
+                            authProvider.user!.lastName,
                             authProvider.user!.email,
                             gender: authProvider.user!.gender,
                             avatarLink: authProvider.user!.avatarLink,
                           );
-
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
