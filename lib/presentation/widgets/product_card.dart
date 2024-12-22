@@ -1,16 +1,16 @@
-// product_card.dart
 import 'package:flutter/material.dart';
 import 'package:bewise/data/models/product_model.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
 
-  const ProductCard({required this.product, super.key});
+  const ProductCard({Key? key, required this.product}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     String validateImageUrl(String url) {
-      return url.isNotEmpty && (url.startsWith('http://') || url.startsWith('https://'))
+      return url.isNotEmpty &&
+              (url.startsWith('http://') || url.startsWith('https://'))
           ? url
           : 'https://example.com/default-image.png';
     }
@@ -30,6 +30,7 @@ class ProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Gambar
           Stack(
             children: [
               ClipRRect(
@@ -39,6 +40,19 @@ class ProductCard extends StatelessWidget {
                   fit: BoxFit.cover,
                   height: 140,
                   width: double.infinity,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    );
+                  },
                   errorBuilder: (context, error, stackTrace) {
                     return Image.asset(
                       'assets/images/error_image.png',
@@ -58,7 +72,10 @@ class ProductCard extends StatelessWidget {
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     child: Text(
                       product.label!.name,
                       style: const TextStyle(
@@ -71,6 +88,8 @@ class ProductCard extends StatelessWidget {
                 ),
             ],
           ),
+
+          // Info
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -97,13 +116,13 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                'Rp ${product.priceA} - Rp ${product.priceB}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                  'Rp ${product.priceA} - Rp ${product.priceB}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
                 ),
-              ),
               ],
             ),
           ),

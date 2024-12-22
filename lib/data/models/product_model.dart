@@ -6,12 +6,13 @@ class Product {
   final int categoryProductId;
   final int nutritionFactId;
   final String barcode;
-  final int priceA; // Harga minimum
-  final int priceB; // Harga maksimum
+  final int priceA;
+  final int priceB;
   final int labelId;
   final CategoryProduct? categoryProduct;
   final NutritionFact? nutritionFact;
   final Label? label;
+  final List<Product>? rekomendasi;
 
   Product({
     required this.id,
@@ -27,29 +28,57 @@ class Product {
     this.categoryProduct,
     this.nutritionFact,
     this.label,
+    this.rekomendasi,
   });
 
+  // Tambahkan copyWith
+  Product copyWith({
+  List<Product>? rekomendasi,
+}) {
+  return Product(
+    id: id,
+    name: name,
+    brand: brand,
+    photo: photo,
+    categoryProductId: categoryProductId,
+    nutritionFactId: nutritionFactId,
+    barcode: barcode,
+    priceA: priceA,
+    priceB: priceB,
+    labelId: labelId,
+    categoryProduct: categoryProduct,
+    nutritionFact: nutritionFact,
+    label: label,
+    rekomendasi: rekomendasi ?? this.rekomendasi,
+  );
+}
+
+
   factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? 'Unknown',
-      brand: json['brand'] ?? 'Unknown',
-      photo: json['photo'] ?? '',
-      categoryProductId: json['category_product_id'] ?? 0,
-      nutritionFactId: json['nutrition_fact_id'] ?? 0,
-      barcode: json['barcode'] ?? '',
-      priceA: json['price_a'] ?? 0,
-      priceB: json['price_b'] ?? 0,
-      labelId: json['label_id'] ?? 0,
-      categoryProduct: json['categoryProduct'] != null
-          ? CategoryProduct.fromJson(json['categoryProduct'])
-          : null,
-      nutritionFact: json['nutritionFact'] != null
-          ? NutritionFact.fromJson(json['nutritionFact'])
-          : null,
-      label: json['label'] != null ? Label.fromJson(json['label']) : null,
-    );
-  }
+  return Product(
+    id: json['id'] ?? 0,
+    name: json['name'] ?? 'Unknown',
+    brand: json['brand'] ?? 'Unknown',
+    photo: json['photo'] ?? '',
+    categoryProductId: json['category_product_id'] ?? 0,
+    nutritionFactId: json['nutrition_fact_id'] ?? 0,
+    barcode: json['barcode'] ?? '',
+    priceA: json['price_a'] ?? 0,
+    priceB: json['price_b'] ?? 0,
+    labelId: json['label_id'] ?? 0,
+    categoryProduct: json['categoryProduct'] != null
+        ? CategoryProduct.fromJson(json['categoryProduct'])
+        : null,
+    nutritionFact: json['nutritionFact'] != null
+        ? NutritionFact.fromJson(json['nutritionFact'])
+        : null,
+    label: json['label'] != null ? Label.fromJson(json['label']) : null,
+    rekomendasi: json['rekomendasi'] != null
+        ? (json['rekomendasi'] as List).map((item) => Product.fromJson(item)).toList()
+        : [],
+  );
+}
+
 
   // Optional: Serialize back to JSON
   Map<String, dynamic> toJson() {
@@ -67,6 +96,7 @@ class Product {
       'categoryProduct': categoryProduct?.toJson(),
       'nutritionFact': nutritionFact?.toJson(),
       'label': label?.toJson(),
+      'rekomendasi': rekomendasi?.map((product) => product.toJson()).toList(),
     };
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bewise/data/providers/product_provider.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
-import 'package:bewise/presentation/page/product/product_base_page.dart';
+import 'package:bewise/presentation/page/product/detail_product_page.dart';
 
 class CategoryProductPage extends StatelessWidget {
   final int categoryId;
@@ -55,7 +55,7 @@ class CategoryProductPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProductBasePage(productId: product.id),
+                  builder: (context) => ProductDetailPage(productId: product.id),
                 ),
               );
             },

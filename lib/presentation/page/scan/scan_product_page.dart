@@ -1,15 +1,18 @@
-import 'package:bewise/core/constans/colors.dart';
-import 'package:bewise/presentation/page/product/product_base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart' as mobilescanner;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
-import 'package:google_ml_kit/google_ml_kit.dart'as mlkit; // Import Google ML Kit
+import 'package:google_ml_kit/google_ml_kit.dart' as mlkit;
+
+import 'package:bewise/core/constans/colors.dart';
 import 'package:bewise/data/providers/product_provider.dart';
+import 'package:bewise/data/models/product_model.dart';
 import 'package:bewise/presentation/page/product/product_base_page.dart';
 
 class ScanProductPage extends StatefulWidget {
+  const ScanProductPage({Key? key}) : super(key: key);
+
   @override
   _ScanProductPageState createState() => _ScanProductPageState();
 }
@@ -64,10 +67,10 @@ class _ScanProductPageState extends State<ScanProductPage> {
   /// Build Kamera atau Gambar dari Galeri
   Widget _buildCameraOrImage() {
     return Padding(
-      padding: const EdgeInsets.all(16.0), // Tambahkan padding di sekitar Stack
+      padding: const EdgeInsets.all(16.0),
       child: Stack(
         children: [
-          // Kamera atau gambar dari galeri
+          // Kamera atau gambar
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
@@ -88,7 +91,7 @@ class _ScanProductPageState extends State<ScanProductPage> {
                               scannedBarcode = code;
                             });
                             cameraController.stop();
-                            await _fetchProductData(code);
+                            await _handleScanResult(code);
                             break;
                           }
                         }
@@ -102,7 +105,7 @@ class _ScanProductPageState extends State<ScanProductPage> {
             ),
           ),
 
-          // Tombol Trigger ke Detail Product
+          // Tombol "Lihat Detail Produk" (hanya muncul jika _selectedImage != null)
           if (_selectedImage != null)
             Align(
               alignment: Alignment.bottomCenter,
@@ -115,26 +118,29 @@ class _ScanProductPageState extends State<ScanProductPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
                   ),
                   onPressed: () async {
                     setState(() {
                       isLoading = true;
                     });
-                    await _scanImageFromGallery(); // Pindai gambar untuk barcode
+                    await _scanImageFromGallery();
                   },
                   icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
                   label: const Text(
                     "Lihat Detail Produk",
                     style: TextStyle(
-                        fontFamily: 'Poppins',
-                      color: Colors.white),
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
 
-          // Tombol Galeri di Kiri Bawah
+          // Tombol Galeri di kiri bawah
           Positioned(
             bottom: 20,
             left: 20,
@@ -151,7 +157,7 @@ class _ScanProductPageState extends State<ScanProductPage> {
             ),
           ),
 
-          // Tombol Flash di Kanan Bawah
+          // Tombol Flash di kanan bawah
           Positioned(
             bottom: 20,
             right: 20,
@@ -207,18 +213,17 @@ class _ScanProductPageState extends State<ScanProductPage> {
   }
 
   Future<void> _pickImageFromGallery() async {
-  final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
-  if (image != null) {
-    setState(() {
-      _selectedImage = image;
-      isLoading = true;  // Tampilkan loader saat proses berlangsung
-    });
+    final XFile? image =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImage = image;
+        isLoading = true;
+      });
 
-    // Setelah memilih gambar, langsung jalankan pemindaian barcode
-    await _scanImageFromGallery();
+      await _scanImageFromGallery();
+    }
   }
-}
-
 
   Future<void> _scanImageFromGallery() async {
     if (_selectedImage == null) return;
@@ -234,42 +239,48 @@ class _ScanProductPageState extends State<ScanProductPage> {
       if (barcodes.isNotEmpty) {
         final String? code = barcodes.first.rawValue;
         if (code != null) {
-          await _fetchProductData(code);
+          await _handleScanResult(code);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Tidak dapat membaca barcode dari gambar')),
+            const SnackBar(
+              content: Text('Tidak dapat membaca barcode dari gambar'),
+            ),
           );
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Barcode tidak ditemukan dalam gambar')),
+          const SnackBar(content: Text('Barcode tidak ditemukan dalam gambar')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi kesalahan saat memindai gambar')),
+        SnackBar(content: Text('Terjadi kesalahan saat memindai gambar: $e')),
       );
     } finally {
       await barcodeScanner.close();
       setState(() {
         _selectedImage = null;
+        isLoading = false;
       });
     }
   }
 
-  Future<void> _fetchProductData(String barcode) async {
-    final productProvider =
-        Provider.of<ProductProvider>(context, listen: false);
-
+  /// Method privat untuk menangani hasil scan (kode)
+  Future<void> _handleScanResult(String barcode) async {
+    final productProvider = Provider.of<ProductProvider>(context, listen: false);
     try {
+      // Panggil scanProduct di provider
       await productProvider.scanProduct(barcode);
-      final product = productProvider.product;
+
+      // Ambil object Product dari provider
+      final Product? product = productProvider.product;
 
       if (product != null) {
+        // Navigasi ke ProductBasePage dengan cara passing data "product"
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductBasePage(productId: product.id),
+            builder: (context) => ProductBasePage(product: product),
           ),
         ).then((_) {
           setState(() {

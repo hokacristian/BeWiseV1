@@ -94,23 +94,33 @@ class ProductProvider extends ChangeNotifier {
 
   // Scan product by barcode
   Future<void> scanProduct(String barcode) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-    try {
-      if (token == null) {
-        await _initializeToken();
-        if (token == null) throw Exception('Token is not available');
-      }
-      final result = await apiService.scanProduct(barcode, token!);
-      _product = Product.fromJson(result.toJson());
-    } catch (error) {
-      _errorMessage = error.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  _isLoading = true;
+  _errorMessage = null;
+  notifyListeners();
+  
+  try {
+    if (token == null) {
+      await _initializeToken();
+      if (token == null) throw Exception('Token is not available');
     }
+    
+    final result = await apiService.scanProduct(barcode, token!);
+    
+    _product = result;
+
+    print('Rekomendasi Produk (Provider): ${_product?.rekomendasi?.length}');
+    notifyListeners();
+  } catch (error) {
+    _errorMessage = error.toString();
+  } finally {
+    _isLoading = false;
+    notifyListeners();
   }
+}
+
+
+
+
 
   // Fetch scan histories
 Future<void> fetchScanHistories(int page, int limit) async {

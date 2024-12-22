@@ -66,7 +66,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            ProductBasePage(productId: product.id),
+                            ProductDetailPage(productId: product.id),
                       ),
                     );
                   },

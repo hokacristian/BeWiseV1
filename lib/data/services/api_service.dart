@@ -191,22 +191,38 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
   }
 
   Future<Product> scanProduct(String barcode, String token) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/products/scan'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({'barcode': barcode}),
-    );
+  final response = await http.post(
+    Uri.parse('$baseUrl/products/scan'),
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({'barcode': barcode}),
+  );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data']['product'];
-      return Product.fromJson(data);
-    } else {
-      throw Exception('Failed to scan product');
-    }
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body)['data'];
+    
+    // Pisahkan product dan rekomendasi
+    Product product = Product.fromJson(data['product']);
+    List<Product> rekomendasi = (data['rekomendasi'] as List)
+        .map((item) => Product.fromJson(item))
+        .toList();
+    
+    // Assign rekomendasi ke dalam objek product
+    product = product.copyWith(rekomendasi: rekomendasi);
+    
+    print('Rekomendasi Produk (ApiService): ${rekomendasi.length}');
+    
+    return product;
+  } else {
+    throw Exception('Failed to scan product');
   }
+}
+
+
+
+
 
   Future<List<Map<String, dynamic>>> getHistories(int page, int limit, String token) async {
   final response = await http.get(
