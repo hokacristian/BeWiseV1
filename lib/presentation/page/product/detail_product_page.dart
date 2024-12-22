@@ -72,7 +72,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     ),
                   ),
                   NutritionFacts(nutritionFact: product.nutritionFact),
-                  PriceInfo(price: product.price),
+                  PriceInfo(priceA: product.priceA, priceB: product.priceB),
                 ],
               ),
             );

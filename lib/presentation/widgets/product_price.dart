@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PriceInfo extends StatelessWidget {
-  final int price;
+  final int priceA;
+  final int priceB;
 
-  const PriceInfo({required this.price, super.key});
+  const PriceInfo({required this.priceA, required this.priceB, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class PriceInfo extends StatelessWidget {
               ),
             ),
             Text(
-              'Rp $price',
+              'Rp $priceA - Rp $priceB',
               style: const TextStyle(
                 color: Colors.yellow,
                 fontSize: 18,

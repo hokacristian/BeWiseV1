@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bewise/data/providers/product_provider.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
+import 'package:bewise/presentation/page/product/product_base_page.dart';
 import 'package:bewise/presentation/page/product/detail_product_page.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -65,7 +66,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            ProductDetailPage(productId: product.id),
+                            ProductBasePage(productId: product.id),
                       ),
                     );
                   },

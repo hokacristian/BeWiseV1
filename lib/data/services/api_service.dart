@@ -176,9 +176,6 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
   }
 }
 
-
-
-
   Future<List<Product>> searchProducts(String name, int page, int limit, String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/products/search?name=$name&page=$page&limit=$limit'),
@@ -278,7 +275,8 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
         categoryProductId: 0,
         nutritionFactId: 0,
         barcode: '',
-        price: 0,
+        priceA: 0,  // Default priceA
+        priceB: 0,  // Default priceB
         labelId: 0,
       );
     }
@@ -286,7 +284,4 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
 
   return products;
 }
-
-
-
 }

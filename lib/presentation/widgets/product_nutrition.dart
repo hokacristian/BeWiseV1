@@ -14,28 +14,32 @@ class NutritionFacts extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Fakta Nutrisi',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.green[100],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Fakta Nutrisi',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildNutritionItem('Energi', '${nutritionFact!.energy} kkal'),
-              _buildNutritionItem('Lemak', '${nutritionFact!.saturatedFat} gr'),
-              _buildNutritionItem('Protein', '${nutritionFact!.protein} gr'),
-              _buildNutritionItem('Gula', '${nutritionFact!.sugar} gr'),
-              _buildNutritionItem('Natrium', '${nutritionFact!.sodium} mg'),
-            ],
-          ),
-        ],
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildNutritionItem('Energi', '${nutritionFact!.energy} kkal'),
+                _buildNutritionItem('Lemak', '${nutritionFact!.saturatedFat} gr'),
+                _buildNutritionItem('Protein', '${nutritionFact!.protein} gr'),
+                _buildNutritionItem('Gula', '${nutritionFact!.sugar} gr'),
+                _buildNutritionItem('Sodium', '${nutritionFact!.sodium} mg'),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -45,18 +49,11 @@ class NutritionFacts extends StatelessWidget {
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
-        const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-          ),
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
         ),
       ],
     );

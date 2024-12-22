@@ -1,15 +1,13 @@
 import 'package:bewise/core/constans/colors.dart';
+import 'package:bewise/presentation/page/product/product_base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart' as mobilescanner;
 import 'package:image_picker/image_picker.dart';
-import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:google_ml_kit/google_ml_kit.dart'
-    as mlkit; // Import Google ML Kit
+import 'package:google_ml_kit/google_ml_kit.dart'as mlkit; // Import Google ML Kit
 import 'package:bewise/data/providers/product_provider.dart';
-import 'package:bewise/presentation/page/product/detail_product_page.dart';
+import 'package:bewise/presentation/page/product/product_base_page.dart';
 
 class ScanProductPage extends StatefulWidget {
   @override
@@ -271,7 +269,7 @@ class _ScanProductPageState extends State<ScanProductPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailPage(productId: product.id),
+            builder: (context) => ProductBasePage(productId: product.id),
           ),
         ).then((_) {
           setState(() {

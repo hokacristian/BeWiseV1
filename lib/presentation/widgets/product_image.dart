@@ -10,18 +10,15 @@ class ProductImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.topRight,
       children: [
         Image.network(
           imageUrl,
-          height: 250,
+          height: 300,
           width: double.infinity,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
-            return const Icon(
-              Icons.broken_image,
-              size: 250,
-              color: Colors.grey,
-            );
+            return const Icon(Icons.broken_image, size: 250, color: Colors.grey);
           },
         ),
         if (label != null)
@@ -29,17 +26,14 @@ class ProductImage extends StatelessWidget {
             top: 16,
             right: 16,
             child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
                 color: Colors.green,
                 borderRadius: BorderRadius.circular(5),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Text(
                 label!.name,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ),

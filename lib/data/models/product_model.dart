@@ -6,7 +6,8 @@ class Product {
   final int categoryProductId;
   final int nutritionFactId;
   final String barcode;
-  final int price;
+  final int priceA; // Harga minimum
+  final int priceB; // Harga maksimum
   final int labelId;
   final CategoryProduct? categoryProduct;
   final NutritionFact? nutritionFact;
@@ -20,7 +21,8 @@ class Product {
     required this.categoryProductId,
     required this.nutritionFactId,
     required this.barcode,
-    required this.price,
+    required this.priceA,
+    required this.priceB,
     required this.labelId,
     this.categoryProduct,
     this.nutritionFact,
@@ -36,7 +38,8 @@ class Product {
       categoryProductId: json['category_product_id'] ?? 0,
       nutritionFactId: json['nutrition_fact_id'] ?? 0,
       barcode: json['barcode'] ?? '',
-      price: json['price'] ?? 0,
+      priceA: json['price_a'] ?? 0,
+      priceB: json['price_b'] ?? 0,
       labelId: json['label_id'] ?? 0,
       categoryProduct: json['categoryProduct'] != null
           ? CategoryProduct.fromJson(json['categoryProduct'])
@@ -58,7 +61,8 @@ class Product {
       'category_product_id': categoryProductId,
       'nutrition_fact_id': nutritionFactId,
       'barcode': barcode,
-      'price': price,
+      'price_a': priceA,
+      'price_b': priceB,
       'label_id': labelId,
       'categoryProduct': categoryProduct?.toJson(),
       'nutritionFact': nutritionFact?.toJson(),
