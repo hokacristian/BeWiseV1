@@ -72,12 +72,15 @@ class Product {
     nutritionFact: json['nutritionFact'] != null
         ? NutritionFact.fromJson(json['nutritionFact'])
         : null,
-    label: json['label'] != null ? Label.fromJson(json['label']) : null,
+    label: json['label'] != null 
+        ? Label.fromJson(json['label'])  // Ambil label langsung dari JSON
+        : null,
     rekomendasi: json['rekomendasi'] != null
         ? (json['rekomendasi'] as List).map((item) => Product.fromJson(item)).toList()
         : [],
   );
 }
+
 
 
   // Optional: Serialize back to JSON

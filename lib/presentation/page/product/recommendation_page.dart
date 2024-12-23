@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bewise/data/models/product_model.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
+import 'package:bewise/presentation/page/product/detail_product_page.dart';
+
 
 class RecommendationPage extends StatelessWidget {
   final Product product;
@@ -34,7 +36,21 @@ class RecommendationPage extends StatelessWidget {
       itemBuilder: (context, index) {
         final productRekomen = rekomendasi[index];
         print('Menampilkan Produk: ${productRekomen.name}');
-        return ProductCard(product: productRekomen);
+
+        // Wrap dengan GestureDetector untuk navigasi ke halaman detail
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductDetailPage(
+                  productId: productRekomen.id,  // Kirim productId ke detail
+                ),
+              ),
+            );
+          },
+          child: ProductCard(product: productRekomen),
+        );
       },
     );
   }
