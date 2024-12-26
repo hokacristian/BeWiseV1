@@ -1,53 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class ScoreCardA extends StatelessWidget {
+// Kartu Skor D
+class ScoreCardD extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFF74AB83),  // Warna hijau (skor A)
+        color: Color(0xFFF6B971),  // Warna oranye untuk skor D
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,  // Pastikan crossAxisAlignment adalah center
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // SVG Icon untuk A
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
             ),
             child: SvgPicture.asset(
-              'assets/img/score_a.svg',
-              width: 80,
-              height: 80,
+              'assets/img/score_d.svg',
+              width: 50,
+              height: 50,
             ),
           ),
           const SizedBox(width: 16),
-
-          // Deskripsi teks
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,  // Teks sejajar vertikal di tengah
               children: const [
                 Text(
-                  '• Produk yang mendapat skor A adalah pilihan terbaik dari segi nutrisi.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                  ),
+                  '• Produk dengan skor D lebih tinggi kandungan kalorinya dan lebih banyak mengandung gula, lemak jenuh, atau garam.',
+                  style: TextStyle(color: Colors.black, fontSize: 14),
                 ),
                 SizedBox(height: 8),
                 Text(
-                  '• Biasanya mengandung sedikit kalori, rendah lemak jenuh, sedikit gula, dan sedikit garam.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                  ),
+                  '• Disarankan untuk dikonsumsi dalam jumlah terbatas.',
+                  style: TextStyle(color: Colors.black, fontSize: 14),
                 ),
               ],
             ),

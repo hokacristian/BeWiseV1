@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:bewise/presentation/widgets/score_card_a.dart';
+import 'package:bewise/presentation/widgets/score_card_b.dart';
+import 'package:bewise/presentation/widgets/score_card_c.dart';
+import 'package:bewise/presentation/widgets/score_card_d.dart';
+import 'package:bewise/presentation/widgets/score_card_e.dart';
 
 
 class InformationPage extends StatelessWidget {
@@ -14,7 +18,11 @@ class InformationPage extends StatelessWidget {
       body: ListView(
         padding:  EdgeInsets.all(16),
         children:  [
-          ScoreCardA(),  // Panggil widget A
+          ScoreCardA(),  
+          ScoreCardB(),  
+          ScoreCardC(),  
+          ScoreCardD(),  
+          ScoreCardE(),  
         ],
       ),
     );
