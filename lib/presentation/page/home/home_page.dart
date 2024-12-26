@@ -2,7 +2,12 @@ import 'package:bewise/core/constans/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:bewise/presentation/widgets/product_card.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
+import 'package:bewise/data/providers/product_provider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:bewise/data/models/product_model.dart';
 import 'package:bewise/presentation/page/product/category_product_page.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -20,8 +25,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    _fetchUserFuture =
-        authProvider.fetchUserData(); // Future diinisialisasi di initState
+    _fetchUserFuture = authProvider.fetchUserData();
+
+    // Menunda fetchTopChoices sampai build selesai
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProductProvider>(context, listen: false).fetchTopChoices();
+    });
   }
 
   @override
@@ -47,17 +56,62 @@ class _HomePageState extends State<HomePage> {
 
   // Konten utama jika data berhasil dimuat
   Widget _buildContent(BuildContext context) {
-    return SingleChildScrollView(
-      // physics: const BouncingScrollPhysics(), // Efek scroll yang smooth
-      child: Column(
-        children: [
-          // Header
-          _buildHeader(),
-          const SizedBox(height: 190),
-          _buildBanner(),
-          const SizedBox(height: 20),
-          _buildBestChoiceSection()
-        ],
+  final productProvider = Provider.of<ProductProvider>(context);
+
+  return SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildHeader(),
+        const SizedBox(height: 190),
+        _buildBanner(),
+        const SizedBox(height: 20),
+
+        // Teks "Pilihan Terbaik"
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Pilihan Terbaik',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        if (productProvider.isLoadingTopChoices)
+          const Center(child: CircularProgressIndicator())
+        else if (productProvider.errorMessageTopChoices != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(productProvider.errorMessageTopChoices!),
+          )
+        else
+          _buildCarousel(productProvider.topChoices),
+
+        const SizedBox(height: 30),  // Tambahkan padding bawah agar tidak tertimpa Bottom Navigation
+      ],
+    ),
+  );
+}
+
+
+  Widget _buildCarousel(List<Product> topChoices) {
+    return CarouselSlider.builder(
+      itemCount: topChoices.length,
+      itemBuilder: (context, index, realIndex) {
+        return ProductCard(product: topChoices[index]);
+      },
+      options: CarouselOptions(
+        height: 250,
+        enlargeCenterPage: true,
+        autoPlay: true,
+        aspectRatio: 16 / 9,
+        autoPlayCurve: Curves.fastOutSlowIn,
+        enableInfiniteScroll: true,
+        autoPlayAnimationDuration: const Duration(milliseconds: 1500),
+        viewportFraction: 0.8,
       ),
     );
   }

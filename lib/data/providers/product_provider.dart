@@ -10,6 +10,33 @@ class ProductProvider extends ChangeNotifier {
     _initializeToken();
   }
 
+  List<Product> _topChoices = [];
+  bool _isLoadingTopChoices = false;
+  String? _errorMessageTopChoices;
+
+  List<Product> get topChoices => _topChoices;
+  bool get isLoadingTopChoices => _isLoadingTopChoices;
+  String? get errorMessageTopChoices => _errorMessageTopChoices;
+
+  Future<void> fetchTopChoices() async {
+    _isLoadingTopChoices = true;
+    _errorMessageTopChoices = null;
+    notifyListeners();
+
+    try {
+      final sessionManager = SessionManager();
+      final token = await sessionManager.getToken();
+      if (token == null) throw Exception('Token is not available');
+
+      _topChoices = await apiService.getTopChoices(token);
+    } catch (error) {
+      _errorMessageTopChoices = error.toString();
+    } finally {
+      _isLoadingTopChoices = false;
+      notifyListeners();
+    }
+  }
+
   // State management variables
   List<Product> _products = [];
   Product? _product;
@@ -32,18 +59,17 @@ class ProductProvider extends ChangeNotifier {
 
   // Fetch product by ID
   Future<void> fetchProductById(int id) async {
-  try {
-    if (token == null) {
-      await _initializeToken();
-      if (token == null) throw Exception('Token is not available');
+    try {
+      if (token == null) {
+        await _initializeToken();
+        if (token == null) throw Exception('Token is not available');
+      }
+      final result = await apiService.getProductById(id, token!);
+      _product = Product.fromJson(result.toJson());
+    } catch (error) {
+      _errorMessage = error.toString();
     }
-    final result = await apiService.getProductById(id, token!);
-    _product = Product.fromJson(result.toJson());
-  } catch (error) {
-    _errorMessage = error.toString();
   }
-}
-
 
   // Fetch products by category
   Future<void> fetchProductsByCategory(int categoryId) async {
@@ -55,8 +81,10 @@ class ProductProvider extends ChangeNotifier {
         await _initializeToken();
         if (token == null) throw Exception('Token is not available');
       }
-      final results = await apiService.getProductsByCategory(categoryId, token!);
-      _products = results.map<Product>((json) => Product.fromJson(json)).toList();
+      final results =
+          await apiService.getProductsByCategory(categoryId, token!);
+      _products =
+          results.map<Product>((json) => Product.fromJson(json)).toList();
       print('Fetched products: ${_products.length}');
     } catch (error) {
       _errorMessage = error.toString();
@@ -78,11 +106,13 @@ class ProductProvider extends ChangeNotifier {
         await _initializeToken();
         if (token == null) throw Exception('Token is not available');
       }
-      final results = await apiService.searchProducts(name, page, limit, token!);
+      final results =
+          await apiService.searchProducts(name, page, limit, token!);
 
       // Explicitly cast each item to Map<String, dynamic>
       _products = (results as List)
-          .map<Product>((json) => Product.fromJson(json as Map<String, dynamic>))
+          .map<Product>(
+              (json) => Product.fromJson(json as Map<String, dynamic>))
           .toList();
     } catch (error) {
       _errorMessage = error.toString();
@@ -94,76 +124,72 @@ class ProductProvider extends ChangeNotifier {
 
   // Scan product by barcode
   Future<void> scanProduct(String barcode) async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-  
-  try {
-    if (token == null) {
-      await _initializeToken();
-      if (token == null) throw Exception('Token is not available');
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      if (token == null) {
+        await _initializeToken();
+        if (token == null) throw Exception('Token is not available');
+      }
+
+      final result = await apiService.scanProduct(barcode, token!);
+
+      _product = result;
+
+      print('Rekomendasi Produk (Provider): ${_product?.rekomendasi?.length}');
+      notifyListeners();
+    } catch (error) {
+      _errorMessage = error.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-    
-    final result = await apiService.scanProduct(barcode, token!);
-    
-    _product = result;
-
-    print('Rekomendasi Produk (Provider): ${_product?.rekomendasi?.length}');
-    notifyListeners();
-  } catch (error) {
-    _errorMessage = error.toString();
-  } finally {
-    _isLoading = false;
-    notifyListeners();
   }
-}
-
-
-
-
 
   // Fetch scan histories
-Future<void> fetchScanHistories(int page, int limit) async {
-  _isLoading = true;
-  _errorMessage = null;
+  Future<void> fetchScanHistories(int page, int limit) async {
+    _isLoading = true;
+    _errorMessage = null;
 
-  try {
-    if (token == null) {
-      await _initializeToken();
-      if (token == null) throw Exception('Token is not available');
-    }
-
-    // Ambil semua riwayat
-    final historiesResponse = await apiService.getHistories(page, limit, token!);
-
-    // Ambil produk berdasarkan ID dari riwayat
-    final List<Product> products = [];
-    for (var history in historiesResponse) {
-      try {
-        final product = await apiService.getProductById(history['product_id'], token!);
-        products.add(product);
-      } catch (e) {
-        print('Error fetching product with ID ${history['product_id']}: $e');
+    try {
+      if (token == null) {
+        await _initializeToken();
+        if (token == null) throw Exception('Token is not available');
       }
+
+      // Ambil semua riwayat
+      final historiesResponse =
+          await apiService.getHistories(page, limit, token!);
+
+      // Ambil produk berdasarkan ID dari riwayat
+      final List<Product> products = [];
+      for (var history in historiesResponse) {
+        try {
+          final product =
+              await apiService.getProductById(history['product_id'], token!);
+          products.add(product);
+        } catch (e) {
+          print('Error fetching product with ID ${history['product_id']}: $e');
+        }
+      }
+
+      _products = products; // Tetap menyimpan semua produk sesuai riwayat
+    } catch (error) {
+      _errorMessage = error.toString();
+      print('Error fetching histories: $error');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    _products = products; // Tetap menyimpan semua produk sesuai riwayat
-  } catch (error) {
-    _errorMessage = error.toString();
-    print('Error fetching histories: $error');
-  } finally {
-    _isLoading = false;
-    notifyListeners();
   }
-}
-
-
-
 
   // Set token for API requests (optional if manual update is needed)
   Future<void> setToken(String newToken) async {
     final sessionManager = SessionManager();
-    await sessionManager.saveSession(newToken, 0, '', '', '', gender: null, avatarLink: null);
+    await sessionManager.saveSession(newToken, 0, '', '', '',
+        gender: null, avatarLink: null);
     token = newToken;
     notifyListeners();
   }

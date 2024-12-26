@@ -300,4 +300,18 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
 
   return products;
 }
+
+Future<List<Product>> getTopChoices(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/products/top-choices'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'] as List;
+      return data.map((product) => Product.fromJson(product)).toList();
+    } else {
+      throw Exception('Failed to fetch top choices');
+    }
+  }
 }
