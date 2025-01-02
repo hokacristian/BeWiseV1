@@ -44,6 +44,8 @@ dependencies:
   flutter_svg: ^2.0.14
   path: ^1.8.1
   skeletonizer: ^1.4.2
+  webview_flutter: ^4.10.0
+  # midtrans_sdk: ^0.4.0
 
 
 
@@ -106,6 +108,8 @@ flutter:
   - assets/img/score_c.svg
   - assets/img/score_d.svg
   - assets/img/score_e.svg
+  - assets/img/subscription.svg
+
 
 
 

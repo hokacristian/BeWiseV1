@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../auth/login_page.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
+import 'package:bewise/data/providers/booking_provider.dart';
 import 'package:bewise/core/utils/sessionmanager.dart';
+import 'package:bewise/presentation/page/profile/subscriptions_page.dart';
 import 'package:bewise/presentation/page/profile/detail_profile_page.dart';
-
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -19,7 +20,10 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     // Fetch user data saat halaman di-load
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AuthProvider>(context, listen: false).fetchUserData();
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final bookingProvider = Provider.of<BookingProvider>(context, listen: false);
+      authProvider.fetchUserData();
+      bookingProvider.createBooking(authProvider.token!, 1); 
     });
   }
 
@@ -40,13 +44,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Profil'),
-      //   backgroundColor: Colors.green,
-      // ),
-      body: Consumer<AuthProvider>(
-        builder: (context, authProvider, child) {
-          if (authProvider.isLoading) {
+      body: Consumer2<AuthProvider, BookingProvider>(
+        builder: (context, authProvider, bookingProvider, child) {
+          if (authProvider.isLoading || bookingProvider.isLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -93,14 +93,33 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.grey,
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  // Langganan End Date (Jika Ada)
+                  if (bookingProvider.booking != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        'Langganan hingga: ${bookingProvider.booking!.endDate}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 32),
                   // Tombol Berlangganan
                   ElevatedButton(
                     onPressed: () {
-                      // Logika untuk berlangganan (jika ada)
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SubscriptionsPage(),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24.0,
                         vertical: 12.0,
@@ -118,28 +137,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 32),
                   // Menu Navigasi
                   ListTile(
-  leading: const Icon(Icons.person, color: Colors.blue),
-  title: const Text('Data Diri'),
-  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-  onTap: () {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final user = authProvider.user;
-
-    if (user != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DetailProfilePage(),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data pengguna tidak tersedia')),
-      );
-    }
-  },
-),
-
+                    leading: const Icon(Icons.person, color: Colors.blue),
+                    title: const Text('Data Diri'),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DetailProfilePage(),
+                        ),
+                      );
+                    },
+                  ),
                   ListTile(
                     leading: const Icon(Icons.info, color: Colors.green),
                     title: const Text('Tentang BeWise'),

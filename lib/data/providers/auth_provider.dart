@@ -112,6 +112,10 @@ class AuthProvider extends ChangeNotifier {
       }
 
       final whoAmIResponse = await apiService.getWhoAmI(_token!);
+      // whoAmIResponse di sini diasumsikan sudah didecode ke dalam model
+      // Contoh: whoAmIResponse.data['user'] dan whoAmIResponse.data['subscription']
+      // Di sini kita gunakan WhoAmIResponse sebagai contoh:
+
       _user = User(
         id: whoAmIResponse.userId,
         email: whoAmIResponse.email,
@@ -120,6 +124,15 @@ class AuthProvider extends ChangeNotifier {
         gender: whoAmIResponse.gender,
         avatarLink: whoAmIResponse.avatarLink,
       );
+
+      // Cek subscription
+      final subscription = whoAmIResponse.subscription; 
+      // subscription misal:
+      // {
+      //   "isActive": true,
+      //   "planName": "Monthly",
+      //   "validUntil": "2025-01-28T20:55:48.494Z"
+      // }
 
       final sessionManager = SessionManager();
       await sessionManager.saveSession(
@@ -130,12 +143,16 @@ class AuthProvider extends ChangeNotifier {
         _user!.email,
         gender: _user!.gender,
         avatarLink: _user!.avatarLink,
+        isActive: subscription?.isActive,
+        planName: subscription?.planName,
+        validUntil: subscription?.validUntil,
       );
     } catch (error) {
       _errorMessage = error.toString();
       print("Error fetching user data: $_errorMessage");
     }
   }
+
 
  // Update Profile
   Future<void> updateProfile(String firstName, String lastName, String gender) async {

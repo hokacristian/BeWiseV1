@@ -314,4 +314,32 @@ Future<List<Product>> getTopChoices(String token) async {
       throw Exception('Failed to fetch top choices');
     }
   }
+
+Future<Map<String, dynamic>> createBooking(String token, int subscriptionId) async {
+  final response = await http.post(
+    Uri.parse('$baseUrl/subscriptions/booking'), // Pastikan endpoint sesuai
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      "subscriptionId": subscriptionId, // Body JSON
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body); // Decode response
+    if (data['status'] == true) {
+      return data; // Return data jika status sukses
+    } else {
+      throw Exception(data['message'] ?? 'Failed to create booking');
+    }
+  } else {
+    throw Exception('Failed to create booking: ${response.body}');
+  }
 }
+
+
+}
+
+
