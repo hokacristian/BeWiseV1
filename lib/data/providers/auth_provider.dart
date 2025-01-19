@@ -211,7 +211,7 @@ class AuthProvider extends ChangeNotifier {
   firstName: _user?.firstName ?? '',
   lastName: _user?.lastName ?? '',
   gender: _user?.gender ?? '',
-  avatarLink: response['data']['avatar_link'], // URL avatar yang baru
+  avatarLink: response['data']['avatar_link'], 
 );
 
 
