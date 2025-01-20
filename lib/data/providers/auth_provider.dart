@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bewise/data/response/whoami_response.dart';
 import '../models/user_model.dart';
 import '../services/api_service.dart';
 import 'package:bewise/core/utils/sessionmanager.dart';
@@ -18,6 +19,10 @@ class AuthProvider extends ChangeNotifier {
 
   User? get user => _user;
   String? get token => _token;
+
+  Subscription? _subscription;
+  Subscription? get subscription => _subscription;
+
 
   Future<void> initialize() async {
     final sessionManager = SessionManager();
@@ -112,27 +117,9 @@ class AuthProvider extends ChangeNotifier {
       }
 
       final whoAmIResponse = await apiService.getWhoAmI(_token!);
-      // whoAmIResponse di sini diasumsikan sudah didecode ke dalam model
-      // Contoh: whoAmIResponse.data['user'] dan whoAmIResponse.data['subscription']
-      // Di sini kita gunakan WhoAmIResponse sebagai contoh:
 
-      _user = User(
-        id: whoAmIResponse.userId,
-        email: whoAmIResponse.email,
-        firstName: whoAmIResponse.firstName,
-        lastName: whoAmIResponse.lastName,
-        gender: whoAmIResponse.gender,
-        avatarLink: whoAmIResponse.avatarLink,
-      );
-
-      // Cek subscription
-      final subscription = whoAmIResponse.subscription; 
-      // subscription misal:
-      // {
-      //   "isActive": true,
-      //   "planName": "Monthly",
-      //   "validUntil": "2025-01-28T20:55:48.494Z"
-      // }
+      _user = whoAmIResponse.user;
+      _subscription = whoAmIResponse.subscription;
 
       final sessionManager = SessionManager();
       await sessionManager.saveSession(
@@ -143,15 +130,17 @@ class AuthProvider extends ChangeNotifier {
         _user!.email,
         gender: _user!.gender,
         avatarLink: _user!.avatarLink,
-        isActive: subscription?.isActive,
-        planName: subscription?.planName,
-        validUntil: subscription?.validUntil,
+        isActive: _subscription?.isActive,
+        planName: _subscription?.planName,
+        validUntil: _subscription?.validUntil,
       );
     } catch (error) {
       _errorMessage = error.toString();
       print("Error fetching user data: $_errorMessage");
     }
   }
+
+
 
 
  // Update Profile

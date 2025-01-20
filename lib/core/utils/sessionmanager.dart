@@ -34,23 +34,21 @@ class SessionManager {
     await prefs.setString(_userEmailKey, userEmail);
 
     if (gender != null) {
-      await prefs.setString(_userGenderKey, gender);
-    }
-    if (avatarLink != null) {
-      await prefs.setString(_userAvatarLinkKey, avatarLink);
-    }
-
-    // Simpan subscription jika ada
-    if (isActive != null) {
-      await prefs.setBool(_subIsActiveKey, isActive);
-    }
-    if (planName != null) {
-      await prefs.setString(_subPlanNameKey, planName);
-    }
-    if (validUntil != null) {
-      await prefs.setString(_subValidUntilKey, validUntil);
-    }
+    await prefs.setString(_userGenderKey, gender);
   }
+  if (avatarLink != null) {
+    await prefs.setString(_userAvatarLinkKey, avatarLink);
+  }
+  if (isActive != null) {
+    await prefs.setBool(_subIsActiveKey, isActive);
+  }
+  if (planName != null) {
+    await prefs.setString(_subPlanNameKey, planName);
+  }
+  if (validUntil != null) {
+    await prefs.setString(_subValidUntilKey, validUntil);
+  }
+}
 
   /// Mendapatkan token
   Future<String?> getToken() async {

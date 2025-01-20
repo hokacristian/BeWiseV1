@@ -62,6 +62,8 @@ class _ProfilePageState extends State<ProfilePage> {
           }
 
           final user = authProvider.user!;
+          final subscription = authProvider.subscription;
+
 
           return SingleChildScrollView(
             child: Padding(
@@ -99,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
-                        'Langganan hingga: ${bookingProvider.booking!.endDate}',
+                        'Langganan hingga: ${subscription?.validUntil ?? 'Tidak ada langganan aktif'}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

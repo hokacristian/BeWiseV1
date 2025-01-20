@@ -1,40 +1,24 @@
+import 'package:bewise/data/models/user_model.dart';
 class WhoAmIResponse {
-  final int userId;
-  final String email;
-  final String firstName;
-  final String lastName;
-  final String? gender;
-  final String? avatarLink;
-
-  // Tambahkan field subscription jika ingin lebih rapi
+  final User user;
   final Subscription? subscription;
 
   WhoAmIResponse({
-    required this.userId,
-    required this.email,
-    required this.firstName,
-    required this.lastName,
-    this.gender,
-    this.avatarLink,
+    required this.user,
     this.subscription,
   });
 
   factory WhoAmIResponse.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] ?? {};
-    final userJson = data['user'] ?? {};
-    final subscriptionJson = data['subscription'] ?? {};
+    final userJson = json['user'] as Map<String, dynamic>? ?? {};
+    final subscriptionJson = json['subscription'] as Map<String, dynamic>?;
 
     return WhoAmIResponse(
-      userId: userJson['id'] ?? 0,
-      email: userJson['email'] ?? 'Unknown email',
-      firstName: userJson['first_name'] ?? 'Unknown',
-      lastName: userJson['last_name'] ?? 'Unknown',
-      gender: userJson['gender'],
-      avatarLink: userJson['avatar_link'],
-      subscription: Subscription.fromJson(subscriptionJson),
+      user: User.fromJson(userJson),
+      subscription: subscriptionJson != null ? Subscription.fromJson(subscriptionJson) : null,
     );
   }
 }
+
 
 // Contoh model Subscription
 class Subscription {
