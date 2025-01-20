@@ -2,6 +2,7 @@ import 'package:bewise/data/providers/booking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:bewise/presentation/page/profile/profile_page.dart';
 import 'package:bewise/data/services/api_service.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/data/providers/product_provider.dart';
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        routes: {
+    '/profile': (context) => ProfilePage(),
+  },
         title: 'BeWise',
         theme: ThemeData(
           primarySwatch: Colors.blue,

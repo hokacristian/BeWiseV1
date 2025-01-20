@@ -46,6 +46,8 @@ dependencies:
   skeletonizer: ^1.4.2
   webview_flutter: ^4.10.0
   flutter_launcher_icons: ^0.14.3
+  flutter_inappwebview: ^6.1.5
+
 
 
 
