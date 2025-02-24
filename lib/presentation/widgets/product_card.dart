@@ -10,75 +10,82 @@ class ProductCard extends StatelessWidget {
     return url.isNotEmpty &&
             (url.startsWith('http://') || url.startsWith('https://'))
         ? url
-        : 'https://via.placeholder.com/150'; // URL placeholder default
+        : 'https://via.placeholder.com/150'; // Placeholder jika gambar kosong
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 160, // Sesuai dengan layout yang diinginkan
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300), // Border seperti di gambar
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 6,
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 4,
+            spreadRadius: 1,
             offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Image Section
+          // Bagian Gambar dengan Label
           Stack(
             children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(10), bottom: Radius.zero),
-                child: Image.network(
-                  _validateImageUrl(product.photo),
-                  fit: BoxFit.cover,
-                  height: 140,
-                  width: double.infinity,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return SizedBox(
-                      height: 140,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  (loadingProgress.expectedTotalBytes ?? 1)
-                              : null,
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0), // Jarak dari atas
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    _validateImageUrl(product.photo),
+                    fit: BoxFit.contain,
+                    height: 120,
+                    width: 120,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    (loadingProgress.expectedTotalBytes ?? 1)
+                                : null,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 140,
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.error_outline, color: Colors.grey),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: 120,
+                      width: 120,
+                      color: Colors.grey[200],
+                      child: const Icon(Icons.error_outline, color: Colors.grey),
+                    ),
                   ),
                 ),
               ),
               if (product.label != null)
                 Positioned(
                   top: 8,
-                  right: 8,
+                  left: 90 ,
                   child: Container(
+                    width: 30,
+                    height: 30,
                     decoration: BoxDecoration(
-                      color: Colors.green[800],
-                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.green,
+                      shape: BoxShape.circle,
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
+                    alignment: Alignment.center,
                     child: Text(
                       product.label!.name,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -86,54 +93,58 @@ class ProductCard extends StatelessWidget {
             ],
           ),
 
-          // Product Info
+          // Informasi Produk
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Brand
-                if (product.brand.isNotEmpty)
-                  Text(
-                    product.brand.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[600],
-                      letterSpacing: 0.5,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                Text(
+                  product.brand,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
 
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
 
-                // Product Name
+                // Nama Produk
                 Text(
                   product.name,
                   style: const TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                     height: 1.2,
                   ),
                   maxLines: 2,
+                  textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                 ),
 
                 const SizedBox(height: 8),
 
-                // Price
-                Row(
-                  children: [
-                    Text(
-                    'Rp ${product.priceA} - Rp ${product.priceB}',
+                // Harga dalam bentuk button
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Rp ${product.priceA} - ${product.priceB}',
                     style: const TextStyle(
+                      color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                      ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
