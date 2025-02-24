@@ -75,4 +75,8 @@ class AppStrings {
       'Product Successfully downloaded!';
   static const String productStartedToDownload = 'Product download Started!';
   static const String noStoragePermission = 'No permission to storage access!';
+  static const String infoPage1 = 'Nutri-Score adalah label gizi yang memudahkan konsumen memilih makanan lebih sehat. Dikembangkan di Prancis, sistem ini menilai nutrisi produk berdasarkan komposisi gizinya.';
+  static const String infoPage2 = 'Nutri-Score menggunakan skala A hingga E dengan warna berbeda untuk menunjukkan kualitas nutrisi produk makanan atau minuman.';
+
+
 }

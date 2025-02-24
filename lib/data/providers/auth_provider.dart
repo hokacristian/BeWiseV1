@@ -133,6 +133,8 @@ class AuthProvider extends ChangeNotifier {
         isActive: _subscription?.isActive,
         planName: _subscription?.planName,
         validUntil: _subscription?.validUntil,
+        countDownDay: _subscription?.countDownDay,
+
       );
     } catch (error) {
       _errorMessage = error.toString();

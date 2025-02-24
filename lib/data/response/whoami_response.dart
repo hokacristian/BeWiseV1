@@ -20,16 +20,17 @@ class WhoAmIResponse {
 }
 
 
-// Contoh model Subscription
 class Subscription {
   final bool isActive;
   final String planName;
   final String validUntil;
+  final String countDownDay;
 
   Subscription({
     required this.isActive,
     required this.planName,
     required this.validUntil,
+    required this.countDownDay,
   });
 
   factory Subscription.fromJson(Map<String, dynamic> json) {
@@ -37,6 +38,7 @@ class Subscription {
       isActive: json['isActive'] ?? false,
       planName: json['planName'] ?? '',
       validUntil: json['validUntil'] ?? '',
+      countDownDay: json['countDownDay'] ?? '',
     );
   }
 }

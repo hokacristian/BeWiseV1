@@ -88,36 +88,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
   - assets/env/.env
-  - assets/img/splashscreen.svg
-  - assets/img/landingpage1.svg
-  - assets/img/landingpage2.svg
-  - assets/img/landingpage3.svg
-  - assets/img/logo_google.svg
-  - assets/img/icon_home.svg
-  - assets/img/icon_history.svg
-  - assets/img/icon_info.svg
-  - assets/img/icon_person.svg
-  - assets/img/icon_scan.svg
-  - assets/img/default_foto.png
-  - assets/img/google.svg
-  - assets/img/news.jpg
-  - assets/img/banner.svg
-  - assets/img/banner.png
-  - assets/img/icon_tea.svg
-  - assets/img/icon_soda.svg
-  - assets/img/icon_susu.svg
-  - assets/img/icon_snack.svg
-  - assets/img/icon_roti.svg
-  - assets/img/icon_all.svg
-  - assets/img/flashlight.svg
-  - assets/img/gallery.svg
-  - assets/img/score_a.svg
-  - assets/img/score_b.svg
-  - assets/img/score_c.svg
-  - assets/img/score_d.svg
-  - assets/img/score_e.svg
-  - assets/img/subscription.svg
-  - assets/img/icon.png
+  - assets/img/
+  - assets/img/subs_page.svg
 
 
 

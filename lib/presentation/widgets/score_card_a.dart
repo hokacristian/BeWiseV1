@@ -22,8 +22,8 @@ class ScoreCardA extends StatelessWidget {
             ),
             child: SvgPicture.asset(
               'assets/img/score_a.svg',
-              width: 80,
-              height: 80,
+              width: 50,
+              height: 50,
             ),
           ),
           const SizedBox(width: 16),

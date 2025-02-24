@@ -1,17 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:bewise/data/models/product_model.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
+import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/presentation/page/product/detail_product_page.dart';
 
 
 class RecommendationPage extends StatelessWidget {
   final Product product;
   const RecommendationPage({Key? key, required this.product}) : super(key: key);
+  
 
   @override
   Widget build(BuildContext context) {
     // Ambil list rekomendasi langsung dari product
     final rekomendasi = product.rekomendasi ?? [];
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final bool isPremium = authProvider.subscription?.isActive ?? false;
+
+ if (!isPremium) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            'Mohon maaf fitur ini tidak tersedia, silahkan melakukan aktivasi Premium Terlebih Dahulu',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, color: Colors.red),
+          ),
+        ),
+      );
+    }
 
     print('Rekomendasi Produk di Page: ${rekomendasi.length}');
 

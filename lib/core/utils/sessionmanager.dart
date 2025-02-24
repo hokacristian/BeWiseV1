@@ -11,6 +11,8 @@ class SessionManager {
   static const String _subIsActiveKey = 'subscription_is_active';
   static const String _subPlanNameKey = 'subscription_plan_name';
   static const String _subValidUntilKey = 'subscription_valid_until';
+  static const String _subCountDownDayKey = 'subscription_count_down_day';
+
 
   /// Menyimpan session user + subscription (opsional).
   /// Jika subscription tidak disertakan, bisa diabaikan.
@@ -25,6 +27,8 @@ class SessionManager {
     bool? isActive,
     String? planName,
     String? validUntil,
+    String? countDownDay,
+
   }) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
@@ -33,22 +37,13 @@ class SessionManager {
     await prefs.setString(_userLastNameKey, lastName);
     await prefs.setString(_userEmailKey, userEmail);
 
-    if (gender != null) {
-    await prefs.setString(_userGenderKey, gender);
+    if (gender != null) await prefs.setString(_userGenderKey, gender);
+    if (avatarLink != null) await prefs.setString(_userAvatarLinkKey, avatarLink);
+    if (isActive != null) await prefs.setBool(_subIsActiveKey, isActive);
+    if (planName != null) await prefs.setString(_subPlanNameKey, planName);
+    if (validUntil != null) await prefs.setString(_subValidUntilKey, validUntil);
+    if (countDownDay != null) await prefs.setString(_subCountDownDayKey, countDownDay);
   }
-  if (avatarLink != null) {
-    await prefs.setString(_userAvatarLinkKey, avatarLink);
-  }
-  if (isActive != null) {
-    await prefs.setBool(_subIsActiveKey, isActive);
-  }
-  if (planName != null) {
-    await prefs.setString(_subPlanNameKey, planName);
-  }
-  if (validUntil != null) {
-    await prefs.setString(_subValidUntilKey, validUntil);
-  }
-}
 
   /// Mendapatkan token
   Future<String?> getToken() async {
@@ -68,11 +63,10 @@ class SessionManager {
       'userEmail': prefs.getString(_userEmailKey),
       'userGender': prefs.getString(_userGenderKey),
       'userAvatarLink': prefs.getString(_userAvatarLinkKey),
-
-      // Subscription
       'subscriptionIsActive': prefs.getBool(_subIsActiveKey),
       'subscriptionPlanName': prefs.getString(_subPlanNameKey),
       'subscriptionValidUntil': prefs.getString(_subValidUntilKey),
+      'subscriptionCountDownDay': prefs.getString(_subCountDownDayKey),
     };
   }
 

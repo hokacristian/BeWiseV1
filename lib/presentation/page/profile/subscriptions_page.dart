@@ -1,4 +1,3 @@
-// subscriptions_page.dart
 import 'package:flutter/material.dart';
 import 'package:bewise/presentation/page/profile/payment_webview_page.dart';
 import 'package:provider/provider.dart';
@@ -18,27 +17,35 @@ class SubscriptionsPage extends StatelessWidget {
         title: const Text('Payment'),
         backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            try {
-              // Dapatkan token dan redirect URL dari booking provider
-              final redirectUrl = await bookingProvider.getPaymentRedirectUrl();
-              
-              // Navigate to WebView page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PaymentWebViewPage(redirectUrl: redirectUrl),
-                ),
-              );
-            } catch (error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error: $error')),
-              );
-            }
-          },
-          child: const Text('Pay Now'),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+           image: AssetImage('assets/img/subs_page.png'),
+            fit: BoxFit.cover, // Sesuaikan dengan kebutuhan Anda
+          ),
+        ),
+        child: Center(
+          child: ElevatedButton(
+            onPressed: () async {
+              try {
+                // Dapatkan token dan redirect URL dari booking provider
+                final redirectUrl = await bookingProvider.getPaymentRedirectUrl();
+                
+                // Navigate to WebView page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaymentWebViewPage(redirectUrl: redirectUrl),
+                  ),
+                );
+              } catch (error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: $error')),
+                );
+              }
+            },
+            child: const Text('Pay Now'),
+          ),
         ),
       ),
     );

@@ -101,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
-                        'Langganan hingga: ${subscription?.validUntil ?? 'Tidak ada langganan aktif'}',
+                        'Premium: ${subscription?.countDownDay ??  'Tidak ada langganan aktif'} Hari',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

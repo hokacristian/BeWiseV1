@@ -240,7 +240,6 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
   }
 }
 
-
   Future<Map<String, dynamic>> getHistoryById(int id, String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/histories/$id'),
