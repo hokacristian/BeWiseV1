@@ -184,6 +184,30 @@ Future<void> fetchScanHistories(int page, int limit) async {
 }
 
 
+Future<void> fetchAllProducts() async {
+  _isLoading = true;
+  _errorMessage = null;
+  notifyListeners();
+
+  try {
+    if (token == null) {
+      await _initializeToken();
+      if (token == null) throw Exception('Token is not available');
+    }
+    
+    _products = await apiService.getAllProducts(token!);
+    print('✅ Successfully fetched ${_products.length} products');
+  } catch (error) {
+    _errorMessage = 'Failed to load all products: $error';
+    print('❌ Error fetching all products: $error');
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+
+
+
   // Set token for API requests (optional if manual update is needed)
   Future<void> setToken(String newToken) async {
     final sessionManager = SessionManager();

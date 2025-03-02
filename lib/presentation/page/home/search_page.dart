@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:bewise/presentation/page/product/product_base_page.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
 import 'package:bewise/data/providers/product_provider.dart';
@@ -14,11 +15,17 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  bool _isSearching = false;
 
   @override
   void initState() {
     super.initState();
     _focusNode.requestFocus();
+
+    // Saat pertama kali masuk, langsung ambil semua produk
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProductProvider>(context, listen: false).fetchAllProducts();
+    });
   }
 
   @override
@@ -26,6 +33,17 @@ class _SearchPageState extends State<SearchPage> {
     _searchController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (query.isNotEmpty) {
+      setState(() => _isSearching = true);
+      Provider.of<ProductProvider>(context, listen: false)
+          .searchProducts(query, 1, 10);
+    } else {
+      setState(() => _isSearching = false);
+      Provider.of<ProductProvider>(context, listen: false).fetchAllProducts();
+    }
   }
 
   @override
@@ -40,12 +58,7 @@ class _SearchPageState extends State<SearchPage> {
             hintText: 'Cari produk...',
             border: InputBorder.none,
           ),
-          onChanged: (query) {
-            if (query.isNotEmpty) {
-              Provider.of<ProductProvider>(context, listen: false)
-                  .searchProducts(query, 1, 10);
-            }
-          },
+          onChanged: _onSearchChanged,
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -54,46 +67,64 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: Consumer<ProductProvider>(
         builder: (context, productProvider, _) {
-          if (productProvider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (productProvider.errorMessage != null) {
-            return Center(child: Text(productProvider.errorMessage!));
-          } else if (_searchController.text.isEmpty) {
-            return const Center(
-              child: Text('Ketik nama produk yang ingin dicari'),
-            );
-          } else if (productProvider.products.isEmpty) {
-            return const Center(child: Text('Produk tidak ditemukan'));
-          } else {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 0.7,
-                ),
-                itemCount: productProvider.products.length,
-                itemBuilder: (context, index) {
-                  final product = productProvider.products[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductBasePage(product: product),
-                        ),
-                      );
-                    },
-                    child: ProductCard(product: product),
-                  );
-                },
-              ),
-            );
-          }
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Skeletonizer(
+              enabled: productProvider.isLoading, // Skeleton aktif saat loading
+              child: _buildGrid(productProvider),
+            ),
+          );
         },
       ),
+    );
+  }
+
+  Widget _buildGrid(ProductProvider productProvider) {
+    if (productProvider.errorMessage != null) {
+      return Center(child: Text(productProvider.errorMessage!));
+    } else if (!_isSearching && productProvider.products.isEmpty) {
+      return const Center(child: Text('Produk tidak tersedia'));
+    } else if (_isSearching && productProvider.products.isEmpty) {
+      return const Center(child: Text('Produk tidak ditemukan'));
+    } else {
+      return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: 0.7,
+        ),
+        itemCount: productProvider.isLoading ? 6 : productProvider.products.length, // Skeleton berjumlah 6 saat loading
+        itemBuilder: (context, index) {
+          if (productProvider.isLoading) {
+            return _buildSkeletonCard();
+          }
+          final product = productProvider.products[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductBasePage(product: product),
+                ),
+              );
+            },
+            child: ProductCard(product: product),
+          );
+        },
+      );
+    }
+  }
+
+  // Skeleton Card untuk efek loading
+  Widget _buildSkeletonCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 200,
+      width: double.infinity,
     );
   }
 }
