@@ -2,6 +2,7 @@ import 'package:bewise/core/constans/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:bewise/presentation/page/home/search_page.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
@@ -178,8 +179,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildSearchBar() {
-    return TextField(
+  // Di dalam class _HomePageState
+Widget _buildSearchBar() {
+  return GestureDetector(
+    onTap: () {
+      // Navigasi ke halaman pencarian saat diklik
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SearchPage()),
+      );
+    },
+    child: TextField(
+      enabled: false, // Nonaktifkan input
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.grey[200],
@@ -190,8 +201,9 @@ class _HomePageState extends State<HomePage> {
           borderSide: BorderSide.none,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildSkeleton() {
     return Padding(

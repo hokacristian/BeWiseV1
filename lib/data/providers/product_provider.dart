@@ -96,31 +96,28 @@ class ProductProvider extends ChangeNotifier {
   }
 
   // Search products
-  Future<void> searchProducts(String name, int page, int limit) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
+Future<void> searchProducts(String name, int page, int limit) async {
+  _isLoading = true;
+  _errorMessage = null;
+  notifyListeners();
 
-    try {
-      if (token == null) {
-        await _initializeToken();
-        if (token == null) throw Exception('Token is not available');
-      }
-      final results =
-          await apiService.searchProducts(name, page, limit, token!);
-
-      // Explicitly cast each item to Map<String, dynamic>
-      _products = (results as List)
-          .map<Product>(
-              (json) => Product.fromJson(json as Map<String, dynamic>))
-          .toList();
-    } catch (error) {
-      _errorMessage = error.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  try {
+    if (token == null) {
+      await _initializeToken();
+      if (token == null) throw Exception('Token is not available');
     }
+    
+    // Langsung assign hasil dari API service
+    final results = await apiService.searchProducts(name, page, limit, token!);
+    _products = results;
+    
+  } catch (error) {
+    _errorMessage = error.toString();
+  } finally {
+    _isLoading = false;
+    notifyListeners();
   }
+}
 
   // Scan product by barcode
   Future<void> scanProduct(String barcode) async {

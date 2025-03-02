@@ -177,18 +177,19 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
 }
 
   Future<List<Product>> searchProducts(String name, int page, int limit, String token) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/products/search?name=$name&page=$page&limit=$limit'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
+  final response = await http.get(
+    Uri.parse('$baseUrl/products/search?name=$name&page=$page&limit=$limit'),
+    headers: {'Authorization': 'Bearer $token'},
+  );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data']['products'] as List;
-      return data.map((product) => Product.fromJson(product)).toList();
-    } else {
-      throw Exception('Failed to search products');
-    }
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body)['data']['products'] as List;
+    // Parsing langsung ke Product
+    return data.map((product) => Product.fromJson(product)).toList();
+  } else {
+    throw Exception('Failed to search products');
   }
+}
 
   Future<Product> scanProduct(String barcode, String token) async {
   final response = await http.post(
