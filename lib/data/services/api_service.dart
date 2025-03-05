@@ -271,35 +271,35 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
     }
   }
 
-  Future<List<Product>> fetchHistoriesAsProducts(int page, int limit, String token) async {
-  final historiesResponse = await getHistories(page, limit, token);
+//   Future<List<Product>> fetchHistoriesAsProducts(int page, int limit, String token) async {
+//   final historiesResponse = await getHistories(page, limit, token);
   
-  // Ambil semua product_id dari histories
-  final productIds = historiesResponse.map<int>((history) => history['product_id']).toSet();
+//   // Ambil semua product_id dari histories
+//   final productIds = historiesResponse.map<int>((history) => history['product_id']).toSet();
 
-  // Ambil detail setiap produk berdasarkan product_id
-  final List<Product> products = await Future.wait(productIds.map((id) async {
-    try {
-      return await getProductById(id, token);
-    } catch (e) {
-      // Jika ada error, kembalikan produk default
-      return Product(
-        id: id,
-        name: 'Unknown Product',
-        brand: 'Unknown',
-        photo: '',
-        categoryProductId: 0,
-        nutritionFactId: 0,
-        barcode: '',
-        priceA: 0,  // Default priceA
-        priceB: 0,  // Default priceB
-        labelId: 0,
-      );
-    }
-  }).toList());
+//   // Ambil detail setiap produk berdasarkan product_id
+//   final List<Product> products = await Future.wait(productIds.map((id) async {
+//     try {
+//       return await getProductById(id, token);
+//     } catch (e) {
+//       // Jika ada error, kembalikan produk default
+//       return Product(
+//         id: id,
+//         name: 'Unknown Product',
+//         brand: 'Unknown',
+//         photo: '',
+//         categoryProductId: 0,
+//         nutritionFactId: 0,
+//         barcode: '',
+//         priceA: 0,  // Default priceA
+//         priceB: 0,  // Default priceB
+//         labelId: 0,
+//       );
+//     }
+//   }).toList());
 
-  return products;
-}
+//   return products;
+// }
 
 Future<List<Product>> getTopChoices(String token) async {
     final response = await http.get(
