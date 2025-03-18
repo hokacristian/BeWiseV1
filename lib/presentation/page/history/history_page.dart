@@ -26,7 +26,6 @@ class _HistoryPageState extends State<HistoryPage> {
     await productProvider.fetchScanHistories(page, _limit);
   }
 
-  /// Method untuk pindah ke halaman berikutnya
   void _nextPage() {
     final productProvider = Provider.of<ProductProvider>(context, listen: false);
     if (productProvider.hasNextPage) {
@@ -37,7 +36,6 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  /// Method untuk kembali ke halaman sebelumnya
   void _previousPage() {
     final productProvider = Provider.of<ProductProvider>(context, listen: false);
     if (productProvider.hasPreviousPage) {
@@ -48,7 +46,6 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  /// Method untuk menarik data ulang (RefreshIndicator)
   Future<void> _onRefresh() async {
     final productProvider = Provider.of<ProductProvider>(context, listen: false);
     return _fetchHistories(productProvider.currentPage);
@@ -67,13 +64,11 @@ class _HistoryPageState extends State<HistoryPage> {
         child: FutureBuilder<void>(
           future: _fetchHistoriesFuture,
           builder: (context, snapshot) {
-            // Tampilkan loading state saat awal fetch
             if (snapshot.connectionState == ConnectionState.waiting && 
                 productProvider.products.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            // Tampilkan error jika ada
             if (snapshot.hasError) {
               return Center(
                 child: Padding(
@@ -86,7 +81,6 @@ class _HistoryPageState extends State<HistoryPage> {
               );
             }
 
-            // Jika data berhasil di-load tapi kosong
             if (productProvider.products.isEmpty) {
               return const Center(
                 child: Text('Belum ada riwayat produk'),
@@ -95,13 +89,16 @@ class _HistoryPageState extends State<HistoryPage> {
 
             return Column(
               children: [
-                // List riwayat
                 Expanded(
-                  child: ListView.separated(
+                  child: GridView.builder(
                     padding: const EdgeInsets.all(16),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 0.7,
+                    ),
                     itemCount: productProvider.products.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final product = productProvider.products[index];
                       return GestureDetector(
@@ -109,8 +106,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductBasePage(product: product),
+                              builder: (context) => ProductBasePage(product: product),
                             ),
                           );
                         },
@@ -119,13 +115,11 @@ class _HistoryPageState extends State<HistoryPage> {
                     },
                   ),
                 ),
-                // Show loading indicator when loading more data
                 if (productProvider.isLoading && productProvider.products.isNotEmpty)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Center(child: CircularProgressIndicator()),
                   ),
-                // Pagination controls
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
@@ -145,7 +139,6 @@ class _HistoryPageState extends State<HistoryPage> {
                     ],
                   ),
                 ),
-                // Show total items info
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                 ),

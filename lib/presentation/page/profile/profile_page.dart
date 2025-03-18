@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../auth/login_page.dart';
+import 'package:bewise/core/constans/colors.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/data/providers/booking_provider.dart';
 import 'package:bewise/core/utils/sessionmanager.dart';
@@ -18,12 +20,12 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    // Fetch user data saat halaman di-load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final bookingProvider = Provider.of<BookingProvider>(context, listen: false);
+      final bookingProvider =
+          Provider.of<BookingProvider>(context, listen: false);
       authProvider.fetchUserData();
-      bookingProvider.createBooking(authProvider.token!, 1); 
+      bookingProvider.createBooking(authProvider.token!, 1);
     });
   }
 
@@ -64,79 +66,113 @@ class _ProfilePageState extends State<ProfilePage> {
           final user = authProvider.user!;
           final subscription = authProvider.subscription;
 
-
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  // Foto Profil
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage(
-                      user.avatarLink ?? 'https://via.placeholder.com/150',
+                  // Box/Card pembungkus
+                  Card(
+                    color: AppColors.yellow,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Nama Pengguna
-                  Text(
-                    '${user.firstName} ${user.lastName}',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Email Pengguna
-                  Text(
-                    user.email,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Langganan End Date (Jika Ada)
-                  if (bookingProvider.booking != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Premium: ${subscription?.countDownDay ??  'Tidak ada langganan aktif'} Hari',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 60,
+                            backgroundImage: NetworkImage(
+                              user.avatarLink ??
+                                  'https://ik.imagekit.io/swvbgy6po/icon.png',
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            '${user.firstName} ${user.lastName}',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            user.email,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          // Bagian yang diubah
+                          if (subscription?.isActive == true)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Text(
+                                'Premium: ${subscription?.countDownDay ?? 0} Hari',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          else
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SubscriptionsPage(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                minimumSize: const Size(double.infinity, 48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/img/barcode.svg',
+                                    height: 24,
+                                    width: 24,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text(
+                                    'Berlangganan',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          const SizedBox(height: 16),
+                        ],
                       ),
                     ),
-                  const SizedBox(height: 32),
-                  // Tombol Berlangganan
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SubscriptionsPage(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0,
-                        vertical: 12.0,
-                      ),
-                    ),
-                    child: const Text(
-                      'Berlangganan',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 10),
                   // Menu Navigasi
                   ListTile(
                     leading: const Icon(Icons.person, color: Colors.blue),
@@ -155,9 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     leading: const Icon(Icons.info, color: Colors.green),
                     title: const Text('Tentang BeWise'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {
-                      // Tambahkan logika untuk membuka halaman Tentang BeWise
-                    },
+                    onTap: () {},
                   ),
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.red),
