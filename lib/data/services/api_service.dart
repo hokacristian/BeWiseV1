@@ -228,21 +228,21 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
 
 
 
-  Future<List<Map<String, dynamic>>> getHistories(int page, int limit, String token) async {
-  final response = await http.get(
-    Uri.parse('$baseUrl/histories?page=$page&limit=$limit'),
-    headers: {'Authorization': 'Bearer $token'},
-  );
+   Future<Map<String, dynamic>> getHistories(int page, int limit, String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/histories?page=$page&limit=$limit'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    print('Histories fetched: ${data['data']['histories']}'); // Debug log
-    return List<Map<String, dynamic>>.from(data['data']['histories']);
-  } else {
-    print('Error fetching histories: ${response.statusCode} ${response.body}'); // Debug log
-    throw Exception('Failed to load histories');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print('Histories fetched: ${data['data']}'); // Debug log
+      return data; // Return the complete response including pagination data
+    } else {
+      print('Error fetching histories: ${response.statusCode} ${response.body}'); // Debug log
+      throw Exception('Failed to load histories');
+    }
   }
-}
 
   Future<Map<String, dynamic>> getHistoryById(int id, String token) async {
     final response = await http.get(
@@ -257,6 +257,7 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
       throw Exception('Failed to load history with id $id');
     }
   }
+
 
   Future<void> deleteHistory(int id, String token) async {
     final response = await http.delete(
@@ -349,12 +350,13 @@ Future<List<Product>> getAllProducts(String token) async {
   );
 
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body)['data']['products'] as List;
+    final data = jsonDecode(response.body)['data'] as List;
     return data.map((product) => Product.fromJson(product)).toList();
   } else {
     throw Exception('Failed to load all products');
   }
 }
+
 
 
 }

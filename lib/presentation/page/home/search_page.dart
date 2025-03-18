@@ -18,15 +18,15 @@ class _SearchPageState extends State<SearchPage> {
   bool _isSearching = false;
 
   @override
-  void initState() {
-    super.initState();
-    _focusNode.requestFocus();
+void initState() {
+  super.initState();
+  _focusNode.requestFocus();
 
-    // Saat pertama kali masuk, langsung ambil semua produk
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProductProvider>(context, listen: false).fetchAllProducts();
-    });
-  }
+  // Directly load all products when the page is initialized
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    Provider.of<ProductProvider>(context, listen: false).fetchAllProducts();
+  });
+}
 
   @override
   void dispose() {
@@ -80,41 +80,40 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildGrid(ProductProvider productProvider) {
-    if (productProvider.errorMessage != null) {
-      return Center(child: Text(productProvider.errorMessage!));
-    } else if (!_isSearching && productProvider.products.isEmpty) {
-      return const Center(child: Text('Produk tidak tersedia'));
-    } else if (_isSearching && productProvider.products.isEmpty) {
-      return const Center(child: Text('Produk tidak ditemukan'));
-    } else {
-      return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 0.7,
-        ),
-        itemCount: productProvider.isLoading ? 6 : productProvider.products.length, // Skeleton berjumlah 6 saat loading
-        itemBuilder: (context, index) {
-          if (productProvider.isLoading) {
-            return _buildSkeletonCard();
-          }
-          final product = productProvider.products[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductBasePage(product: product),
-                ),
-              );
-            },
-            child: ProductCard(product: product),
-          );
-        },
-      );
-    }
+  if (productProvider.errorMessage != null) {
+    return Center(child: Text(productProvider.errorMessage!));
+  } else if (productProvider.products.isEmpty) {
+    return const Center(child: Text('Produk tidak tersedia'));
+  } else {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        childAspectRatio: 0.7,
+      ),
+      itemCount: productProvider.isLoading ? 6 : productProvider.products.length,
+      itemBuilder: (context, index) {
+        if (productProvider.isLoading) {
+          return _buildSkeletonCard();
+        }
+        final product = productProvider.products[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductBasePage(product: product),
+              ),
+            );
+          },
+          child: ProductCard(product: product),
+        );
+      },
+    );
   }
+}
+
 
   // Skeleton Card untuk efek loading
   Widget _buildSkeletonCard() {

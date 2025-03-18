@@ -13,13 +13,12 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   late Future<void> _fetchHistoriesFuture;
-  int _currentPage = 1;
-  final int _limit = 5; // Jumlah item per halaman
+  final int _limit = 10; // Items per page
 
   @override
   void initState() {
     super.initState();
-    _fetchHistoriesFuture = _fetchHistories(_currentPage);
+    _fetchHistoriesFuture = _fetchHistories(1); // Start with page 1
   }
 
   Future<void> _fetchHistories(int page) async {
@@ -29,30 +28,35 @@ class _HistoryPageState extends State<HistoryPage> {
 
   /// Method untuk pindah ke halaman berikutnya
   void _nextPage() {
-    setState(() {
-      _currentPage++;
-      _fetchHistoriesFuture = _fetchHistories(_currentPage);
-    });
+    final productProvider = Provider.of<ProductProvider>(context, listen: false);
+    if (productProvider.hasNextPage) {
+      int nextPage = productProvider.currentPage + 1;
+      setState(() {
+        _fetchHistoriesFuture = _fetchHistories(nextPage);
+      });
+    }
   }
 
   /// Method untuk kembali ke halaman sebelumnya
   void _previousPage() {
-    if (_currentPage > 1) {
+    final productProvider = Provider.of<ProductProvider>(context, listen: false);
+    if (productProvider.hasPreviousPage) {
+      int prevPage = productProvider.currentPage - 1;
       setState(() {
-        _currentPage--;
-        _fetchHistoriesFuture = _fetchHistories(_currentPage);
+        _fetchHistoriesFuture = _fetchHistories(prevPage);
       });
     }
   }
 
   /// Method untuk menarik data ulang (RefreshIndicator)
   Future<void> _onRefresh() async {
-    await _fetchHistories(_currentPage);
+    final productProvider = Provider.of<ProductProvider>(context, listen: false);
+    return _fetchHistories(productProvider.currentPage);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productProvider = Provider.of<ProductProvider>(context, listen: true);
+    final productProvider = Provider.of<ProductProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -63,8 +67,9 @@ class _HistoryPageState extends State<HistoryPage> {
         child: FutureBuilder<void>(
           future: _fetchHistoriesFuture,
           builder: (context, snapshot) {
-            // Tampilkan indikator loading saat menunggu
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            // Tampilkan loading state saat awal fetch
+            if (snapshot.connectionState == ConnectionState.waiting && 
+                productProvider.products.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
 
@@ -81,7 +86,7 @@ class _HistoryPageState extends State<HistoryPage> {
               );
             }
 
-            // Jika data berhasil di-load
+            // Jika data berhasil di-load tapi kosong
             if (productProvider.products.isEmpty) {
               return const Center(
                 child: Text('Belum ada riwayat produk'),
@@ -114,23 +119,35 @@ class _HistoryPageState extends State<HistoryPage> {
                     },
                   ),
                 ),
-                // Navigasi page
+                // Show loading indicator when loading more data
+                if (productProvider.isLoading && productProvider.products.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                // Pagination controls
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        onPressed: _previousPage,
+                        onPressed: productProvider.hasPreviousPage ? _previousPage : null,
                         child: const Text('Previous'),
                       ),
-                      Text('Page $_currentPage'),
+                      const SizedBox(width: 16),
+                      Text('Page ${productProvider.currentPage} of ${productProvider.totalPages}'),
+                      const SizedBox(width: 16),
                       ElevatedButton(
-                        onPressed: _nextPage,
+                        onPressed: productProvider.hasNextPage ? _nextPage : null,
                         child: const Text('Next'),
                       ),
                     ],
                   ),
+                ),
+                // Show total items info
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
                 ),
               ],
             );

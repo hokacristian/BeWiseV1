@@ -170,43 +170,47 @@ Future<void> searchProducts(String name, int page, int limit) async {
     }
   }
 
-  // Fetch scan histories
-Future<void> fetchScanHistories(int page, int limit) async {
-  _isLoading = true;
-  _errorMessage = null;
+// Fetch scan histories
+  Future<void> fetchScanHistories(int page, int limit) async {
+    _isLoading = true;
+    _errorMessage = null;
 
-  try {
-    if (token == null) {
-      await _initializeToken();
-      if (token == null) throw Exception('Token is not available');
-    }
-
-    final historiesResponse = await apiService.getHistories(page, limit, token!);
-
-    // Debug: Print raw response
-    print('Histories Response: $historiesResponse');
-
-    final List<Product> products = [];
-    for (var history in historiesResponse) {
-      final productData = history['product'];
-      if (productData != null) {
-        // Debug: Print product data before parsing
-        print('Product Data: $productData');
-        products.add(Product.fromJson(productData));
-      } else {
-        print('Product data is missing in history: $history');
+    try {
+      if (token == null) {
+        await _initializeToken();
+        if (token == null) throw Exception('Token is not available');
       }
-    }
 
-    _products = products;
-  } catch (error) {
-    _errorMessage = error.toString();
-    print('Error fetching histories: $error');
-  } finally {
-    _isLoading = false;
-    notifyListeners();
+      final response = await apiService.getHistories(page, limit, token!);
+      
+      // Extract histories and pagination data
+      final historiesResponse = response['data'];
+      final paginationData = response['pagination'];
+      
+      // Update pagination metadata
+      _totalPages = paginationData['totalPage'];
+      _currentPage = paginationData['currentPage'];
+      _hasNextPage = paginationData['hasNextPage'];
+      _hasPreviousPage = paginationData['hasPreviousPage'];
+
+      // Parse products
+      final List<Product> products = [];
+      for (var history in historiesResponse) {
+        final productData = history['product'];
+        if (productData != null) {
+          products.add(Product.fromJson(productData));
+        }
+      }
+
+      _products = products;
+    } catch (error) {
+      _errorMessage = error.toString();
+      print('Error fetching histories: $error');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
-}
 
 
 Future<void> fetchAllProducts() async {
@@ -219,7 +223,8 @@ Future<void> fetchAllProducts() async {
       await _initializeToken();
       if (token == null) throw Exception('Token is not available');
     }
-    
+
+    // Directly fetch products without dealing with pagination
     _products = await apiService.getAllProducts(token!);
     print('✅ Successfully fetched ${_products.length} products');
   } catch (error) {
@@ -230,6 +235,7 @@ Future<void> fetchAllProducts() async {
     notifyListeners();
   }
 }
+
 
 
 
