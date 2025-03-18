@@ -18,6 +18,16 @@ class ProductProvider extends ChangeNotifier {
   bool get isLoadingTopChoices => _isLoadingTopChoices;
   String? get errorMessageTopChoices => _errorMessageTopChoices;
 
+  int _currentPage = 1;
+  int _totalPages = 1;
+  bool _hasNextPage = false;
+  bool _hasPreviousPage = false;
+
+  int get currentPage => _currentPage;
+  int get totalPages => _totalPages;
+  bool get hasNextPage => _hasNextPage;
+  bool get hasPreviousPage => _hasPreviousPage;
+
   Future<void> fetchTopChoices() async {
     _isLoadingTopChoices = true;
     _errorMessageTopChoices = null;
@@ -71,29 +81,44 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  // Fetch products by category
-  Future<void> fetchProductsByCategory(int categoryId) async {
-    _isLoading = true;
-    _errorMessage = null;
+ // Fetch products by category with pagination
+Future<void> fetchProductsByCategory(int categoryId, int page) async {
+  _isLoading = true;
+  _errorMessage = null;
+  notifyListeners();
 
-    try {
-      if (token == null) {
-        await _initializeToken();
-        if (token == null) throw Exception('Token is not available');
-      }
-      final results =
-          await apiService.getProductsByCategory(categoryId, token!);
-      _products =
-          results.map<Product>((json) => Product.fromJson(json)).toList();
-      print('Fetched products: ${_products.length}');
-    } catch (error) {
-      _errorMessage = error.toString();
-      print('Error fetching products by category: $error');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  try {
+    if (token == null) {
+      await _initializeToken();
+      if (token == null) throw Exception('Token is not available');
     }
+
+    // Make the API call to fetch products by category and pagination data
+    final results = await apiService.getProductsByCategory(categoryId, page, token!); // Pass token as the third argument
+
+    // Parse products
+    _products = List<Product>.from(
+      results['data'].map((json) => Product.fromJson(json))
+    );
+
+    // Parse pagination values
+    _currentPage = results['pagination']['currentPage'] ?? 1;
+    _totalPages = results['pagination']['totalPages'] ?? 1;
+    _hasNextPage = results['pagination']['hasNextPage'] == true;
+    _hasPreviousPage = results['pagination']['hasPreviousPage'] == true;
+
+  } catch (error) {
+    _errorMessage = error.toString();
+  } finally {
+    _isLoading = false;
+    notifyListeners();
   }
+}
+
+
+
+
+
 
   // Search products
 Future<void> searchProducts(String name, int page, int limit) async {

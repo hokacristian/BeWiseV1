@@ -162,15 +162,18 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
     }
   }
 
- Future<List<Map<String, dynamic>>> getProductsByCategory(int categoryId, String token) async {
+ Future<Map<String, dynamic>> getProductsByCategory(int categoryId, int page, String token) async {
   final response = await http.get(
-    Uri.parse('$baseUrl/products/category/$categoryId'),
+    Uri.parse('$baseUrl/products/category/$categoryId?page=$page'),
     headers: {'Authorization': 'Bearer $token'},
   );
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
-    return List<Map<String, dynamic>>.from(data['data']['products']);
+    return {
+      'data': data['data'],
+      'pagination': data['pagination']
+    };
   } else {
     throw Exception('Failed to load products');
   }
