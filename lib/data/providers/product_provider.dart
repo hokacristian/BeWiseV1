@@ -68,16 +68,18 @@ class ProductProvider extends ChangeNotifier {
   }
 
   // Fetch product by ID
-  Future<void> fetchProductById(int id) async {
+   Future<void> fetchProductById(int id) async {
     try {
       if (token == null) {
         await _initializeToken();
         if (token == null) throw Exception('Token is not available');
       }
       final result = await apiService.getProductById(id, token!);
-      _product = Product.fromJson(result.toJson());
+      _product = result; // Use the complete Product object returned by apiService
+      notifyListeners();
     } catch (error) {
       _errorMessage = error.toString();
+      notifyListeners();
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:bewise/data/models/product_model.dart';
 
 class NutritionFacts extends StatelessWidget {
@@ -12,48 +13,92 @@ class NutritionFacts extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.green[100],
-          borderRadius: BorderRadius.circular(10),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildNutritionCircle(
+          value: '${nutritionFact!.energy}',
+          unit: 'kkal',
+          label: 'Energi',
+          iconAsset: 'assets/img/google.svg',
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Fakta Nutrisi',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNutritionItem('Energi', '${nutritionFact!.energy} kkal'),
-                _buildNutritionItem('Lemak', '${nutritionFact!.saturatedFat} gr'),
-                _buildNutritionItem('Protein', '${nutritionFact!.protein} gr'),
-                _buildNutritionItem('Gula', '${nutritionFact!.sugar} gr'),
-                _buildNutritionItem('Sodium', '${nutritionFact!.sodium} mg'),
-              ],
-            ),
-          ],
+        _buildNutritionCircle(
+          value: '${nutritionFact!.saturatedFat}',
+          unit: 'gr',
+          label: 'Lemak',
+          iconAsset: 'assets/img/google.svg',
         ),
-      ),
+        _buildNutritionCircle(
+          value: '${nutritionFact!.protein}',
+          unit: 'gr',
+          label: 'Protein',
+          iconAsset: 'assets/img/google.svg',
+        ),
+        _buildNutritionCircle(
+          value: '${nutritionFact!.sugar}',
+          unit: 'gr',
+          label: 'Gula',
+          iconAsset: 'assets/img/google.svg',
+        ),
+        _buildNutritionCircle(
+          value: '${nutritionFact!.sodium}',
+          unit: 'mg',
+          label: 'Sodium',
+          iconAsset: 'assets/img/google.svg',
+        ),
+      ],
     );
   }
 
-  Widget _buildNutritionItem(String label, String value) {
+  Widget _buildNutritionCircle({
+    required String value,
+    required String unit,
+    required String label,
+    required String iconAsset,
+  }) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          value,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        Container(
+          width: 64,
+          height: 64,
+                    padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: SvgPicture.asset(
+            iconAsset,
+            fit: BoxFit.contain,
+          ),
+        ),
+        const SizedBox(height: 8),
+        RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+            children: [
+              TextSpan(text: '$value '),
+              TextSpan(
+                text: unit,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
         ),
         Text(
           label,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+          ),
         ),
       ],
     );

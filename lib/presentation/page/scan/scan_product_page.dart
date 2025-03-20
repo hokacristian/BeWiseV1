@@ -3,8 +3,8 @@ import 'package:mobile_scanner/mobile_scanner.dart' as mobilescanner;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
-import 'package:google_ml_kit/google_ml_kit.dart' as mlkit;
-
+import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
+import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 import 'package:bewise/core/constans/colors.dart';
 import 'package:bewise/data/providers/product_provider.dart';
 import 'package:bewise/data/models/product_model.dart';
@@ -27,12 +27,15 @@ class _ScanProductPageState extends State<ScanProductPage> {
   final mobilescanner.MobileScannerController cameraController =
       mobilescanner.MobileScannerController();
   final ImagePicker _imagePicker = ImagePicker();
+BarcodeScanner get _barcodeScanner => BarcodeScanner();
 
   @override
-  void dispose() {
-    cameraController.dispose();
-    super.dispose();
-  }
+void dispose() {
+  cameraController.dispose();
+  // Hapus ini:
+  // _barcodeScanner.close();
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +185,19 @@ class _ScanProductPageState extends State<ScanProductPage> {
               ),
             ),
           ),
+
+          // Loading indicator
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -226,43 +242,40 @@ class _ScanProductPageState extends State<ScanProductPage> {
   }
 
   Future<void> _scanImageFromGallery() async {
-    if (_selectedImage == null) return;
+  if (_selectedImage == null) return;
 
-    final mlkit.InputImage inputImage =
-        mlkit.InputImage.fromFilePath(_selectedImage!.path);
-    final mlkit.BarcodeScanner barcodeScanner =
-        mlkit.GoogleMlKit.vision.barcodeScanner();
+  final inputImage = InputImage.fromFilePath(_selectedImage!.path);
+  final scanner = _barcodeScanner; // Gunakan getter
 
-    try {
-      final List<mlkit.Barcode> barcodes =
-          await barcodeScanner.processImage(inputImage);
-      if (barcodes.isNotEmpty) {
-        final String? code = barcodes.first.rawValue;
-        if (code != null) {
-          await _handleScanResult(code);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Tidak dapat membaca barcode dari gambar'),
-            ),
-          );
+  try {
+    final List<Barcode> barcodes = await scanner.processImage(inputImage);
+    
+    if (barcodes.isNotEmpty) {
+      for (final barcode in barcodes) {
+        if (barcode.type == BarcodeType.product) {
+          final String? code = barcode.rawValue;
+          if (code != null && code.isNotEmpty) {
+            await _handleScanResult(code);
+            return;
+          }
         }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Barcode tidak ditemukan dalam gambar')),
-        );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi kesalahan saat memindai gambar: $e')),
-      );
-    } finally {
-      await barcodeScanner.close();
-      setState(() {
-        _selectedImage = null;
-        isLoading = false;
-      });
+      _showErrorMessage('Barcode produk tidak ditemukan');
+    } else {
+      _showErrorMessage('Tidak ada barcode terdeteksi');
     }
+  } catch (e) {
+    _showErrorMessage('Gagal memindai: ${e.toString()}');
+  } finally {
+    await scanner.close(); // Tutup scanner setelah selesai
+    setState(() => isLoading = false);
+  }
+}
+
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   /// Method privat untuk menangani hasil scan (kode)
@@ -286,6 +299,7 @@ class _ScanProductPageState extends State<ScanProductPage> {
           setState(() {
             hasScanned = false;
             isLoading = false;
+            _selectedImage = null; // Reset selected image
           });
           cameraController.start();
         });
@@ -293,9 +307,7 @@ class _ScanProductPageState extends State<ScanProductPage> {
         throw Exception('Produk tidak ditemukan.');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      _showErrorMessage('Error: ${e.toString()}');
       setState(() {
         isLoading = false;
         hasScanned = false;
