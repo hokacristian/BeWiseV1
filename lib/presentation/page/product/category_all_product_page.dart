@@ -93,6 +93,7 @@ class CategoryAllProductPage extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => CategoryProductPage(
                       categoryId: category['id'] as int,
+                      categoryName: category['name'] as String, // Pass the category name
                     ),
                   ),
                 );

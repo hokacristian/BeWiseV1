@@ -6,8 +6,13 @@ import 'package:bewise/presentation/page/product/product_base_page.dart';
 
 class CategoryProductPage extends StatefulWidget {
   final int categoryId;
+  final String categoryName; // Added categoryName parameter
 
-  const CategoryProductPage({required this.categoryId, super.key});
+  const CategoryProductPage({
+    required this.categoryId, 
+    required this.categoryName, // Make it required
+    super.key,
+  });
 
   @override
   State<CategoryProductPage> createState() => _CategoryProductPageState();
@@ -20,20 +25,18 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    final productProvider =
-        Provider.of<ProductProvider>(context, listen: false);
+    final productProvider = Provider.of<ProductProvider>(context, listen: false);
 
     if (!_isInitialized) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        productProvider.fetchProductsByCategory(
-            widget.categoryId, _currentPage);
+        productProvider.fetchProductsByCategory(widget.categoryId, _currentPage);
         _isInitialized = true;
       });
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Produk Kategori ${widget.categoryId}'),
+        title: Text('Produk ${widget.categoryName}'), // Use categoryName instead of ID
       ),
       body: Stack(
         children: [
@@ -59,8 +62,7 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
                     Expanded(
                       child: GridView.builder(
                         padding: const EdgeInsets.all(16.0),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
@@ -75,43 +77,29 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
                               setState(() {
                                 _isLoadingProduct = true;
                               });
-
+                              
                               try {
                                 // Fetch the complete product with nutritionFact
                                 await provider.fetchProductById(product.id);
-
-                                // Add debug logs
-                                print(
-                                    "CATEGORY_PAGE Debug - Product ID: ${product.id}");
-                                print(
-                                    "CATEGORY_PAGE Debug - After fetchProductById, nutritionFact exists: ${provider.product?.nutritionFact != null}");
-                                if (provider.product?.nutritionFact != null) {
-                                  print(
-                                      "CATEGORY_PAGE Debug - NutritionFact data: energy=${provider.product?.nutritionFact?.energy}, protein=${provider.product?.nutritionFact?.protein}");
-                                }
-
+                                
                                 // Navigate only if product was fetched successfully
                                 if (provider.product != null) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ProductBasePage(
-                                          product: provider.product!),
+                                      builder: (context) => ProductBasePage(product: provider.product!),
                                     ),
                                   );
                                 } else {
                                   // Show error if product could not be fetched
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text('Gagal memuat detail produk')),
+                                    const SnackBar(content: Text('Gagal memuat detail produk')),
                                   );
                                 }
                               } catch (e) {
                                 // Show error message
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text('Error: ${e.toString()}')),
+                                  SnackBar(content: Text('Error: ${e.toString()}')),
                                 );
                               } finally {
                                 // Hide loading indicator
@@ -137,14 +125,12 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
                                   setState(() {
                                     _currentPage--;
                                   });
-                                  productProvider.fetchProductsByCategory(
-                                      widget.categoryId, _currentPage);
+                                  productProvider.fetchProductsByCategory(widget.categoryId, _currentPage);
                                 },
                                 child: const Text('Previous'),
                               ),
                             const SizedBox(width: 10),
-                            Text(
-                                'Page ${provider.currentPage} of ${provider.totalPages}'),
+                            Text('Page ${provider.currentPage} of ${provider.totalPages}'),
                             const SizedBox(width: 10),
                             if (provider.hasNextPage)
                               ElevatedButton(
@@ -152,8 +138,7 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
                                   setState(() {
                                     _currentPage++;
                                   });
-                                  productProvider.fetchProductsByCategory(
-                                      widget.categoryId, _currentPage);
+                                  productProvider.fetchProductsByCategory(widget.categoryId, _currentPage);
                                 },
                                 child: const Text('Next'),
                               ),
@@ -165,7 +150,7 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
               }
             },
           ),
-
+          
           // Show a full-screen loading indicator when fetching product details
           if (_isLoadingProduct)
             Container(

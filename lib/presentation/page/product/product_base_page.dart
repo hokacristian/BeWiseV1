@@ -33,7 +33,6 @@ class _ProductBasePageState extends State<ProductBasePage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Produk: ${product.name}'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

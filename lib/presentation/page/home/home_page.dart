@@ -189,76 +189,79 @@ class HomePageState extends State<HomePage> {
   }
 
   /// Widget untuk menampilkan kategori (Snack, Roti, Teh, Soda, dll.)
-  Widget _buildCategorySection() {
-    // List kategori dengan ID, nama, dan path gambar
-    final List<Map<String, dynamic>> categories = [
+  // Updated _buildCategorySection method
+Widget _buildCategorySection() {
+  // List kategori dengan ID, nama, dan path gambar
+  final List<Map<String, dynamic>> categories = [
     {'id': 7, 'name': 'Teh', 'image': 'assets/img/google.svg'},
     {'id': 7, 'name': 'Soda', 'image': 'assets/img/icon_soda.svg'},
     {'id': 7, 'name': 'Susu', 'image': 'assets/img/icon_susu.svg'},
     {'id': 7, 'name': 'Snack', 'image': 'assets/img/icon_snack.svg'},
     {'id': 7, 'name': 'Roti', 'image': 'assets/img/icon_roti.svg'},
     {'id': 0, 'name': 'Semua', 'image': 'assets/img/icon_all.svg'},
-    ];
+  ];
 
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // Jumlah kolom
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          childAspectRatio: 1.0,
+  return Container(
+    margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
         ),
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final cat = categories[index];
-          return _buildCategoryButtonWithImage(
-            context,
-            cat['name'] as String,
-            cat['id'] as int,
-            cat['image'] as String,
-          );
-        },
+      ],
+    ),
+    child: GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3, // Jumlah kolom
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 1.0,
       ),
-    );
-  }
+      itemCount: categories.length,
+      itemBuilder: (context, index) {
+        final cat = categories[index];
+        return _buildCategoryButtonWithImage(
+          context,
+          cat['name'] as String,
+          cat['id'] as int,
+          cat['image'] as String,
+        );
+      },
+    ),
+  );
+}
 
-  /// Tombol kategori satuan
-  Widget _buildCategoryButtonWithImage(
-      BuildContext context, String name, int categoryId, String imagePath) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        onTap: () {
-          debugPrint("Tapped: $name (ID: $categoryId)");
-          if (name == 'Semua') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CategoryAllProductPage(),
+/// Tombol kategori satuan - Updated to pass category name
+Widget _buildCategoryButtonWithImage(
+    BuildContext context, String name, int categoryId, String imagePath) {
+  return Material(
+    color: Colors.transparent,
+    child: InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () {
+        debugPrint("Tapped: $name (ID: $categoryId)");
+        if (name == 'Semua') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CategoryAllProductPage(),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CategoryProductPage(
+                categoryId: categoryId,
+                categoryName: name, // Now passing the category name
               ),
-            );
-          } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    CategoryProductPage(categoryId: categoryId),
               ),
             );
           }
