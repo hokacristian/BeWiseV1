@@ -19,13 +19,12 @@ class CategoryAllProductPage extends StatelessWidget {
             title: 'Minuman',
             categories: [
               {'id': 6, 'name': 'Susu', 'icon': 'assets/img/icon_susu.svg'},
-              {'id': 2, 'name': 'Teh', 'icon': 'assets/img/icon_roti.svg'},
-              {'id': 1, 'name': 'Kopi', 'icon': 'assets/img/icon_roti.svg'},
-              {'id': 4, 'name': 'Soda', 'icon': 'assets/img/icon_roti.svg'},
-              {'id': 5, 'name': 'Mineral', 'icon': 'assets/img/icon_roti.svg'},
-              {'id': 4, 'name': 'Jus', 'icon': 'assets/img/icon_roti.svg'},
-              {'id': 3, 'name': 'Energi', 'icon': 'assets/img/icon_roti.svg'},
-
+              {'id': 2, 'name': 'Teh', 'icon': 'assets/img/icon_tea.svg'},
+              {'id': 1, 'name': 'Kopi', 'icon': 'assets/img/icon_coffe.svg'},
+              {'id': 4, 'name': 'Soda', 'icon': 'assets/img/icon_soda.svg'},
+              {'id': 5, 'name': 'Mineral', 'icon': 'assets/img/icon_water.svg'},
+              {'id': 4, 'name': 'Jus', 'icon': 'assets/img/iconn_jus.svg'},
+              {'id': 3, 'name': 'Energi', 'icon': 'assets/img/icon_energy.svg'},
             ],
           ),
           const SizedBox(height: 24),
@@ -45,94 +44,105 @@ class CategoryAllProductPage extends StatelessWidget {
   }
 
   Widget _buildCategorySection(
-  BuildContext context, {
-  required String title,
-  required List<Map<String, dynamic>> categories,
-}) {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    margin: const EdgeInsets.only(bottom: 16), // Tambahkan margin bawah
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.1),
-          blurRadius: 8,
-          spreadRadius: 2,
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min, // Tambahkan ini
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12, // Kurangi spacing vertikal
-            childAspectRatio: 0.8, // Sesuaikan aspect ratio
+    BuildContext context, {
+    required String title,
+    required List<Map<String, dynamic>> categories,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 8,
+            spreadRadius: 2,
           ),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CategoryProductPage(
-                      categoryId: category['id'] as int,
-                      categoryName: category['name'] as String, // Pass the category name
-                    ),
-                  ),
-                );
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // Tambahkan ini
-                children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: SvgPicture.asset(
-                      category['icon'] as String,
-                    ),
-                  ),
-                  const SizedBox(height: 4), // Kurangi jarak
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: Text(
-                      category['name'] as String,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 10, // Perkecil ukuran font
-                          ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment:
+            CrossAxisAlignment.center, // Ubah alignment ke center
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Center widget untuk memastikan judul berada di tengah
+          Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontFamily: 'Poppins', // Gunakan font Poppins
+                fontSize: 18, // Ukuran font yang sesuai
+                fontWeight: FontWeight.bold, // Gaya font bold
+                color: Colors.black, // Warna teks
               ),
-            );
-          },
-        ),
-      ],
-    ),
-  );
-}
+              textAlign: TextAlign.center, // Teks rata tengah
+            ),
+          ),
+          const SizedBox(height: 16),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.8,
+            ),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CategoryProductPage(
+                        categoryId: category['id'] as int,
+                        categoryName: category['name'] as String,
+                      ),
+                    ),
+                  );
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 64,
+                      height: 64,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: SvgPicture.asset(
+                        category['icon'] as String,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Text(
+                        category['name'] as String,
+                        style: TextStyle(
+                          fontFamily:
+                              'Poppins', // Gunakan font Poppins untuk text kategori
+                          fontSize: 13,
+                          fontWeight: FontWeight.normal,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
