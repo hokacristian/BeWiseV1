@@ -1,5 +1,6 @@
 import 'package:bewise/presentation/page/auth/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:bewise/core/constans/colors.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
@@ -7,12 +8,15 @@ import 'package:bewise/core/widgets/input_field_widget.dart';
 import 'package:bewise/presentation/widgets/custom_button_widget.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
@@ -20,174 +24,190 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.brokenWhite,
+      resizeToAvoidBottomInset: false,
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
-          return Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Header
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Daftar Sekarang!',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.textSecondary,
-                        fontFamily: 'Poppins',
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.black),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Buat akun dalam sekejap dan rasakan pengalaman terbaik bersama kami.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300,
-                      color: AppColors.textFourth,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                  SizedBox(height: 20),
+                    const SizedBox(height: 16),
 
-                  // Input Nama
-                  _buildInputField(
-                    label: 'Nama',
-                    controller: _nameController,
-                  ),
-                  SizedBox(height: 10),
-
-                  // Input Email
-                  _buildInputField(
-                    label: 'Email',
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  SizedBox(height: 10),
-
-                  // Input Kata Sandi
-                  _buildInputField(
-                    label: 'Kata Sandi',
-                    controller: _passwordController,
-                    obscureText: !_isPasswordVisible,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                    const Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Daftar Sekarang!',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          fontFamily: 'Poppins',
+                        ),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
                     ),
-                  ),
-                  SizedBox(height: 20),
-
-                  // Pesan Error
-                  if (authProvider.errorMessage != null)
-                    Text(
-                      authProvider.errorMessage!,
-                      style: TextStyle(color: Colors.red, fontSize: 14),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Buat akun dalam sekejap dan rasakan pengalaman terbaik bersama kami.',
                       textAlign: TextAlign.center,
-                    ),
-                  SizedBox(height: 16),
-
-                  // Tombol Daftar
-                  CustomButtonWidget(
-  text: 'Daftar',
-  isLoading: authProvider.isLoading,
-  onPressed: () async {
-    await authProvider.register(
-      _nameController.text.trim(),
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
-    );
-
-    if (authProvider.errorMessage == null) {
-      // Navigasi ke halaman login jika berhasil
-      Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
-    } else {
-      // Tampilkan error jika ada
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authProvider.errorMessage!),
-        ),
-      );
-    }
-  },
-                    backgroundColor: AppColors.lightBlue,
-                    textColor: AppColors.textPrimary,
-                  ),
-                  SizedBox(height: 10),
-
-                  // Separator
-                  Center(
-                    child: Text(
-                      'atau',
                       style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey,
                         fontFamily: 'Poppins',
-                        fontSize: 14,
-                        color: AppColors.textFourth,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
+                    const SizedBox(height: 20),
 
-                  // Tombol Daftar dengan Google
-                  CustomButtonWidget(
-                    backgroundColor: AppColors.secondary,
-                    text: 'Daftar dengan Google',
-                    isLoading: false,
-                    onPressed: () {
-                      // Implementasi login dengan Google
-                    },
-                    icon: Icon(
-                      Icons.g_mobiledata,
-                      color: Colors.white,
+                    // Input Nama Depan
+                    _buildInputField(
+                      label: 'Nama Depan',
+                      controller: _firstNameController,
                     ),
-                  ),
-                  SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                  // Tautan ke halaman login
-                  Center(
-                    child: Text(
-                      'Sudah punya akun?',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 14,
-                        color: AppColors.textFourth,
+                    // Input Nama Belakang
+                    _buildInputField(
+                      label: 'Nama Belakang',
+                      controller: _lastNameController,
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Input Email
+                    _buildInputField(
+                      label: 'Email',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Input Kata Sandi
+                    _buildInputField(
+                      label: 'Kata Sandi',
+                      controller: _passwordController,
+                      obscureText: !_isPasswordVisible,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
-                    },
-                    child: Text(
-                      'Masuk Di sini',
-                      style: TextStyle(
-                        color: AppColors.lightBlue,
-                        fontFamily: 'Poppins',
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                    const SizedBox(height: 20),
+
+                    // Tombol Daftar
+                    CustomButtonWidget(
+                      text: 'Daftar',
+                      isLoading: authProvider.isLoading,
+                      onPressed: () async {
+                        await authProvider.register(
+                          _firstNameController.text.trim(),
+                          _lastNameController.text.trim(),
+                          _emailController.text.trim(),
+                          _passwordController.text.trim(),
+                        );
+
+                        if (authProvider.errorMessage == null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const LoginPage()),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(authProvider.errorMessage!),
+                            ),
+                          );
+                        }
+                      },
+                      backgroundColor: AppColors.lightBlue,
+                      textColor: Colors.white,
+                    ),
+                    const SizedBox(height: 10),
+
+                    const Center(
+                      child: Text(
+                        'atau',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+
+                    CustomButtonWidget(
+                      backgroundColor: AppColors.secondary,
+                      text: 'Daftar dengan Google',
+                      isLoading: false,
+                      onPressed: () {
+                        // Implementasi login dengan Google
+                      },
+                      icon: SvgPicture.asset(
+                        'assets/img/google.svg',
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Sudah punya akun?',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const LoginPage()),
+                          );
+                        },
+                        child: const Text(
+                          'Masuk Di sini',
+                          style: TextStyle(
+                            color: AppColors.lightBlue,
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -206,14 +226,14 @@ class _RegisterPageState extends State<RegisterPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: AppColors.textSecondary,
+            color: Colors.black,
             fontFamily: 'Poppins',
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         InputFieldWidget(
           controller: controller,
           fillColor: Colors.grey[200],

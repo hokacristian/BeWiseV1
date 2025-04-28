@@ -1,25 +1,44 @@
+import 'package:bewise/data/models/user_model.dart';
 class WhoAmIResponse {
-  final int userId;
-  final String email;
-  final String name;
-  final String? gender;
-  final String? avatarLink;
+  final User user;
+  final Subscription? subscription;
 
   WhoAmIResponse({
-    required this.userId,
-    required this.email,
-    required this.name,
-    this.gender,
-    this.avatarLink,
+    required this.user,
+    this.subscription,
   });
 
   factory WhoAmIResponse.fromJson(Map<String, dynamic> json) {
+    final userJson = json['user'] as Map<String, dynamic>? ?? {};
+    final subscriptionJson = json['subscription'] as Map<String, dynamic>?;
+
     return WhoAmIResponse(
-      userId: json['id'] ?? 0,
-      email: json['email'] ?? 'Unknown email',
-      name: json['name'] ?? 'Unknown name',
-      gender: json['gender'], // Tetap null jika tidak ada
-      avatarLink: json['avatar_link'], // Tetap null jika tidak ada
+      user: User.fromJson(userJson),
+      subscription: subscriptionJson != null ? Subscription.fromJson(subscriptionJson) : null,
+    );
+  }
+}
+
+
+class Subscription {
+  final bool isActive;
+  final String planName;
+  final String validUntil;
+  final String countDownDay;
+
+  Subscription({
+    required this.isActive,
+    required this.planName,
+    required this.validUntil,
+    required this.countDownDay,
+  });
+
+  factory Subscription.fromJson(Map<String, dynamic> json) {
+    return Subscription(
+      isActive: json['isActive'] ?? false,
+      planName: json['planName'] ?? '',
+      validUntil: json['validUntil'] ?? '',
+      countDownDay: json['countDownDay'] ?? '',
     );
   }
 }

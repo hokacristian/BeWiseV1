@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bewise/data/response/whoami_response.dart';
 import '../models/user_model.dart';
 import '../services/api_service.dart';
 import 'package:bewise/core/utils/sessionmanager.dart';
@@ -11,9 +12,7 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = false; 
   String? _errorMessage; 
 
-  AuthProvider(this.apiService) {
-    _initialize();
-  }
+  AuthProvider(this.apiService);
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -21,7 +20,11 @@ class AuthProvider extends ChangeNotifier {
   User? get user => _user;
   String? get token => _token;
 
-  Future<void> _initialize() async {
+  Subscription? _subscription;
+  Subscription? get subscription => _subscription;
+
+
+  Future<void> initialize() async {
     final sessionManager = SessionManager();
     _token = await sessionManager.getToken();
     if (_token != null) {
@@ -30,67 +33,63 @@ class AuthProvider extends ChangeNotifier {
         _user = User(
           id: userDetails['userId'],
           email: userDetails['userEmail'],
-          name: userDetails['userName'],
+          firstName: userDetails['userFirstName'],
+          lastName: userDetails['userLastName'],
           gender: userDetails['userGender'],
           avatarLink: userDetails['userAvatarLink'],
         );
       }
     }
-    notifyListeners();
   }
 
-  Future<void> login(String email, String password) async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-
-  try {
-    final response = await apiService.login(email, password);
-    _token = response['data']['token'];
-    _user = User.fromJson(response['data']['user']);
-
-    // Simpan sesi
-    final sessionManager = SessionManager();
-    await sessionManager.saveSession(
-      _token!,
-      _user!.id,
-      _user!.name,
-      _user!.email,
-      gender: _user!.gender,
-      avatarLink: _user!.avatarLink,
-    );
-
-    print("Token saved: $_token"); // Debugging
-  } catch (error) {
-    _errorMessage = error.toString().replaceFirst('Exception: ', '');
-    print("Login error: $_errorMessage"); // Debugging
-  } finally {
-    _isLoading = false;
-    notifyListeners();
-  }
-}
-
-
-
-  Future<void> register(String name, String email, String password) async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-
-  try {
-    final response = await apiService.register(name, email, password);
-
-    // Jika respons sukses (200), kosongkan pesan error
+   Future<void> login(String email, String password) async {
+    _isLoading = true;
     _errorMessage = null;
-
-    // Logika untuk navigasi dilakukan di UI, bukan di sini
-  } catch (error) {
-    _errorMessage = error.toString().replaceFirst('Exception: ', '');
-  } finally {
-    _isLoading = false;
     notifyListeners();
+
+    try {
+      final response = await apiService.login(email, password);
+      _token = response['data']['token'];
+      _user = User.fromJson(response['data']['user']);
+
+      final sessionManager = SessionManager();
+      await sessionManager.saveSession(
+        _token!,
+        _user!.id,
+        _user!.firstName,
+        _user!.lastName,
+        _user!.email,
+        gender: _user!.gender,
+        avatarLink: _user!.avatarLink,
+      );
+
+      print("Token saved: $_token");
+    } catch (error) {
+      _errorMessage = error.toString().replaceFirst('Exception: ', '');
+      print("Login error: $_errorMessage");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
-}
+
+
+
+  Future<void> register(String firstName, String lastName, String email, String password) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await apiService.register(firstName, lastName, email, password);
+      _errorMessage = null;
+    } catch (error) {
+      _errorMessage = error.toString().replaceFirst('Exception: ', '');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 
   Future<void> forgotPassword(String email) async {
     _isLoading = true;
@@ -107,82 +106,76 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchUserData() async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-
-  try {
-    if (_token == null) {
-      final sessionManager = SessionManager();
-      _token = await sessionManager.getToken();
+   Future<void> fetchUserData() async {
+    try {
       if (_token == null) {
-        throw Exception('No token found');
+        final sessionManager = SessionManager();
+        _token = await sessionManager.getToken();
+        if (_token == null) {
+          throw Exception('No token found');
+        }
       }
+
+      final whoAmIResponse = await apiService.getWhoAmI(_token!);
+
+      _user = whoAmIResponse.user;
+      _subscription = whoAmIResponse.subscription;
+
+      final sessionManager = SessionManager();
+      await sessionManager.saveSession(
+        _token!,
+        _user!.id,
+        _user!.firstName,
+        _user!.lastName,
+        _user!.email,
+        gender: _user!.gender,
+        avatarLink: _user!.avatarLink,
+        isActive: _subscription?.isActive,
+        planName: _subscription?.planName,
+        validUntil: _subscription?.validUntil,
+        countDownDay: _subscription?.countDownDay,
+
+      );
+    } catch (error) {
+      _errorMessage = error.toString();
+      print("Error fetching user data: $_errorMessage");
     }
-
-    final whoAmIResponse = await apiService.getWhoAmI(_token!);
-    _user = User(
-      id: whoAmIResponse.userId,
-      email: whoAmIResponse.email,
-      name: whoAmIResponse.name,
-      gender: whoAmIResponse.gender,
-      avatarLink: whoAmIResponse.avatarLink,
-    );
-
-    // Simpan data pengguna ke SessionManager
-    final sessionManager = SessionManager(); // Buat instance
-await sessionManager.saveSession(
-  _token!,
-  _user!.id,
-  _user!.name,
-  _user!.email,
-  gender: _user!.gender,
-  avatarLink: _user!.avatarLink,
-);
-
-
-    print("User data fetched: ${_user?.name}");
-  } catch (error) {
-    _errorMessage = error.toString();
-    print("Error fetching user data: $_errorMessage");
-  } finally {
-    _isLoading = false;
-    notifyListeners();
   }
-}
+
+
+
 
  // Update Profile
-  Future<void> updateProfile(String name, String gender) async {
+  Future<void> updateProfile(String firstName, String lastName, String gender) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
       if (_token == null) throw Exception('No token found');
-      final response = await apiService.updateProfile(_token!, name, gender);
+      final response = await apiService.updateProfile(_token!, firstName, lastName, gender);
 
-      // Perbarui data user lokal
       _user = User(
         id: _user?.id ?? 0,
         email: _user?.email ?? '',
-        name: response['data']['name'],
-        gender: response['data']['gender'],
+        firstName: response['first_name'],
+        lastName: response['last_name'],
+        gender: response['gender'],
         avatarLink: _user?.avatarLink,
       );
 
-      // Simpan ke SessionManager
       final sessionManager = SessionManager();
       await sessionManager.saveSession(
         _token!,
         _user!.id,
-        _user!.name,
+        _user!.firstName,
+        _user!.lastName,
         _user!.email,
         gender: _user!.gender,
         avatarLink: _user!.avatarLink,
       );
 
-      print('Profile updated: ${_user!.name}, ${_user!.gender}');
+      print('Profile updated: ${_user!.firstName} ${_user!.lastName}, ${_user!.gender}');
     } catch (error) {
       _errorMessage = error.toString();
       print("Error updating profile: $_errorMessage");
@@ -204,23 +197,26 @@ await sessionManager.saveSession(
 
     // Perbarui avatar lokal
     _user = User(
-      id: _user?.id ?? 0,
-      email: _user?.email ?? '',
-      name: _user?.name ?? '',
-      gender: _user?.gender ?? '',
-      avatarLink: response['data']['avatar_link'], // URL avatar yang baru
-    );
+  id: _user?.id ?? 0,
+  email: _user?.email ?? '',
+  firstName: _user?.firstName ?? '',
+  lastName: _user?.lastName ?? '',
+  gender: _user?.gender ?? '',
+  avatarLink: response['data']['avatar_link'], 
+);
+
 
     // Simpan ke SessionManager
-    final sessionManager = SessionManager();
-    await sessionManager.saveSession(
-      _token!,
-      _user!.id,
-      _user!.name,
-      _user!.email,
-      gender: _user!.gender,
-      avatarLink: _user!.avatarLink, // Simpan URL avatar baru
-    );
+      final sessionManager = SessionManager();
+      await sessionManager.saveSession(
+        _token!,
+        _user!.id,
+        _user!.firstName,
+        _user!.lastName,
+        _user!.email,
+        gender: _user!.gender,
+        avatarLink: _user!.avatarLink,
+      );
 
     print('Avatar updated: ${_user!.avatarLink}');
   } catch (error) {

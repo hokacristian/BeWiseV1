@@ -5,6 +5,8 @@ import 'package:bewise/presentation/page/auth/login_page.dart';
 
 
 class LandingPage extends StatefulWidget {
+  const LandingPage({super.key});
+
   @override
   _LandingPageState createState() => _LandingPageState();
 }
@@ -58,7 +60,7 @@ class _LandingPageState extends State<LandingPage> {
                     MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 },
-                child: Text(
+                child: const Text(
                   "Lewati",
                   style: TextStyle(
                     color: Colors.black,
@@ -77,8 +79,8 @@ class _LandingPageState extends State<LandingPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(3, (index) {
                 return AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  margin: EdgeInsets.symmetric(horizontal: 4.0),
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
                   height: 8.0,
                   width: _currentPage == index ? 16.0 : 8.0,
                   decoration: BoxDecoration(
@@ -130,20 +132,20 @@ class _LandingPageState extends State<LandingPage> {
           child: Center(
             child: ElevatedButton(
               onPressed: onButtonPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.lightBlue, // Warna latar belakang tombol
+                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
+                textStyle: const TextStyle(fontSize: 18.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0), // Membuat tombol berbentuk melengkung
+                ),
+              ),
               child: Text(
                 buttonText,
                 style: TextStyle(
                   fontFamily: 'Poppins', // Menggunakan font Poppins
                   fontWeight: FontWeight.bold,
                   color: Colors.white
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightBlue, // Warna latar belakang tombol
-                padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
-                textStyle: TextStyle(fontSize: 18.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0), // Membuat tombol berbentuk melengkung
                 ),
               ),
             ),

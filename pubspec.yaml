@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_ml_kit: ^0.18.0
   shared_preferences: ^2.3.3
   camera: ^0.11.0+2
   image_picker: ^1.1.2
@@ -43,6 +42,14 @@ dependencies:
   provider: ^6.1.2
   flutter_svg: ^2.0.14
   path: ^1.8.1
+  skeletonizer: ^1.4.2
+  webview_flutter: ^4.10.0
+  flutter_launcher_icons: ^0.14.3
+  flutter_inappwebview: ^6.1.5
+  google_mlkit_barcode_scanning: ^0.13.0
+
+
+
 
 
 
@@ -54,6 +61,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/img/icon.png"
+  min_sdk_android: 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -76,17 +89,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
   - assets/env/.env
-  - assets/img/splashscreen.svg
-  - assets/img/landingpage1.svg
-  - assets/img/landingpage2.svg
-  - assets/img/landingpage3.svg
-  - assets/img/logo_google.svg
-  - assets/img/icon_home.svg
-  - assets/img/icon_history.svg
-  - assets/img/icon_info.svg
-  - assets/img/icon_person.svg
-  - assets/img/icon_scan.svg
-  - assets/img/default_foto.png
+  - assets/img/
+  - assets/img/subs_page.svg
+
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

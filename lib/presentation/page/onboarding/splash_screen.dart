@@ -5,6 +5,8 @@ import 'package:bewise/presentation/page/home/main_screen.dart';
 import 'package:bewise/presentation/page/onboarding/landing_page.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -20,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _navigateBasedOnLogin() async {
     final isLoggedIn = await _sessionManager.isLoggedIn();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (isLoggedIn) {
       Navigator.pushReplacement(

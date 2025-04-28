@@ -9,6 +9,8 @@ import 'package:bewise/core/constans/colors.dart';
 
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -21,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
     HistoryPage(),
     Container(), 
     InformationPage(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -59,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -67,28 +69,28 @@ class _MainScreenState extends State<MainScreen> {
             IconButton(
               icon: SvgPicture.asset(
                 'assets/img/icon_home.svg',
-                color: _selectedIndex == 0 ? AppColors.lightBlue: Color(0XFFBBC2CD),
+                color: _selectedIndex == 0 ? AppColors.lightBlue: const Color(0XFFBBC2CD),
               ),
               onPressed: () => _onItemTapped(0),
             ),
             IconButton(
               icon: SvgPicture.asset(
                 'assets/img/icon_history.svg',
-                color: _selectedIndex == 1 ? AppColors.lightBlue : Color(0XFFBBC2CD)),
+                color: _selectedIndex == 1 ? AppColors.lightBlue : const Color(0XFFBBC2CD)),
               onPressed: () => _onItemTapped(1),
             ),
-            SizedBox(
+            const SizedBox(
               width: 40), // This space is for the floating action button.
             IconButton(
               icon: SvgPicture.asset(
                 'assets/img/icon_info.svg',
-                color: _selectedIndex == 3 ? AppColors.lightBlue : Color(0XFFBBC2CD)),
+                color: _selectedIndex == 3 ? AppColors.lightBlue : const Color(0XFFBBC2CD)),
               onPressed: () => _onItemTapped(3),
             ),
             IconButton(
               icon: SvgPicture.asset(
                 'assets/img/icon_person.svg',
-                color: _selectedIndex == 4 ? AppColors.lightBlue : Color(0XFFBBC2CD)),
+                color: _selectedIndex == 4 ? AppColors.lightBlue : const Color(0XFFBBC2CD)),
               onPressed: () => _onItemTapped(4),
             ),
           ],

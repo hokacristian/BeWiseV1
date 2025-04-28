@@ -89,6 +89,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  checked_yaml:
+    dependency: transitive
+    description:
+      name: checked_yaml
+      sha256: feb6bed21949061731a7a75fc5d2aa727cf160b91af9a3e464c5e3a32e28b5ff
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
+  cli_util:
+    dependency: transitive
+    description:
+      name: cli_util
+      sha256: ff6785f7e9e3c38ac98b2fb035701789de90154024a75b6cb926445e83197d1c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2"
   clock:
     dependency: transitive
     description:
@@ -206,6 +222,70 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.1"
+  flutter_inappwebview:
+    dependency: "direct main"
+    description:
+      name: flutter_inappwebview
+      sha256: "80092d13d3e29b6227e25b67973c67c7210bd5e35c4b747ca908e31eb71a46d5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.5"
+  flutter_inappwebview_android:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview_android
+      sha256: "62557c15a5c2db5d195cb3892aab74fcaec266d7b86d59a6f0027abd672cddba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.3"
+  flutter_inappwebview_internal_annotations:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview_internal_annotations
+      sha256: "787171d43f8af67864740b6f04166c13190aa74a1468a1f1f1e9ee5b90c359cd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  flutter_inappwebview_ios:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview_ios
+      sha256: "5818cf9b26cf0cbb0f62ff50772217d41ea8d3d9cc00279c45f8aabaa1b4025d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
+  flutter_inappwebview_macos:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview_macos
+      sha256: c1fbb86af1a3738e3541364d7d1866315ffb0468a1a77e34198c9be571287da1
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
+  flutter_inappwebview_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview_platform_interface
+      sha256: cf5323e194096b6ede7a1ca808c3e0a078e4b33cc3f6338977d75b4024ba2500
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.0+1"
+  flutter_inappwebview_web:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview_web
+      sha256: "55f89c83b0a0d3b7893306b3bb545ba4770a4df018204917148ebb42dc14a598"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
+  flutter_inappwebview_windows:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview_windows
+      sha256: "8b4d3a46078a2cdc636c4a3d10d10f2a16882f6be607962dbfff8874d1642055"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
@@ -254,14 +334,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  flutter_lints:
-    dependency: "direct dev"
+  flutter_launcher_icons:
+    dependency: "direct main"
     description:
-      name: flutter_lints
-      sha256: "3f41d009ba7172d5ff9be5f6e6e6abb4300e263aab8866d2a0842ed2a70f8f0c"
+      name: flutter_launcher_icons
+      sha256: bfa04787c85d80ecb3f8777bde5fc10c3de809240c48fa061a2c2bf15ea5211c
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "0.14.3"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -288,126 +368,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  google_ml_kit:
+  google_mlkit_barcode_scanning:
     dependency: "direct main"
     description:
-      name: google_ml_kit
-      sha256: "71e325a4d7837734844adb3ffdf29f8cc0a71a7013168c080768f2f853814bf6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.18.1"
-  google_mlkit_barcode_scanning:
-    dependency: transitive
-    description:
       name: google_mlkit_barcode_scanning
-      sha256: "1df232be24ae9cb93443d2786681efab71b5964c8c476f6072d8b4d61aa03ecc"
+      sha256: "5852d1daa007a05b33f99e3e3fa34227c49d9c41bc92a85d820666a57fd5c35f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.1"
+    version: "0.13.0"
   google_mlkit_commons:
     dependency: transitive
     description:
       name: google_mlkit_commons
-      sha256: "9990a65f407a3ef6bae646bf10143faa93fec126683771465bc6c0b43fb0e6e9"
+      sha256: "7e9a6d6e66b44aa8cfe944bda9bc3346c52486dd890ca49e5bc98845cda40d7f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.1"
-  google_mlkit_digital_ink_recognition:
-    dependency: transitive
-    description:
-      name: google_mlkit_digital_ink_recognition
-      sha256: "289e10da258f37c72a093a89d12b436f7df33cedf3cf5e144774503143178557"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.12.1"
-  google_mlkit_entity_extraction:
-    dependency: transitive
-    description:
-      name: google_mlkit_entity_extraction
-      sha256: "5670af254849e7f012f5b5c27e1253e4cb5a98a61a6d974cbc684b8667bcfe48"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.13.1"
-  google_mlkit_face_detection:
-    dependency: transitive
-    description:
-      name: google_mlkit_face_detection
-      sha256: "0aeab4f39204f7a235ed4cccedfe7e61401b43f4ef139a868c01fa29fdc225ab"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.11.1"
-  google_mlkit_face_mesh_detection:
-    dependency: transitive
-    description:
-      name: google_mlkit_face_mesh_detection
-      sha256: a5a1c671ef58b4e4adb891e86f1040658dbaae2087523c7d6650f2124ab4f7c2
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.1"
-  google_mlkit_image_labeling:
-    dependency: transitive
-    description:
-      name: google_mlkit_image_labeling
-      sha256: ec0911d514e86c8d287772fd279e7a21abb078b6163957b8f9d7b1c204866f16
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.12.1"
-  google_mlkit_language_id:
-    dependency: transitive
-    description:
-      name: google_mlkit_language_id
-      sha256: "75dc3b0857cd3537b3156e108baf84cefff1113e3895ffd31e876962342bf520"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.11.1"
-  google_mlkit_object_detection:
-    dependency: transitive
-    description:
-      name: google_mlkit_object_detection
-      sha256: c516ed16c011a47c3abc8f087c6183fa1980b032278a4a1b45872e98d6f4180e
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.13.1"
-  google_mlkit_pose_detection:
-    dependency: transitive
-    description:
-      name: google_mlkit_pose_detection
-      sha256: "24d92165cbb57c44d5c1e83f07cee3299cb62603c5d28f61a96c808a76a46763"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.12.1"
-  google_mlkit_selfie_segmentation:
-    dependency: transitive
-    description:
-      name: google_mlkit_selfie_segmentation
-      sha256: c512c67d0c7aa29d5325cfeb8df9f5996976bfa8209a8809cdb5e7a18c476633
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.1"
-  google_mlkit_smart_reply:
-    dependency: transitive
-    description:
-      name: google_mlkit_smart_reply
-      sha256: fd4c6af2965e490b6186c4e608691069d25b21c64ba5beaf5542bf93751a541e
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.11.1"
-  google_mlkit_text_recognition:
-    dependency: transitive
-    description:
-      name: google_mlkit_text_recognition
-      sha256: "179349417066fa2c275d7a6ed6cbceeb7fa265d73aacdb2d732f1a2991face0a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.13.1"
-  google_mlkit_translation:
-    dependency: transitive
-    description:
-      name: google_mlkit_translation
-      sha256: f35f270afba775bd7c9864cf167fa60113144e900eab74ec7a7cc5eaead72520
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.11.1"
+    version: "0.9.0"
   http:
     dependency: "direct main"
     description:
@@ -504,6 +480,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.14"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -528,14 +512,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  lints:
-    dependency: transitive
-    description:
-      name: lints
-      sha256: "976c774dd944a42e83e2467f4cc670daef7eed6295b10b36ae8c85bcbf828235"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
   matcher:
     dependency: transitive
     description:
@@ -712,6 +688,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  skeletonizer:
+    dependency: "direct main"
+    description:
+      name: skeletonizer
+      sha256: "3b202e4fa9c49b017d368fb0e570d4952bcd19972b67b2face071bdd68abbfae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -829,6 +813,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  webview_flutter:
+    dependency: "direct main"
+    description:
+      name: webview_flutter
+      sha256: "889a0a678e7c793c308c68739996227c9661590605e70b1f6cf6b9a6634f7aec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.10.0"
+  webview_flutter_android:
+    dependency: transitive
+    description:
+      name: webview_flutter_android
+      sha256: "3d535126f7244871542b2f0b0fcf94629c9a14883250461f9abe1a6644c1c379"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
+  webview_flutter_platform_interface:
+    dependency: transitive
+    description:
+      name: webview_flutter_platform_interface
+      sha256: d937581d6e558908d7ae3dc1989c4f87b786891ab47bb9df7de548a151779d8d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.10.0"
+  webview_flutter_wkwebview:
+    dependency: transitive
+    description:
+      name: webview_flutter_wkwebview
+      sha256: b7e92f129482460951d96ef9a46b49db34bd2e1621685de26e9eaafd9674e7eb
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.16.3"
   xdg_directories:
     dependency: transitive
     description:
@@ -845,6 +861,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      sha256: b9da305ac7c39faa3f030eccd175340f968459dae4af175130b3fc47e40d76ce
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.3"
 sdks:
   dart: ">=3.5.4 <4.0.0"
   flutter: ">=3.24.0"
