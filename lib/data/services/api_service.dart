@@ -26,12 +26,17 @@ class ApiService {
     }
   }
 
-
-  Future<Map<String, dynamic>> register(String firstName, String lastName, String email, String password) async {
+  Future<Map<String, dynamic>> register(
+      String firstName, String lastName, String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/register'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({"first_name": firstName, "last_name": lastName, "email": email, "password": password}),
+      body: jsonEncode({
+        "first_name": firstName,
+        "last_name": lastName,
+        "email": email,
+        "password": password
+      }),
     );
 
     final data = jsonDecode(response.body);
@@ -47,7 +52,6 @@ class ApiService {
     }
   }
 
-
   Future<Map<String, dynamic>> forgotPassword(String email) async {
     final response = await http.post(
       Uri.parse('$baseUrl/forgot-password'),
@@ -59,14 +63,14 @@ class ApiService {
       if (data['status'] == true) {
         return data;
       } else {
-        throw Exception(data['message'] ?? 'Password reset failed'); 
+        throw Exception(data['message'] ?? 'Password reset failed');
       }
     } else {
       throw Exception(data['message'] ?? 'Failed to send reset password email');
     }
   }
 
-Future<WhoAmIResponse> getWhoAmI(String token) async {
+  Future<WhoAmIResponse> getWhoAmI(String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/whoami'),
       headers: {'Authorization': 'Bearer $token'},
@@ -80,7 +84,8 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
     }
   }
 
- Future<Map<String, dynamic>> updateProfile(String token, String firstName, String lastName, String gender) async {
+  Future<Map<String, dynamic>> updateProfile(
+      String token, String firstName, String lastName, String gender) async {
     final response = await http.patch(
       Uri.parse('$baseUrl/profile'),
       headers: {
@@ -107,48 +112,49 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
   }
 
   // Update Avatar
-  Future<Map<String, dynamic>> updateAvatar(String token, String filePath) async {
-  try {
-    final request = http.MultipartRequest(
-      'PATCH', // Gunakan PATCH sesuai dengan endpoint
-      Uri.parse('$baseUrl/avatar-profile'),
-    );
+  Future<Map<String, dynamic>> updateAvatar(
+      String token, String filePath) async {
+    try {
+      final request = http.MultipartRequest(
+        'PATCH', // Gunakan PATCH sesuai dengan endpoint
+        Uri.parse('$baseUrl/avatar-profile'),
+      );
 
-    request.headers['Authorization'] = 'Bearer $token';
-    request.headers['Accept'] = 'application/json'; // Tambahkan Accept header
-    request.files.add(
-      await http.MultipartFile.fromPath(
-        'avatar', // Key sesuai dengan yang diharapkan API
-        filePath,
-        contentType: MediaType('image', 'jpeg'), // Pastikan tipe sesuai
-      ),
-    );
+      request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Accept'] = 'application/json'; // Tambahkan Accept header
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'avatar', // Key sesuai dengan yang diharapkan API
+          filePath,
+          contentType: MediaType('image', 'jpeg'), // Pastikan tipe sesuai
+        ),
+      );
 
-    // Kirim request
-    final response = await request.send();
-    final responseBody = await response.stream.bytesToString();
+      // Kirim request
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(responseBody);
-      if (data['status'] == true) {
-        print('Avatar updated successfully: ${data['data']['avatar_link']}');
-        return data;
+      if (response.statusCode == 200) {
+        final data = jsonDecode(responseBody);
+        if (data['status'] == true) {
+          print('Avatar updated successfully: ${data['data']['avatar_link']}');
+          return data;
+        } else {
+          print('Error updating avatar: ${data['message']}');
+          throw Exception(data['message']);
+        }
       } else {
-        print('Error updating avatar: ${data['message']}');
-        throw Exception(data['message']);
+        print('Failed to update avatar. Status code: ${response.statusCode}');
+        print('Response body: $responseBody');
+        throw Exception('Failed to update avatar');
       }
-    } else {
-      print('Failed to update avatar. Status code: ${response.statusCode}');
-      print('Response body: $responseBody');
-      throw Exception('Failed to update avatar');
+    } catch (e) {
+      print('Error occurred while updating avatar: $e');
+      throw Exception('Error updating avatar: $e');
     }
-  } catch (e) {
-    print('Error occurred while updating avatar: $e');
-    throw Exception('Error updating avatar: $e');
   }
-}
 
- Future<Product> getProductById(int id, String token) async {
+  Future<Product> getProductById(int id, String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/products/$id'),
       headers: {'Authorization': 'Bearer $token'},
@@ -162,73 +168,69 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
     }
   }
 
- Future<Map<String, dynamic>> getProductsByCategory(int categoryId, int page, String token) async {
-  final response = await http.get(
-    Uri.parse('$baseUrl/products/category/$categoryId?page=$page'),
-    headers: {'Authorization': 'Bearer $token'},
-  );
+  Future<Map<String, dynamic>> getProductsByCategory(
+      int categoryId, int page, String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/products/category/$categoryId?page=$page'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    return {
-      'data': data['data'],
-      'pagination': data['pagination']
-    };
-  } else {
-    throw Exception('Failed to load products');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return {'data': data['data'], 'pagination': data['pagination']};
+    } else {
+      throw Exception('Failed to load products');
+    }
   }
-}
 
-  Future<List<Product>> searchProducts(String name, int page, int limit, String token) async {
-  final response = await http.get(
-    Uri.parse('$baseUrl/products/search?name=$name&page=$page&limit=$limit'),
-    headers: {'Authorization': 'Bearer $token'},
-  );
+  Future<List<Product>> searchProducts(
+      String name, int page, int limit, String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/products/search?name=$name&page=$page&limit=$limit'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body)['data']['products'] as List;
-    // Parsing langsung ke Product
-    return data.map((product) => Product.fromJson(product)).toList();
-  } else {
-    throw Exception('Failed to search products');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data']['products'] as List;
+      // Parsing langsung ke Product
+      return data.map((product) => Product.fromJson(product)).toList();
+    } else {
+      throw Exception('Failed to search products');
+    }
   }
-}
 
   Future<Product> scanProduct(String barcode, String token) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/products/scan'),
-    headers: {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({'barcode': barcode}),
-  );
+    final response = await http.post(
+      Uri.parse('$baseUrl/products/scan'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'barcode': barcode}),
+    );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body)['data'];
-    
-    // Pisahkan product dan rekomendasi
-    Product product = Product.fromJson(data['product']);
-    List<Product> rekomendasi = (data['rekomendasi'] as List)
-        .map((item) => Product.fromJson(item))
-        .toList();
-    
-    // Assign rekomendasi ke dalam objek product
-    product = product.copyWith(rekomendasi: rekomendasi);
-    
-    print('Rekomendasi Produk (ApiService): ${rekomendasi.length}');
-    
-    return product;
-  } else {
-    throw Exception('Failed to scan product');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'];
+
+      // Pisahkan product dan rekomendasi
+      Product product = Product.fromJson(data['product']);
+      List<Product> rekomendasi = (data['rekomendasi'] as List)
+          .map((item) => Product.fromJson(item))
+          .toList();
+
+      // Assign rekomendasi ke dalam objek product
+      product = product.copyWith(rekomendasi: rekomendasi);
+
+      print('Rekomendasi Produk (ApiService): ${rekomendasi.length}');
+
+      return product;
+    } else {
+      throw Exception('Failed to scan product');
+    }
   }
-}
 
-
-
-
-
-   Future<Map<String, dynamic>> getHistories(int page, int limit, String token) async {
+  Future<Map<String, dynamic>> getHistories(
+      int page, int limit, String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/histories?page=$page&limit=$limit'),
       headers: {'Authorization': 'Bearer $token'},
@@ -239,7 +241,8 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
       print('Histories fetched: ${data['data']}'); // Debug log
       return data; // Return the complete response including pagination data
     } else {
-      print('Error fetching histories: ${response.statusCode} ${response.body}'); // Debug log
+      print(
+          'Error fetching histories: ${response.statusCode} ${response.body}'); // Debug log
       throw Exception('Failed to load histories');
     }
   }
@@ -257,7 +260,6 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
       throw Exception('Failed to load history with id $id');
     }
   }
-
 
   Future<void> deleteHistory(int id, String token) async {
     final response = await http.delete(
@@ -277,7 +279,7 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
 
 //   Future<List<Product>> fetchHistoriesAsProducts(int page, int limit, String token) async {
 //   final historiesResponse = await getHistories(page, limit, token);
-  
+
 //   // Ambil semua product_id dari histories
 //   final productIds = historiesResponse.map<int>((history) => history['product_id']).toSet();
 
@@ -305,7 +307,7 @@ Future<WhoAmIResponse> getWhoAmI(String token) async {
 //   return products;
 // }
 
-Future<List<Product>> getTopChoices(String token) async {
+  Future<List<Product>> getTopChoices(String token) async {
     final response = await http.get(
       Uri.parse('$baseUrl/products/top-choices'),
       headers: {'Authorization': 'Bearer $token'},
@@ -319,46 +321,58 @@ Future<List<Product>> getTopChoices(String token) async {
     }
   }
 
-Future<Map<String, dynamic>> createBooking(String token, int subscriptionId) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/subscriptions/booking'), // Pastikan endpoint sesuai
-    headers: {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({
-      "subscriptionId": subscriptionId, // Body JSON
-    }),
-  );
+  Future<Map<String, dynamic>> createBooking(
+      String token, int subscriptionId) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/subscriptions/booking'), // Pastikan endpoint sesuai
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "subscriptionId": subscriptionId, // Body JSON
+      }),
+    );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body); // Decode response
-    if (data['status'] == true) {
-      return data; // Return data jika status sukses
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body); // Decode response
+      if (data['status'] == true) {
+        return data; // Return data jika status sukses
+      } else {
+        throw Exception(data['message'] ?? 'Failed to create booking');
+      }
     } else {
-      throw Exception(data['message'] ?? 'Failed to create booking');
+      throw Exception('Failed to create booking: ${response.body}');
     }
-  } else {
-    throw Exception('Failed to create booking: ${response.body}');
   }
-}
 
-Future<List<Product>> getAllProducts(String token) async {
+  Future<List<Product>> getAllProducts(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/products'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'] as List;
+      return data.map((product) => Product.fromJson(product)).toList();
+    } else {
+      throw Exception('Failed to load all products');
+    }
+  }
+
+  Future<List<Product>> getHistoryRecommendation(int historyId, String token) async {
   final response = await http.get(
-    Uri.parse('$baseUrl/products'),
+    Uri.parse('$baseUrl/histories/recommendation/$historyId'),
     headers: {'Authorization': 'Bearer $token'},
   );
 
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body)['data'] as List;
+    final data = jsonDecode(response.body)['data']['recommendedProducts'] as List;
     return data.map((product) => Product.fromJson(product)).toList();
   } else {
-    throw Exception('Failed to load all products');
+    throw Exception('Failed to fetch history recommendations');
   }
 }
 
 
-
 }
-
-

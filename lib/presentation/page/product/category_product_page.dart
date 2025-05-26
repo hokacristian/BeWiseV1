@@ -3,14 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:bewise/data/providers/product_provider.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
 import 'package:bewise/presentation/page/product/product_base_page.dart';
+import 'package:bewise/presentation/widgets/pagination_widget.dart'; // Import pagination widget
 
 class CategoryProductPage extends StatefulWidget {
   final int categoryId;
-  final String categoryName; // Added categoryName parameter
+  final String categoryName;
 
   const CategoryProductPage({
     required this.categoryId, 
-    required this.categoryName, // Make it required
+    required this.categoryName,
     super.key,
   });
 
@@ -36,13 +37,13 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Produk ${widget.categoryName}'), // Use categoryName instead of ID
+        title: Text('Produk ${widget.categoryName}'),
       ),
       body: Stack(
         children: [
           Consumer<ProductProvider>(
             builder: (context, provider, _) {
-              if (provider.isLoading) {
+              if (provider.isLoading && provider.products.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               } else if (provider.errorMessage != null) {
                 return Center(
@@ -113,36 +114,25 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
                         },
                       ),
                     ),
-                    if (provider.products.isNotEmpty)
+                    
+                    // Pagination widget
+                    if (provider.totalPages > 1)
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (provider.hasPreviousPage)
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _currentPage--;
-                                  });
-                                  productProvider.fetchProductsByCategory(widget.categoryId, _currentPage);
-                                },
-                                child: const Text('Previous'),
-                              ),
-                            const SizedBox(width: 10),
-                            Text('Page ${provider.currentPage} of ${provider.totalPages}'),
-                            const SizedBox(width: 10),
-                            if (provider.hasNextPage)
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _currentPage++;
-                                  });
-                                  productProvider.fetchProductsByCategory(widget.categoryId, _currentPage);
-                                },
-                                child: const Text('Next'),
-                              ),
-                          ],
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: PaginationWidget(
+                          currentPage: provider.currentPage,
+                          totalPages: provider.totalPages,
+                          hasNextPage: provider.hasNextPage,
+                          hasPreviousPage: provider.hasPreviousPage,
+                          onPageChanged: (page) {
+                            setState(() {
+                              _currentPage = page;
+                            });
+                            provider.fetchProductsByCategory(widget.categoryId, page);
+                          },
+                          backgroundColor: Colors.white,
+                          activeColor: const Color(0xFF2B59C3),
+                          textColor: Colors.black,
                         ),
                       ),
                   ],

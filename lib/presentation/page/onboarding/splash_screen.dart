@@ -21,19 +21,35 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _navigateBasedOnLogin() async {
-    final isLoggedIn = await _sessionManager.isLoggedIn();
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (isLoggedIn) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => MainScreen()),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => LandingPage()),
-      );
+    try {
+      await Future.delayed(const Duration(seconds: 2));
+      
+      // Cek validitas token
+      final isLoggedIn = await _sessionManager.isLoggedIn();
+      
+      // Navigate ke halaman yang sesuai
+      if (mounted) {
+        if (isLoggedIn) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => MainScreen()),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => LandingPage()),
+          );
+        }
+      }
+    } catch (e) {
+      // Handle errors by going to landing page
+      print('Error navigating: $e');
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => LandingPage()),
+        );
+      }
     }
   }
 

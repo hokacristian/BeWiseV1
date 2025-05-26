@@ -17,33 +17,18 @@ class NutritionFacts extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _buildNutritionCircle(
-          value: '${nutritionFact!.energy}',
-          unit: 'kkal',
-          label: 'Energi',
           iconAsset: 'assets/img/calories.svg',
         ),
         _buildNutritionCircle(
-          value: '${nutritionFact!.saturatedFat}',
-          unit: 'gr',
-          label: 'Lemak',
           iconAsset: 'assets/img/lipid.svg',
         ),
         _buildNutritionCircle(
-          value: '${nutritionFact!.protein}',
-          unit: 'gr',
-          label: 'Protein',
           iconAsset: 'assets/img/muscle.svg',
         ),
         _buildNutritionCircle(
-          value: '${nutritionFact!.sugar}',
-          unit: 'gr',
-          label: 'Gula',
           iconAsset: 'assets/img/sugar-cube.svg',
         ),
         _buildNutritionCircle(
-          value: '${nutritionFact!.sodium}',
-          unit: 'mg',
-          label: 'Sodium',
           iconAsset: 'assets/img/sodium.svg',
         ),
       ],
@@ -51,56 +36,24 @@ class NutritionFacts extends StatelessWidget {
   }
 
   Widget _buildNutritionCircle({
-    required String value,
-    required String unit,
-    required String label,
     required String iconAsset,
   }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 64,
-          height: 64,
-                    padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.rectangle,
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: SvgPicture.asset(
-            iconAsset,
-            fit: BoxFit.contain,
-          ),
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          width: 1,
         ),
-        const SizedBox(height: 8),
-        RichText(
-          text: TextSpan(
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-            children: [
-              TextSpan(text: '$value '),
-              TextSpan(
-                text: unit,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
+      ),
+      child: Center(
+        child: SvgPicture.asset(
+          iconAsset,
+          width: 24,
+          height: 24,
         ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

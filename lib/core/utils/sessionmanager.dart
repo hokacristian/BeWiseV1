@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:bewise/data/services/api_service.dart';
 
 class SessionManager {
   static const String _tokenKey = 'token';
@@ -13,6 +14,7 @@ class SessionManager {
   static const String _subValidUntilKey = 'subscription_valid_until';
   static const String _subCountDownDayKey = 'subscription_count_down_day';
 
+  final ApiService _apiService = ApiService();
 
   /// Menyimpan session user + subscription (opsional).
   /// Jika subscription tidak disertakan, bisa diabaikan.
@@ -76,9 +78,27 @@ class SessionManager {
     await prefs.clear();
   }
 
-  /// Mengecek apakah sudah login atau belum
+  /// Verifikasi validitas token
+  Future<bool> isTokenValid() async {
+    try {
+      final token = await getToken();
+      if (token == null || token.isEmpty) {
+        return false;
+      }
+      
+      // Coba mendapatkan data user untuk memverifikasi token
+      await _apiService.getWhoAmI(token);
+      return true;
+    } catch (e) {
+      // Token tidak valid jika request whoami gagal
+      print('Token tidak valid: $e');
+      await clearSession(); // Clear session jika token tidak valid
+      return false;
+    }
+  }
+
+  /// Mengecek apakah sudah login dengan valid
   Future<bool> isLoggedIn() async {
-    final token = await getToken();
-    return token != null && token.isNotEmpty;
+    return await isTokenValid();
   }
 }

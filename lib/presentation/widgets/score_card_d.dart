@@ -6,39 +6,55 @@ class ScoreCardD extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFFF6B971),  // Warna oranye untuk skor D
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFF6B971), // Orange color for D score
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Score circle
           Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
+            width: 60,
+            height: 60,
+            decoration: const BoxDecoration(
+              color: Color(0xFFE8974F), // Darker orange for circle
               shape: BoxShape.circle,
             ),
-            child: SvgPicture.asset(
-              'assets/img/score_d.svg',
-              width: 50,
-              height: 50,
+            child: const Center(
+              child: Text(
+                'D',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 16),
+          
+          // Description text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text(
-                  '• Produk dengan skor D lebih tinggi kandungan kalorinya dan lebih banyak mengandung gula, lemak jenuh, atau garam.',
-                  style: TextStyle(color: Colors.black, fontSize: 14),
+                  'Produk dengan skor D lebih tinggi kandungan kalorinya dan lebih banyak mengandung gula, lemak jenuh, atau garam.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    height: 1.4,
+                  ),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 4),
                 Text(
-                  '• Disarankan untuk dikonsumsi dalam jumlah terbatas.',
-                  style: TextStyle(color: Colors.black, fontSize: 14),
+                  'Disarankan untuk dikonsumsi dalam jumlah terbatas.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),

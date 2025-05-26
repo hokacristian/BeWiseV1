@@ -20,14 +20,20 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _pages = [
     HomePage(),
-    HistoryPage(),
+    Container(), // Placeholder untuk history (tidak digunakan di sini)
     Container(), 
     InformationPage(),
     const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
-    if (index == 2) {
+    if (index == 1) {
+      // Navigate to HistoryPage as separate screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HistoryPage()),
+      );
+    } else if (index == 2) {
       // Navigate to ScanProductPage without bottom navbar
       Navigator.push(
         context,
@@ -76,7 +82,8 @@ class _MainScreenState extends State<MainScreen> {
             IconButton(
               icon: SvgPicture.asset(
                 'assets/img/icon_history.svg',
-                color: _selectedIndex == 1 ? AppColors.lightBlue : const Color(0XFFBBC2CD)),
+                color: const Color(0XFFBBC2CD), // Always inactive color since it's navigated separately
+              ),
               onPressed: () => _onItemTapped(1),
             ),
             const SizedBox(

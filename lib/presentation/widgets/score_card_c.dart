@@ -6,36 +6,43 @@ class ScoreCardC extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFFFEE272),  // Warna kuning untuk skor C
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFFEE272), // Yellow color for C score
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Score circle
           Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
+            width: 60,
+            height: 60,
+            decoration: const BoxDecoration(
+              color: Color(0xFFF4C430), // Darker yellow for circle
               shape: BoxShape.circle,
             ),
-            child: SvgPicture.asset(
-              'assets/img/score_c.svg',
-              width: 50,
-              height: 50,
+            child: const Center(
+              child: Text(
+                'C',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 16),
+          
+          // Description text
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  '• Produk ini memiliki kandungan yang seimbang antara nutrisi baik dan kurang sehat, seperti kalori atau lemak lebih tinggi, namun tetap kaya serat atau protein yang bermanfaat.',
-                  style: TextStyle(color: Colors.black, fontSize: 14),
-                ),
-              ],
+            child: Text(
+              'Produk ini memiliki kandungan yang seimbang antara nutrisi baik dan kurang sehat, seperti kalori atau lemak lebih tinggi, namun tetap kaya serat atau protein yang bermanfaat.',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                height: 1.4,
+              ),
             ),
           ),
         ],
