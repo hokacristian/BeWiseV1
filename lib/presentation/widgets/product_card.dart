@@ -13,6 +13,24 @@ class ProductCard extends StatelessWidget {
         : 'https://via.placeholder.com/150'; // Placeholder jika gambar kosong
   }
 
+  // Fungsi untuk mendapatkan warna berdasarkan label
+  Color _getLabelColor(String labelName) {
+    switch (labelName.toUpperCase()) {
+      case 'A':
+        return const Color(0xFF018242); // Hijau untuk A
+      case 'B':
+        return const Color(0xFF86BC31); // Hijau muda untuk B
+      case 'C':
+        return const Color(0xFFFFCD01); // Kuning untuk C
+      case 'D':
+        return const Color(0xFFEF8304); // Orange untuk D
+      case 'E':
+        return const Color(0xFFC44623); // Merah untuk E
+      default:
+        return Colors.grey; // Default warna abu-abu
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -71,12 +89,12 @@ class ProductCard extends StatelessWidget {
               if (product.label != null)
                 Positioned(
                   top: 8,
-                  left: 90 ,
+                  left: 90,
                   child: Container(
                     width: 30,
                     height: 30,
                     decoration: BoxDecoration(
-                      color: Colors.green,
+                      color: _getLabelColor(product.label!.name), // Dynamic color berdasarkan label
                       shape: BoxShape.circle,
                     ),
                     alignment: Alignment.center,
@@ -138,7 +156,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    'Rp ${product.priceA} - ${product.priceB}',
+                          'Rp ${_formatPrice(product.priceA)} - Rp ${_formatPrice(product.priceB)}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -153,4 +171,12 @@ class ProductCard extends StatelessWidget {
       ),
     );
   }
+
+  String _formatPrice(int price) {
+    return price.toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]}.',
+    );
+  }
+
 }
