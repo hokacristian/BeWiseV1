@@ -6,39 +6,55 @@ class ScoreCardE extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFFF1947A),  // Warna merah untuk skor E
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFF1947A), // Red/coral color for E score
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Score circle
           Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
+            width: 60,
+            height: 60,
+            decoration: const BoxDecoration(
+              color: Color(0xFFE67E52), // Darker red/coral for circle
               shape: BoxShape.circle,
             ),
-            child: SvgPicture.asset(
-              'assets/img/score_e.svg',
-              width: 50,
-              height: 50,
+            child: const Center(
+              child: Text(
+                'E',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 16),
+          
+          // Description text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text(
-                  '• Produk ini memiliki tingkat kalori yang sangat tinggi, banyak lemak jenuh, gula, dan garam.',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  'Produk ini memiliki tingkat kalori yang sangat tinggi, banyak lemak jenuh, gula, dan garam.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    height: 1.4,
+                  ),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 4),
                 Text(
-                  '• Pilihan ini sebaiknya dihindari atau hanya dikonsumsi dalam jumlah sangat kecil.',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  'Pilihan ini sebaiknya dihindari atau hanya dikonsumsi dalam jumlah sangat kecil.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),

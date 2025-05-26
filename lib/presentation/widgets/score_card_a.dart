@@ -5,48 +5,54 @@ class ScoreCardA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFF74AB83),  // Warna hijau (skor A)
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFF74AB83), // Green color for A score
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,  // Pastikan crossAxisAlignment adalah center
         children: [
-          // SVG Icon untuk A
+          // Score circle
           Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
+            width: 60,
+            height: 60,
+            decoration: const BoxDecoration(
+              color: Color(0xFF5E8B6B), // Darker green for circle
               shape: BoxShape.circle,
             ),
-            child: SvgPicture.asset(
-              'assets/img/score_a.svg',
-              width: 50,
-              height: 50,
+            child: const Center(
+              child: Text(
+                'A',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 16),
-
-          // Deskripsi teks
+          
+          // Description text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,  // Teks sejajar vertikal di tengah
               children: const [
                 Text(
-                  '• Produk yang mendapat skor A adalah pilihan terbaik dari segi nutrisi.',
+                  'Produk yang mendapat skor A adalah pilihan terbaik dari segi nutrisi.',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,
+                    height: 1.4,
                   ),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 4),
                 Text(
-                  '• Biasanya mengandung sedikit kalori, rendah lemak jenuh, sedikit gula, dan sedikit garam.',
+                  'Biasanya mengandung sedikit kalori, rendah lemak jenuh, sedikit gula, dan sedikit garam.',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,
+                    height: 1.4,
                   ),
                 ),
               ],
