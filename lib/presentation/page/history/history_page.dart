@@ -127,7 +127,8 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildProductGrid(ProductProvider productProvider) {
+  // Update navigation dalam history_page.dart - _buildProductGrid method:
+Widget _buildProductGrid(ProductProvider productProvider) {
   return GridView.builder(
     padding: const EdgeInsets.all(20),
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

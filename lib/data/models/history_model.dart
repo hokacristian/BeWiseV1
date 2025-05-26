@@ -1,5 +1,5 @@
 // Buat file baru: history_model.dart
-
+// Import yang diperlukan di bagian atas file
 import 'package:bewise/data/models/product_model.dart';
 
 class History {

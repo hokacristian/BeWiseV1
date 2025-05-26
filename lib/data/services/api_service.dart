@@ -360,19 +360,19 @@ class ApiService {
     }
   }
 
-  Future<List<Product>> getHistoryRecommendation(
-      int historyId, String token) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/histories/recommendation/$historyId'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
+  Future<List<Product>> getHistoryRecommendation(int historyId, String token) async {
+  final response = await http.get(
+    Uri.parse('$baseUrl/histories/recommendation/$historyId'),
+    headers: {'Authorization': 'Bearer $token'},
+  );
 
-    if (response.statusCode == 200) {
-      final data =
-          jsonDecode(response.body)['data']['recommendedProducts'] as List;
-      return data.map((product) => Product.fromJson(product)).toList();
-    } else {
-      throw Exception('Failed to fetch history recommendations');
-    }
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body)['data']['recommendedProducts'] as List;
+    return data.map((product) => Product.fromJson(product)).toList();
+  } else {
+    throw Exception('Failed to fetch history recommendations');
   }
+}
+
+
 }

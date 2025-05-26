@@ -4,7 +4,6 @@ import 'package:bewise/data/services/api_service.dart';
 import 'package:bewise/core/utils/sessionmanager.dart';
 import 'package:bewise/data/models/history_model.dart';
 
-
 class ProductProvider extends ChangeNotifier {
   final ApiService apiService;
 
@@ -20,10 +19,9 @@ class ProductProvider extends ChangeNotifier {
   bool get isLoadingTopChoices => _isLoadingTopChoices;
   String? get errorMessageTopChoices => _errorMessageTopChoices;
 
-
   List<History> _histories = [];
-List<History> get histories => _histories;
-
+  List<History> get histories => _histories;
+  
   int _currentPage = 1;
   int _totalPages = 1;
   bool _hasNextPage = false;
@@ -180,6 +178,14 @@ List<History> get histories => _histories;
     }
   }
 
+// Clear history recommendations when needed
+  void clearHistoryRecommendations() {
+    _historyRecommendations = [];
+    _isLoadingHistoryRecommendations = false;
+    _errorMessageHistoryRecommendations = null;
+    notifyListeners();
+  }
+
   // Scan product by barcode
   Future<void> scanProduct(String barcode) async {
     _isLoading = true;
@@ -206,50 +212,52 @@ List<History> get histories => _histories;
     }
   }
 
-// Fetch scan histories
+// Update method fetchScanHistories:
   Future<void> fetchScanHistories(int page, int limit) async {
-  _isLoading = true;
-  _errorMessage = null;
-
-  try {
-    if (token == null) {
-      await _initializeToken();
-      if (token == null) throw Exception('Token is not available');
-    }
-
-    final response = await apiService.getHistories(page, limit, token!);
-    
-    // Extract histories and pagination data
-    final historiesResponse = response['data'];
-    final paginationData = response['pagination'];
-    
-    // Update pagination metadata
-    _totalPages = paginationData['totalPage'];
-    _currentPage = paginationData['currentPage'];
-    _hasNextPage = paginationData['hasNextPage'];
-    _hasPreviousPage = paginationData['hasPreviousPage'];
-
-    // Parse histories as History objects
-    final List<History> historyList = [];
-    final List<Product> productList = [];
-    
-    for (var historyData in historiesResponse) {
-      final history = History.fromJson(historyData);
-      historyList.add(history);
-      productList.add(history.product);
-    }
-
-    _histories = historyList;
-    _products = productList; // Keep existing products list for compatibility
-
-  } catch (error) {
-    _errorMessage = error.toString();
-    print('Error fetching histories: $error');
-  } finally {
-    _isLoading = false;
+    _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
+
+    try {
+      if (token == null) {
+        await _initializeToken();
+        if (token == null) throw Exception('Token is not available');
+      }
+
+      final response = await apiService.getHistories(page, limit, token!);
+
+      // Extract histories and pagination data
+      final historiesResponse = response['data'];
+      final paginationData = response['pagination'];
+
+      // Update pagination metadata
+      _totalPages = paginationData['totalPage'];
+      _currentPage = paginationData['currentPage'];
+      _hasNextPage = paginationData['hasNextPage'];
+      _hasPreviousPage = paginationData['hasPreviousPage'];
+
+      // Parse histories as History objects
+      final List<History> historyList = [];
+      final List<Product> productList = [];
+
+      for (var historyData in historiesResponse) {
+        final history = History.fromJson(historyData);
+        historyList.add(history);
+        productList.add(history.product);
+      }
+
+      _histories = historyList;
+      _products = productList; // Keep existing products list for compatibility
+
+      print('✅ Successfully fetched ${_histories.length} histories');
+    } catch (error) {
+      _errorMessage = error.toString();
+      print('Error fetching histories: $error');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
-}
 
   Future<void> fetchAllProducts() async {
     _isLoading = true;

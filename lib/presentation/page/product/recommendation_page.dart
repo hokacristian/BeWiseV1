@@ -4,7 +4,7 @@ import 'package:bewise/data/models/product_model.dart';
 import 'package:bewise/presentation/widgets/product_card.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/data/providers/product_provider.dart';
-import 'package:bewise/presentation/page/product/detail_product_page.dart';
+import 'package:bewise/presentation/page/product/product_base_page.dart';
 
 class RecommendationPage extends StatefulWidget {
   final Product? product;
@@ -85,7 +85,13 @@ class _RecommendationPageState extends State<RecommendationPage> {
                   'Gagal memuat rekomendasi',
                   style: TextStyle(fontSize: 18, color: Colors.red),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 8),
+                Text(
+                  errorMessage,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     if (widget.sourceType == 'history' && widget.historyId != null) {
@@ -122,15 +128,46 @@ class _RecommendationPageState extends State<RecommendationPage> {
             print('Menampilkan Produk: ${productRekomen.name}');
 
             return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductDetailPage(
-                      productId: productRekomen.id,
-                    ),
+              onTap: () async {
+                // Show loading indicator
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => const Center(
+                    child: CircularProgressIndicator(),
                   ),
                 );
+
+                try {
+                  // Fetch complete product data first
+                  await productProvider.fetchProductById(productRekomen.id);
+                  
+                  // Close loading dialog
+                  Navigator.of(context).pop();
+                  
+                  // Navigate to ProductBasePage with complete data
+                  if (productProvider.product != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductBasePage(
+                          product: productProvider.product!,
+                          sourceType: 'scan', // From recommendation, treat as scan
+                        ),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Gagal memuat detail produk')),
+                    );
+                  }
+                } catch (e) {
+                  // Close loading dialog
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: ${e.toString()}')),
+                  );
+                }
               },
               child: ProductCard(product: productRekomen),
             );
