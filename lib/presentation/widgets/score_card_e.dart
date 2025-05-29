@@ -25,6 +25,7 @@ class ScoreCardE extends StatelessWidget {
               child: Text(
                 'E',
                 style: TextStyle(
+                  fontFamily: 'Poppins',
                   color: Colors.white,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -33,7 +34,7 @@ class ScoreCardE extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Description text
           Expanded(
             child: Column(
@@ -42,6 +43,7 @@ class ScoreCardE extends StatelessWidget {
                 Text(
                   'Produk ini memiliki tingkat kalori yang sangat tinggi, banyak lemak jenuh, gula, dan garam.',
                   style: TextStyle(
+                    fontFamily: 'Poppins',
                     color: Colors.black,
                     fontSize: 14,
                     height: 1.4,
@@ -51,6 +53,7 @@ class ScoreCardE extends StatelessWidget {
                 Text(
                   'Pilihan ini sebaiknya dihindari atau hanya dikonsumsi dalam jumlah sangat kecil.',
                   style: TextStyle(
+                    fontFamily: 'Poppins',
                     color: Colors.black,
                     fontSize: 14,
                     height: 1.4,
@@ -64,4 +67,3 @@ class ScoreCardE extends StatelessWidget {
     );
   }
 }
-

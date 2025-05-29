@@ -25,6 +25,7 @@ class ScoreCardC extends StatelessWidget {
               child: Text(
                 'C',
                 style: TextStyle(
+                  fontFamily: 'Poppins',
                   color: Colors.white,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -33,12 +34,13 @@ class ScoreCardC extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Description text
           Expanded(
             child: Text(
               'Produk ini memiliki kandungan yang seimbang antara nutrisi baik dan kurang sehat, seperti kalori atau lemak lebih tinggi, namun tetap kaya serat atau protein yang bermanfaat.',
               style: const TextStyle(
+                fontFamily: 'Poppins',
                 color: Colors.black,
                 fontSize: 14,
                 height: 1.4,
@@ -50,5 +52,3 @@ class ScoreCardC extends StatelessWidget {
     );
   }
 }
-
-

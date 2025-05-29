@@ -37,37 +37,30 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
   Future<void> _pickImage() async {
     final pickedImage = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      imageQuality: 70, // Built-in quality reduction
+      imageQuality: 70,
     );
     
     if (pickedImage != null) {
       File imageFile = File(pickedImage.path);
 
       try {
-        // Baca file asli sebagai byte array dan ubah menjadi Uint8List
         Uint8List imageBytes = await imageFile.readAsBytes();
-
-        // Decode gambar
         img.Image? image = img.decodeImage(imageBytes);
 
         if (image != null) {
-          // Resize gambar untuk memastikan maksimal lebar 800px
           const int maxWidth = 800;
           final resizedImage = img.copyResize(
             image,
             width: maxWidth,
-            height: (maxWidth * image.height ~/ image.width), // Menjaga rasio aspek
+            height: (maxWidth * image.height ~/ image.width),
           );
 
-          // Kompres gambar ke kualitas 70%
           List<int> compressedBytes = img.encodeJpg(resizedImage, quality: 70);
 
-          // Jika ukuran masih terlalu besar (>1MB), turunkan kualitas lebih lanjut
           if (compressedBytes.length > 1024 * 1024) {
             compressedBytes = img.encodeJpg(resizedImage, quality: 50);
           }
 
-          // Simpan gambar terkompresi ke file baru
           final compressedFilePath = pickedImage.path.replaceFirst(
             path.extension(pickedImage.path),
             '_compressed.jpg',
@@ -76,7 +69,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
             ..writeAsBytesSync(compressedBytes);
 
           setState(() {
-            _selectedImage = compressedFile; // Update state dengan file terkompresi
+            _selectedImage = compressedFile;
           });
         }
       } catch (e) {
@@ -96,7 +89,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       try {
         if (_selectedImage != null) {
-          await authProvider.updateAvatar(_selectedImage!.path); // Update avatar
+          await authProvider.updateAvatar(_selectedImage!.path);
         }
         await authProvider.updateProfile(
           _firstNameController.text,
@@ -111,7 +104,6 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
           ),
         );
         
-        // Navigate back to profile page
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -139,384 +131,265 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final user = authProvider.user;
-    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Edit Profil'),
+        title: const Text(
+          'Data Diri',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SafeArea(
-        child: GestureDetector(
-          onTap: () {
-            // Dismiss keyboard when tapping outside of text fields
-            FocusScope.of(context).unfocus();
-          },
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
-              children: [
-                // Profile Header with Avatar
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Foto Profil',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Center(
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: theme.primaryColor.withOpacity(0.2),
-                                    width: 4,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      blurRadius: 8,
-                                      spreadRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                                child: CircleAvatar(
-                                  radius: 60,
-                                  backgroundColor: Colors.grey[200],
-                                  backgroundImage: _selectedImage != null
-                                      ? FileImage(_selectedImage!)
-                                      : (user?.avatarLink != null
-                                          ? NetworkImage(user!.avatarLink!)
-                                          : const AssetImage('assets/img/default_foto.png')) as ImageProvider,
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: GestureDetector(
-                                  onTap: _pickImage,
-                                  child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: theme.primaryColor,
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.camera_alt_rounded,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Ketuk tombol kamera untuk mengubah foto profil',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Personal Information Section
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Informasi Pribadi',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        
-                        // First Name field
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Avatar Section
+                      Center(
+                        child: Stack(
                           children: [
-                            const Text(
-                              'Nama Depan',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              controller: _firstNameController,
-                              decoration: InputDecoration(
-                                hintText: 'Masukkan nama depan',
-                                prefixIcon: const Icon(Icons.person_outline),
-                                filled: true,
-                                fillColor: Colors.grey[100],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: theme.primaryColor, width: 1),
-                                ),
-                                contentPadding: const EdgeInsets.all(16),
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Nama depan tidak boleh kosong';
-                                }
-                                return null;
-                              },
-                              textInputAction: TextInputAction.next,
-                              keyboardType: TextInputType.name,
-                              textCapitalization: TextCapitalization.words,
-                            ),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 20),
-                        
-                        // Last Name field
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Nama Belakang',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              controller: _lastNameController,
-                              decoration: InputDecoration(
-                                hintText: 'Masukkan nama belakang',
-                                prefixIcon: const Icon(Icons.person_outline),
-                                filled: true,
-                                fillColor: Colors.grey[100],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: theme.primaryColor, width: 1),
-                                ),
-                                contentPadding: const EdgeInsets.all(16),
-                              ),
-                              textInputAction: TextInputAction.next,
-                              keyboardType: TextInputType.name,
-                              textCapitalization: TextCapitalization.words,
-                            ),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 20),
-                        
-                        // Email field (non-editable)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Email',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              initialValue: user?.email ?? '',
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.email_outlined),
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
-                                ),
-                                contentPadding: const EdgeInsets.all(16),
-                              ),
-                              enabled: false,
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 20),
-                        
-                        // Gender selection
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Jenis Kelamin',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
                             Container(
+                              width: 120,
+                              height: 120,
                               decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.grey[300]!),
+                                shape: BoxShape.circle,
+                                color: Colors.grey[200],
                               ),
+                              child: CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.grey[200],
+                                backgroundImage: _selectedImage != null
+                                    ? FileImage(_selectedImage!)
+                                    : (user?.avatarLink != null
+                                        ? NetworkImage(user!.avatarLink!)
+                                        : const AssetImage('assets/img/default_foto.png')) as ImageProvider,
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: GestureDetector(
+                                onTap: _pickImage,
+                                child: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0xFF2B59C3),
+                                  ),
+                                  child: const Icon(
+                                    Icons.edit,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 40),
+                      
+                      // Nama Field
+                      const Text(
+                        'Nama',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F5F5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${_firstNameController.text} ${_lastNameController.text}',
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Email Field
+                      const Text(
+                        'Email',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F5F5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          user?.email ?? '',
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Jenis Kelamin
+                      const Text(
+                        'Jenis Kelamin',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _gender = 'Pria';
+                                });
+                              },
                               child: Row(
                                 children: [
-                                  Expanded(
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _gender = 'Pria';
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
-                                        decoration: BoxDecoration(
-                                          color: _gender == 'Pria' ? theme.primaryColor : Colors.transparent,
-                                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(11)),),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.male_rounded,
-                                              color: _gender == 'Pria' ? Colors.white : Colors.grey[700],
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              'Pria',
-                                              style: TextStyle(
-                                                color: _gender == 'Pria' ? Colors.white : Colors.grey[700],
-                                                fontWeight: _gender == 'Pria' ? FontWeight.bold : FontWeight.normal,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                  Radio<String>(
+                                    value: 'Pria',
+                                    groupValue: _gender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _gender = value;
+                                      });
+                                    },
+                                    activeColor: const Color(0xFF2B59C3),
                                   ),
-                                  Expanded(
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _gender = 'Wanita';
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
-                                        decoration: BoxDecoration(
-                                          color: _gender == 'Wanita' ? theme.primaryColor : Colors.transparent,
-                                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(11)),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.female_rounded,
-                                              color: _gender == 'Wanita' ? Colors.white : Colors.grey[700],
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              'Wanita',
-                                              style: TextStyle(
-                                                color: _gender == 'Wanita' ? Colors.white : Colors.grey[700],
-                                                fontWeight: _gender == 'Wanita' ? FontWeight.bold : FontWeight.normal,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                  const Text(
+                                    'Pria',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                      color: Colors.black87,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _gender = 'Wanita';
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Radio<String>(
+                                    value: 'Wanita',
+                                    groupValue: _gender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _gender = value;
+                                      });
+                                    },
+                                    activeColor: const Color(0xFF2B59C3),
+                                  ),
+                                  const Text(
+                                    'Wanita',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                
-                const SizedBox(height: 32),
-                
-                // Save Button
-                CustomButtonWidget(
-                  text: 'Simpan Perubahan',
-                  onPressed: _saveProfile,
-                  isLoading: _isLoading,
-                  backgroundColor: theme.primaryColor,
-                  icon: const Icon(Icons.save_rounded, color: Colors.white),
+              ),
+              
+              // Bottom Button
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _saveProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2B59C3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Simpan',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
                 ),
-                
-                const SizedBox(height: 12),
-                
-                // Cancel Button
-                CustomButtonWidget(
-                  text: 'Batal',
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  backgroundColor: Colors.grey[200],
-                  textColor: Colors.black87,
-                ),
-                
-                const SizedBox(height: 24),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -25,6 +25,7 @@ class ScoreCardB extends StatelessWidget {
               child: Text(
                 'B',
                 style: TextStyle(
+                  fontFamily: 'Poppins',
                   color: Colors.white,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -33,12 +34,13 @@ class ScoreCardB extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Description text
           Expanded(
             child: Text(
               'Produk dengan skor B masih termasuk sehat, tetapi mungkin mengandung sedikit lebih banyak kalori, gula, atau lemak dibanding produk dengan skor A.',
               style: const TextStyle(
+                fontFamily: 'Poppins',
                 color: Colors.black,
                 fontSize: 14,
                 height: 1.4,
@@ -50,4 +52,3 @@ class ScoreCardB extends StatelessWidget {
     );
   }
 }
-

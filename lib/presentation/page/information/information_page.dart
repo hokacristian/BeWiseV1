@@ -3,13 +3,20 @@ import 'package:flutter/material.dart';
 class InformationPage extends StatelessWidget {
   const InformationPage({super.key});
 
-  static const String infoPage1 = 'Nutri-Score adalah label gizi yang memudahkan konsumen memilih makanan lebih sehat. Dikembangkan di Prancis, sistem ini menilai nutrisi produk berdasarkan komposisi gizinya.';
+  static const String infoPage1 =
+      'Nutri-Score adalah label gizi yang memudahkan konsumen memilih makanan lebih sehat. Dikembangkan di Prancis, sistem ini menilai nutrisi produk berdasarkan komposisi gizinya.\n\nNutri-Score menggunakan skala A hingga E dengan warna berbeda untuk menunjukkan kualitas nutrisi produk makanan atau minuman.';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Info Page'),
+        title: const Text(
+          'Info Page',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -22,30 +29,37 @@ class InformationPage extends StatelessWidget {
               children: [
                 Text(
                   infoPage1,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    height: 1.5,
+                  ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Score cards section
                 const Text(
                   'Sistem Penilaian Nutri-Score:',
                   style: TextStyle(
+                    fontFamily: 'Poppins',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Score A
                 _buildScoreInfoCard(
                   score: 'A',
                   backgroundColor: const Color(0xFF74AB83),
                   circleColor: const Color(0xFF5E8B6B),
-                  textColor: Colors.white,
-                  title: 'Produk yang mendapat skor A adalah pilihan terbaik dari segi nutrisi.',
-                  description: 'Biasanya mengandung sedikit kalori, rendah lemak jenuh, sedikit gula, dan sedikit garam.',
+                  textColor: Colors.black87,
+                  title:
+                      'Produk yang mendapat skor A adalah pilihan terbaik dari segi nutrisi.',
+                  description:
+                      'Biasanya mengandung sedikit kalori, rendah lemak jenuh, sedikit gula, dan sedikit garam.',
                 ),
 
                 const SizedBox(height: 12),
@@ -56,7 +70,8 @@ class InformationPage extends StatelessWidget {
                   backgroundColor: const Color(0xFFBFD789),
                   circleColor: const Color(0xFF9BC063),
                   textColor: Colors.black87,
-                  title: 'Produk dengan skor B masih termasuk sehat, tetapi mungkin mengandung sedikit lebih banyak kalori, gula, atau lemak dibanding produk dengan skor A.',
+                  title:
+                      'Produk dengan skor B masih termasuk sehat, tetapi mungkin mengandung sedikit lebih banyak kalori, gula, atau lemak dibanding produk dengan skor A.',
                 ),
 
                 const SizedBox(height: 12),
@@ -67,8 +82,10 @@ class InformationPage extends StatelessWidget {
                   backgroundColor: const Color(0xFFFEE272),
                   circleColor: const Color(0xFFF4C430),
                   textColor: Colors.black87,
-                  title: 'Produk ini memiliki kandungan yang seimbang antara nutrisi baik dan kurang sehat, seperti kalori atau lemak lebih tinggi.',
-                  description: 'Namun tetap kaya serat atau protein yang bermanfaat.',
+                  title:
+                      'Produk ini memiliki kandungan yang seimbang antara nutrisi baik dan kurang sehat, seperti kalori atau lemak lebih tinggi.',
+                  description:
+                      'Namun tetap kaya serat atau protein yang bermanfaat.',
                 ),
 
                 const SizedBox(height: 12),
@@ -79,8 +96,10 @@ class InformationPage extends StatelessWidget {
                   backgroundColor: const Color(0xFFF6B971),
                   circleColor: const Color(0xFFE8974F),
                   textColor: Colors.black87,
-                  title: 'Produk dengan skor D lebih tinggi kandungan kalorinya dan lebih banyak mengandung gula, lemak jenuh, atau garam.',
-                  description: 'Disarankan untuk dikonsumsi dalam jumlah terbatas.',
+                  title:
+                      'Produk dengan skor D lebih tinggi kandungan kalorinya dan lebih banyak mengandung gula, lemak jenuh, atau garam.',
+                  description:
+                      'Disarankan untuk dikonsumsi dalam jumlah terbatas.',
                 ),
 
                 const SizedBox(height: 12),
@@ -90,9 +109,11 @@ class InformationPage extends StatelessWidget {
                   score: 'E',
                   backgroundColor: const Color(0xFFF1947A),
                   circleColor: const Color(0xFFE67E52),
-                  textColor: Colors.white,
-                  title: 'Produk ini memiliki tingkat kalori yang sangat tinggi, banyak lemak jenuh, gula, dan garam.',
-                  description: 'Pilihan ini sebaiknya dihindari atau hanya dikonsumsi dalam jumlah sangat kecil.',
+                  textColor: Colors.black87,
+                  title:
+                      'Produk ini memiliki tingkat kalori yang sangat tinggi, banyak lemak jenuh, gula, dan garam.',
+                  description:
+                      'Pilihan ini sebaiknya dihindari atau hanya dikonsumsi dalam jumlah sangat kecil.',
                 ),
 
                 const SizedBox(height: 24),
@@ -123,6 +144,7 @@ class InformationPage extends StatelessWidget {
                           Text(
                             'Tips Penggunaan',
                             style: TextStyle(
+                              fontFamily: 'Poppins',
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.blue.shade700,
@@ -134,6 +156,7 @@ class InformationPage extends StatelessWidget {
                       const Text(
                         'Gunakan BeWise untuk memindai barcode produk dan mendapatkan informasi nutrisi yang mudah dipahami. Pilih produk dengan skor A atau B untuk pilihan yang lebih sehat.',
                         style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 14,
                           height: 1.5,
                         ),
@@ -186,6 +209,7 @@ class InformationPage extends StatelessWidget {
               child: Text(
                 score,
                 style: const TextStyle(
+                  fontFamily: 'Poppins',
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -194,7 +218,7 @@ class InformationPage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Text content
           Expanded(
             child: Column(
@@ -203,6 +227,7 @@ class InformationPage extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
+                    fontFamily: 'Poppins',
                     color: textColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -214,6 +239,7 @@ class InformationPage extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(
+                      fontFamily: 'Poppins',
                       color: textColor,
                       fontSize: 14,
                       height: 1.4,

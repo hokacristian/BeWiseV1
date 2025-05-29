@@ -25,6 +25,7 @@ class ScoreCardD extends StatelessWidget {
               child: Text(
                 'D',
                 style: TextStyle(
+                  fontFamily: 'Poppins',
                   color: Colors.white,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -33,7 +34,7 @@ class ScoreCardD extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Description text
           Expanded(
             child: Column(
@@ -42,6 +43,7 @@ class ScoreCardD extends StatelessWidget {
                 Text(
                   'Produk dengan skor D lebih tinggi kandungan kalorinya dan lebih banyak mengandung gula, lemak jenuh, atau garam.',
                   style: TextStyle(
+                    fontFamily: 'Poppins',
                     color: Colors.black,
                     fontSize: 14,
                     height: 1.4,
@@ -51,6 +53,7 @@ class ScoreCardD extends StatelessWidget {
                 Text(
                   'Disarankan untuk dikonsumsi dalam jumlah terbatas.',
                   style: TextStyle(
+                    fontFamily: 'Poppins',
                     color: Colors.black,
                     fontSize: 14,
                     height: 1.4,
@@ -64,4 +67,3 @@ class ScoreCardD extends StatelessWidget {
     );
   }
 }
-

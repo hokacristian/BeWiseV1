@@ -24,6 +24,7 @@ class ScoreCardA extends StatelessWidget {
               child: Text(
                 'A',
                 style: TextStyle(
+                  fontFamily: 'Poppins',
                   color: Colors.white,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -32,7 +33,7 @@ class ScoreCardA extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Description text
           Expanded(
             child: Column(
@@ -41,6 +42,7 @@ class ScoreCardA extends StatelessWidget {
                 Text(
                   'Produk yang mendapat skor A adalah pilihan terbaik dari segi nutrisi.',
                   style: TextStyle(
+                    fontFamily: 'Poppins',
                     color: Colors.black,
                     fontSize: 14,
                     height: 1.4,
@@ -50,6 +52,7 @@ class ScoreCardA extends StatelessWidget {
                 Text(
                   'Biasanya mengandung sedikit kalori, rendah lemak jenuh, sedikit gula, dan sedikit garam.',
                   style: TextStyle(
+                    fontFamily: 'Poppins',
                     color: Colors.black,
                     fontSize: 14,
                     height: 1.4,
@@ -63,4 +66,3 @@ class ScoreCardA extends StatelessWidget {
     );
   }
 }
-

@@ -7,7 +7,7 @@ class TrialButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onPressed, 
+      onTap: onPressed,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -22,6 +22,7 @@ class TrialButton extends StatelessWidget {
             Text(
               'Mulai uji coba gratis 3 hari',
               style: TextStyle(
+                fontFamily: 'Poppins',
                 color: Colors.white.withOpacity(0.9),
                 fontSize: 14,
               ),
@@ -30,6 +31,7 @@ class TrialButton extends StatelessWidget {
             Text(
               'Setelah itu Rp19.999 / Bulan',
               style: TextStyle(
+                fontFamily: 'Poppins',
                 color: Colors.lightGreenAccent.shade100,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
