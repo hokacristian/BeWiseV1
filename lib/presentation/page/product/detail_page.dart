@@ -41,14 +41,14 @@ class DetailPage extends StatelessWidget {
           children: [
             // Main content with SingleChildScrollView
             SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 90), // Bottom padding untuk price bar
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Product Info Card
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: const Color(0xFFDDF093), // Light green background
                       borderRadius: BorderRadius.circular(16),
@@ -110,9 +110,6 @@ class DetailPage extends StatelessWidget {
                         // Nutrition Facts - Langsung tanpa container background
                         if (product.nutritionFact != null)
                           NutritionFacts(nutritionFact: product.nutritionFact),
-
-                        // Spasi bawah untuk price bar
-                        const SizedBox(height: 80),
                       ],
                     ),
                   ),

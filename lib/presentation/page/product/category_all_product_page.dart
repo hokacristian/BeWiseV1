@@ -8,8 +8,11 @@ class CategoryAllProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // Background putih untuk seluruh halaman
       appBar: AppBar(
         title: const Text('Kategori Produk'),
+        backgroundColor: Colors.white, // AppBar juga putih
+        elevation: 0,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -33,10 +36,19 @@ class CategoryAllProductPage extends StatelessWidget {
             context,
             title: 'Makanan',
             categories: [
-              {'id': 11, 'name': 'Snack', 'icon': 'assets/img/icon_roti.svg'},
               {'id': 7, 'name': 'Roti', 'icon': 'assets/img/icon_roti.svg'},
-              {'id': 8, 'name': 'Mie', 'icon': 'assets/img/icon_roti.svg'},
-              {'id': 12, 'name': 'Buah', 'icon': 'assets/img/icon_roti.svg'},
+              {'id': 8, 'name': 'Mie', 'icon': 'assets/img/mie.svg'},
+              {
+                'id': 9,
+                'name': 'Frozen Food',
+                'icon': 'assets/img/frozen.svg'
+              },
+              {
+                'id': 10,
+                'name': 'Wafer & Biskuit',
+                'icon': 'assets/img/waffers.svg'
+              },
+              {'id': 11, 'name': 'Snack', 'icon': 'assets/img/snack.svg'},
             ],
           ),
         ],
@@ -57,28 +69,28 @@ class CategoryAllProductPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.white,
+            color: Colors.grey.withOpacity(0.1), // Shadow abu-abu transparan
             blurRadius: 8,
             spreadRadius: 2,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.center, // Ubah alignment ke center
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           // Center widget untuk memastikan judul berada di tengah
           Center(
             child: Text(
               title,
-              style: TextStyle(
-                fontFamily: 'Poppins', // Gunakan font Poppins
-                fontSize: 18, // Ukuran font yang sesuai
-                fontWeight: FontWeight.bold, // Gaya font bold
-                color: Colors.black, // Warna teks
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
-              textAlign: TextAlign.center, // Teks rata tengah
+              textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: 16),
@@ -114,8 +126,12 @@ class CategoryAllProductPage extends StatelessWidget {
                       height: 64,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
+                        color: Colors.grey.shade50, // Background icon sedikit abu-abu muda
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.grey.shade200,
+                          width: 0.5,
+                        ),
                       ),
                       child: SvgPicture.asset(
                         category['icon'] as String,
@@ -126,9 +142,8 @@ class CategoryAllProductPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: Text(
                         category['name'] as String,
-                        style: TextStyle(
-                          fontFamily:
-                              'Poppins', // Gunakan font Poppins untuk text kategori
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 13,
                           fontWeight: FontWeight.normal,
                         ),

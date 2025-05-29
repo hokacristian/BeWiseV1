@@ -8,7 +8,6 @@ import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/presentation/page/profile/profile_page.dart';
-import 'package:bewise/presentation/widgets/custom_button_widget.dart';
 
 class DetailProfilePage extends StatefulWidget {
   const DetailProfilePage({super.key});
