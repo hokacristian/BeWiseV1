@@ -1,0 +1,13 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background rounded rectangle -->
+  <rect width="100" height="100" rx="20" ry="20" fill="#4F7DF3"/>
+  
+  <!-- Person icon -->
+  <g fill="white">
+    <!-- Head -->
+    <circle cx="50" cy="35" r="12"/>
+    
+    <!-- Body -->
+    <path d="M30 75 C30 65, 38 58, 50 58 C62 58, 70 65, 70 75 L70 80 L30 80 Z"/>
+  </g>
+</svg>

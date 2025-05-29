@@ -174,10 +174,28 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 10),
                   // Menu Navigasi
+                  // Ganti bagian ListTile pada profile_page.dart
+
                   ListTile(
-                    leading: const Icon(Icons.person, color: Colors.blue),
-                    title: const Text('Data Diri'),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: SvgPicture.asset(
+                        'assets/img/datadiri.svg',
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                    title: const Text(
+                      'Data Diri',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Color(0xFF4F7DF3), // Biru sesuai gambar
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios,
+                        size: 16, color: Colors.grey),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -187,16 +205,50 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     },
                   ),
+
                   ListTile(
-                    leading: const Icon(Icons.info, color: Colors.green),
-                    title: const Text('Tentang BeWise'),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: SvgPicture.asset(
+                        'assets/img/tentang.svg',
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                    title: const Text(
+                      'Tentang BeWise',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Color(0xFF1A202C), // Hitam gelap sesuai gambar
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios,
+                        size: 16, color: Colors.grey),
                     onTap: () {},
                   ),
+
                   ListTile(
-                    leading: const Icon(Icons.logout, color: Colors.red),
-                    title: const Text('Keluar Akun'),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: SvgPicture.asset(
+                        'assets/img/logout.svg',
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                    title: const Text(
+                      'Keluar akun', // Huruf 'a' kecil sesuai gambar
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Color(0xFFE53E3E), // Merah sesuai gambar
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios,
+                        size: 16, color: Colors.grey),
                     onTap: () => _logout(context),
                   ),
                 ],

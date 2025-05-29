@@ -427,8 +427,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                         padding: const EdgeInsets.symmetric(vertical: 12),
                                         decoration: BoxDecoration(
                                           color: _gender == 'Pria' ? theme.primaryColor : Colors.transparent,
-                                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(11)),
-                                        ),
+                                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(11)),),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [

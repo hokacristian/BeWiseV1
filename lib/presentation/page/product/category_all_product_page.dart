@@ -25,6 +25,7 @@ class CategoryAllProductPage extends StatelessWidget {
               {'id': 5, 'name': 'Mineral', 'icon': 'assets/img/icon_water.svg'},
               {'id': 4, 'name': 'Jus', 'icon': 'assets/img/iconn_jus.svg'},
               {'id': 3, 'name': 'Energi', 'icon': 'assets/img/icon_energy.svg'},
+              {'id': 3, 'name': 'Isotonik', 'icon': 'assets/img/isotonik.svg'},
             ],
           ),
           const SizedBox(height: 24),
@@ -56,7 +57,7 @@ class CategoryAllProductPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.white,
             blurRadius: 8,
             spreadRadius: 2,
           ),

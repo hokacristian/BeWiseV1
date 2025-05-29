@@ -193,10 +193,10 @@ class HomePageState extends State<HomePage> {
 Widget _buildCategorySection() {
   // List kategori dengan ID, nama, dan path gambar
   final List<Map<String, dynamic>> categories = [
-    {'id': 7, 'name': 'Teh', 'image': 'assets/img/icon_tea.svg'},
+    {'id': 2, 'name': 'Teh', 'image': 'assets/img/icon_tea.svg'},
     {'id': 7, 'name': 'Soda', 'image': 'assets/img/icon_soda.svg'},
-    {'id': 7, 'name': 'Susu', 'image': 'assets/img/icon_susu.svg'},
-    {'id': 7, 'name': 'Snack', 'image': 'assets/img/icon_snack.svg'},
+    {'id': 6, 'name': 'Susu', 'image': 'assets/img/icon_susu.svg'},
+    {'id': 11, 'name': 'Snack', 'image': 'assets/img/icon_snack.svg'},
     {'id': 7, 'name': 'Roti', 'image': 'assets/img/icon_roti.svg'},
     {'id': 0, 'name': 'Semua', 'image': 'assets/img/icon_all.svg'},
   ];
