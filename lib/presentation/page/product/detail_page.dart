@@ -107,65 +107,12 @@ class DetailPage extends StatelessWidget {
                         
                         const SizedBox(height: 20),
 
-                        // Nutrition Facts
+                        // Nutrition Facts - Langsung tanpa container background
                         if (product.nutritionFact != null)
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min, // Fit dengan content
-                              children: [
-                                // Nutrition circles
-                                NutritionFacts(nutritionFact: product.nutritionFact),
-                                const SizedBox(height: 12),
-                                
-                                // Nutrition values row
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    _buildNutritionValue(
-                                      '${product.nutritionFact!.energy}',
-                                      'kkal',
-                                      'Energi',
-                                    ),
-                                    _buildNutritionValue(
-                                      '${product.nutritionFact!.saturatedFat}',
-                                      'gr',
-                                      'Lemak',
-                                    ),
-                                    _buildNutritionValue(
-                                      '${product.nutritionFact!.protein}',
-                                      'gr',
-                                      'Protein',
-                                    ),
-                                    _buildNutritionValue(
-                                      '${product.nutritionFact!.sugar}',
-                                      'gr',
-                                      'Gula',
-                                    ),
-                                    _buildNutritionValue(
-                                      '${product.nutritionFact!.sodium}',
-                                      'mg',
-                                      'Sodium',
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                          NutritionFacts(nutritionFact: product.nutritionFact),
 
-                        // Extra padding at the bottom to ensure content isn't covered by the price bar
-                        const SizedBox(height: 100), // Ditambah untuk mengakomodasi price bar yang nempel
+                        // Spasi bawah untuk price bar
+                        const SizedBox(height: 80),
                       ],
                     ),
                   ),
@@ -224,43 +171,6 @@ class DetailPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildNutritionValue(String value, String unit, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-            children: [
-              TextSpan(text: value),
-              TextSpan(
-                text: ' $unit',
-                style: const TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
     );
   }
 
