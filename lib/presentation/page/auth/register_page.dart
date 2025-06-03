@@ -143,31 +143,31 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 10),
 
-                    const Center(
-                      child: Text(
-                        'atau',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
+                    // const Center(
+                    //   child: Text(
+                    //     'atau',
+                    //     style: TextStyle(
+                    //       fontFamily: 'Poppins',
+                    //       fontSize: 14,
+                    //       color: Colors.grey,
+                    //     ),
+                    //   ),
+                    // ),
                     const SizedBox(height: 10),
 
-                    CustomButtonWidget(
-                      backgroundColor: AppColors.secondary,
-                      text: 'Daftar dengan Google',
-                      isLoading: false,
-                      onPressed: () {
-                        // Implementasi login dengan Google
-                      },
-                      icon: SvgPicture.asset(
-                        'assets/img/google.svg',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ),
+                    // CustomButtonWidget(
+                    //   backgroundColor: AppColors.secondary,
+                    //   text: 'Daftar dengan Google',
+                    //   isLoading: false,
+                    //   onPressed: () {
+                    //     // Implementasi login dengan Google
+                    //   },
+                    //   icon: SvgPicture.asset(
+                    //     'assets/img/google.svg',
+                    //     width: 24,
+                    //     height: 24,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

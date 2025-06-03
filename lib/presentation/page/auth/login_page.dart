@@ -182,26 +182,26 @@ class _LoginPageState extends State<LoginPage> {
                       backgroundColor: AppColors.yellow,
                     ),
                     const SizedBox(height: 10),
-                    const Center(
-                      child: Text(
-                        'atau',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
-                          color: Color(0xFF666666),
-                        ),
-                      ),
-                    ),
+                    // const Center(
+                    //   child: Text(
+                    //     'atau',
+                    //     style: TextStyle(
+                    //       fontFamily: 'Poppins',
+                    //       fontSize: 14,
+                    //       color: Color(0xFF666666),
+                    //     ),
+                    //   ),
+                    // ),
                     const SizedBox(height: 10),
-                    CustomButtonWidget(
-                      backgroundColor: AppColors.secondary,
-                      text: 'Masuk dengan Google',
-                      isLoading: false,
-                      onPressed: () {
-                        // TODO: Implement Google login
-                      },
-                      icon: SvgPicture.asset('assets/img/google.svg'),
-                    ),
+                    // CustomButtonWidget(
+                    //   backgroundColor: AppColors.secondary,
+                    //   text: 'Masuk dengan Google',
+                    //   isLoading: false,
+                    //   onPressed: () {
+                       
+                    //   },
+                    //   icon: SvgPicture.asset('assets/img/google.svg'),
+                    // ),
                     const SizedBox(height: 20),
                   ],
                 ),
