@@ -21,14 +21,22 @@ class CategoryAllProductPage extends StatelessWidget {
             context,
             title: 'Minuman',
             categories: [
-              {'id': 6, 'name': 'Susu', 'icon': 'assets/img/icon_susu.svg'},
-              {'id': 2, 'name': 'Teh', 'icon': 'assets/img/icon_tea.svg'},
-              {'id': 1, 'name': 'Kopi', 'icon': 'assets/img/icon_coffe.svg'},
-              {'id': 4, 'name': 'Soda', 'icon': 'assets/img/icon_soda.svg'},
-              {'id': 5, 'name': 'Mineral', 'icon': 'assets/img/icon_water.svg'},
-              {'id': 4, 'name': 'Jus', 'icon': 'assets/img/iconn_jus.svg'},
-              {'id': 3, 'name': 'Energi', 'icon': 'assets/img/icon_energy.svg'},
-              {'id': 3, 'name': 'Isotonik', 'icon': 'assets/img/isotonik.svg'},
+              {'id': 10, 'name': 'Susu', 'icon': 'assets/img/icon_susu.svg'},
+              {'id': 14, 'name': 'Teh', 'icon': 'assets/img/icon_tea.svg'},
+              {'id': 8, 'name': 'Kopi', 'icon': 'assets/img/icon_coffe.svg'},
+              {'id': 7, 'name': 'Soda', 'icon': 'assets/img/icon_soda.svg'},
+              {
+                'id': 13,
+                'name': 'Mineral',
+                'icon': 'assets/img/icon_water.svg'
+              },
+              {'id': 11, 'name': 'Jus', 'icon': 'assets/img/iconn_jus.svg'},
+              {
+                'id': 9,
+                'name': 'Yoghurt',
+                'icon': 'assets/img/yogurt.svg'
+              },
+              {'id': 12, 'name': 'Isotonik', 'icon': 'assets/img/isotonik.svg'},
             ],
           ),
           const SizedBox(height: 24),
@@ -36,19 +44,12 @@ class CategoryAllProductPage extends StatelessWidget {
             context,
             title: 'Makanan',
             categories: [
-              {'id': 7, 'name': 'Roti', 'icon': 'assets/img/icon_roti.svg'},
-              {'id': 8, 'name': 'Mie', 'icon': 'assets/img/mie.svg'},
-              {
-                'id': 9,
-                'name': 'Frozen Food',
-                'icon': 'assets/img/frozen.svg'
-              },
-              {
-                'id': 10,
-                'name': 'Wafer & Biskuit',
-                'icon': 'assets/img/waffers.svg'
-              },
-              {'id': 11, 'name': 'Snack', 'icon': 'assets/img/snack.svg'},
+              {'id': 1, 'name': 'Roti', 'icon': 'assets/img/icon_roti.svg'},
+              {'id': 5, 'name': 'Mie', 'icon': 'assets/img/mie.svg'},
+              {'id': 3, 'name': 'Frozen Food', 'icon': 'assets/img/frozen.svg'},
+              {'id': 2, 'name': 'Biskuit', 'icon': 'assets/img/waffers.svg'},
+              {'id': 4, 'name': 'Snack', 'icon': 'assets/img/snack.svg'},
+              {'id': 6, 'name': 'Sereal', 'icon': 'assets/img/cereal.svg'},
             ],
           ),
         ],
@@ -126,7 +127,8 @@ class CategoryAllProductPage extends StatelessWidget {
                       height: 64,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50, // Background icon sedikit abu-abu muda
+                        color: Colors.grey
+                            .shade50, // Background icon sedikit abu-abu muda
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: Colors.grey.shade200,

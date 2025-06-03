@@ -150,7 +150,7 @@ class HomePageState extends State<HomePage> {
               CircleAvatar(
                 radius: 30,
                 backgroundImage: NetworkImage(
-                  user?.avatarLink ?? 'https://example.com/default-avatar.png',
+                  user?.avatarLink ?? 'https://ik.imagekit.io/swvbgy6po/icon.png',
                 ),
               ),
             ],
@@ -193,11 +193,11 @@ class HomePageState extends State<HomePage> {
 Widget _buildCategorySection() {
   // List kategori dengan ID, nama, dan path gambar
   final List<Map<String, dynamic>> categories = [
-    {'id': 2, 'name': 'Teh', 'image': 'assets/img/icon_tea.svg'},
+    {'id': 14, 'name': 'Teh', 'image': 'assets/img/icon_tea.svg'},
     {'id': 7, 'name': 'Soda', 'image': 'assets/img/icon_soda.svg'},
-    {'id': 6, 'name': 'Susu', 'image': 'assets/img/icon_susu.svg'},
-    {'id': 11, 'name': 'Snack', 'image': 'assets/img/icon_snack.svg'},
-    {'id': 7, 'name': 'Roti', 'image': 'assets/img/icon_roti.svg'},
+    {'id': 10, 'name': 'Susu', 'image': 'assets/img/icon_susu.svg'},
+    {'id': 4, 'name': 'Snack', 'image': 'assets/img/icon_snack.svg'},
+    {'id': 1, 'name': 'Roti', 'image': 'assets/img/icon_roti.svg'},
     {'id': 0, 'name': 'Semua', 'image': 'assets/img/icon_all.svg'},
   ];
 

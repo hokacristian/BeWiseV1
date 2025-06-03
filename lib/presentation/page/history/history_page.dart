@@ -5,6 +5,8 @@ import 'package:bewise/presentation/widgets/product_card.dart';
 import 'package:bewise/presentation/page/product/product_base_page.dart';
 import 'package:bewise/presentation/widgets/pagination_widget.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:bewise/presentation/page/scan/scan_product_page.dart';
+
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -348,16 +350,21 @@ Widget _buildProductGrid(ProductProvider productProvider) {
           ),
           const SizedBox(height: 32),
           ElevatedButton.icon(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.qr_code_scanner),
-            label: const Text('Mulai Scan'),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ScanProductPage()),
+    );
+  },
+  icon: const Icon(Icons.qr_code_scanner),
+  label: const Text('Mulai Scan'),
+  style: ElevatedButton.styleFrom(
+    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+),
         ],
       ),
     );

@@ -180,7 +180,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                     ? FileImage(_selectedImage!)
                                     : (user?.avatarLink != null
                                         ? NetworkImage(user!.avatarLink!)
-                                        : const AssetImage('assets/img/default_foto.png')) as ImageProvider,
+                                        : const AssetImage('assets/img/icon.png')) as ImageProvider,
                               ),
                             ),
                             Positioned(
