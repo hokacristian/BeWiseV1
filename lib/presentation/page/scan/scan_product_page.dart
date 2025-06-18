@@ -9,7 +9,8 @@ import 'package:bewise/core/constans/colors.dart';
 import 'package:bewise/data/providers/product_provider.dart';
 import 'package:bewise/data/models/product_model.dart';
 import 'package:bewise/presentation/page/product/product_base_page.dart';
-import 'package:bewise/presentation/page/nutrition/scan_nutrition_page.dart'; // Import page baru
+import 'package:bewise/presentation/page/nutrition/scan_nutrition_page.dart';
+import 'package:bewise/core/utils/custom_toast.dart';
 
 class ScanProductPage extends StatefulWidget {
   const ScanProductPage({Key? key}) : super(key: key);
@@ -271,11 +272,9 @@ class _ScanProductPageState extends State<ScanProductPage> {
     }
   }
 
-  void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
+ void _showErrorMessage(String message) {
+  CustomToast.showError(context, message);
+}
 
   /// Show dialog when product not found
   void _showProductNotFoundDialog(String barcode) {
