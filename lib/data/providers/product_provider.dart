@@ -188,29 +188,30 @@ class ProductProvider extends ChangeNotifier {
 
   // Scan product by barcode
   Future<void> scanProduct(String barcode) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
+  _isLoading = true;
+  _errorMessage = null;
+  _product = null; 
+  notifyListeners();
 
-    try {
-      if (token == null) {
-        await _initializeToken();
-        if (token == null) throw Exception('Token is not available');
-      }
-
-      final result = await apiService.scanProduct(barcode, token!);
-
-      _product = result;
-
-      print('Rekomendasi Produk (Provider): ${_product?.rekomendasi?.length}');
-      notifyListeners();
-    } catch (error) {
-      _errorMessage = error.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  try {
+    if (token == null) {
+      await _initializeToken();
+      if (token == null) throw Exception('Token is not available');
     }
+
+    final result = await apiService.scanProduct(barcode, token!);
+    _product = result;
+
+    print('Rekomendasi Produk (Provider): ${_product?.rekomendasi?.length}');
+  } catch (error) {
+    _errorMessage = error.toString();
+    _product = null; // 🔥 PENTING: Clear product jika ada error
+    print('Error scanning product: $_errorMessage');
+  } finally {
+    _isLoading = false;
+    notifyListeners();
   }
+}
 
 // Update method fetchScanHistories:
   Future<void> fetchScanHistories(int page, int limit) async {

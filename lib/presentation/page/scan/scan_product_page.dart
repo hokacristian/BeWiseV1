@@ -9,6 +9,7 @@ import 'package:bewise/core/constans/colors.dart';
 import 'package:bewise/data/providers/product_provider.dart';
 import 'package:bewise/data/models/product_model.dart';
 import 'package:bewise/presentation/page/product/product_base_page.dart';
+import 'package:bewise/presentation/page/nutrition/scan_nutrition_page.dart'; // Import page baru
 
 class ScanProductPage extends StatefulWidget {
   const ScanProductPage({Key? key}) : super(key: key);
@@ -27,15 +28,13 @@ class _ScanProductPageState extends State<ScanProductPage> {
   final mobilescanner.MobileScannerController cameraController =
       mobilescanner.MobileScannerController();
   final ImagePicker _imagePicker = ImagePicker();
-BarcodeScanner get _barcodeScanner => BarcodeScanner();
+  BarcodeScanner get _barcodeScanner => BarcodeScanner();
 
   @override
-void dispose() {
-  cameraController.dispose();
-  // Hapus ini:
-  // _barcodeScanner.close();
-  super.dispose();
-}
+  void dispose() {
+    cameraController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -242,40 +241,164 @@ void dispose() {
   }
 
   Future<void> _scanImageFromGallery() async {
-  if (_selectedImage == null) return;
+    if (_selectedImage == null) return;
 
-  final inputImage = InputImage.fromFilePath(_selectedImage!.path);
-  final scanner = _barcodeScanner; // Gunakan getter
+    final inputImage = InputImage.fromFilePath(_selectedImage!.path);
+    final scanner = _barcodeScanner;
 
-  try {
-    final List<Barcode> barcodes = await scanner.processImage(inputImage);
-    
-    if (barcodes.isNotEmpty) {
-      for (final barcode in barcodes) {
-        if (barcode.type == BarcodeType.product) {
-          final String? code = barcode.rawValue;
-          if (code != null && code.isNotEmpty) {
-            await _handleScanResult(code);
-            return;
+    try {
+      final List<Barcode> barcodes = await scanner.processImage(inputImage);
+      
+      if (barcodes.isNotEmpty) {
+        for (final barcode in barcodes) {
+          if (barcode.type == BarcodeType.product) {
+            final String? code = barcode.rawValue;
+            if (code != null && code.isNotEmpty) {
+              await _handleScanResult(code);
+              return;
+            }
           }
         }
+        _showErrorMessage('Barcode produk tidak ditemukan');
+      } else {
+        _showErrorMessage('Tidak ada barcode terdeteksi');
       }
-      _showErrorMessage('Barcode produk tidak ditemukan');
-    } else {
-      _showErrorMessage('Tidak ada barcode terdeteksi');
+    } catch (e) {
+      _showErrorMessage('Gagal memindai: ${e.toString()}');
+    } finally {
+      await scanner.close();
+      setState(() => isLoading = false);
     }
-  } catch (e) {
-    _showErrorMessage('Gagal memindai: ${e.toString()}');
-  } finally {
-    await scanner.close(); // Tutup scanner setelah selesai
-    setState(() => isLoading = false);
   }
-}
 
   void _showErrorMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+
+  /// Show dialog when product not found
+  void _showProductNotFoundDialog(String barcode) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.orange,
+                size: 28,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Produk Tidak Ditemukan',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Produk dengan barcode "$barcode" tidak ditemukan dalam database kami.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Anda dapat memindai label nutrisi secara manual untuk mendapatkan informasi kandungan gizi produk.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  height: 1.4,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _resetScanState();
+              },
+              child: Text(
+                'Scan Ulang',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ScanNutritionPage(
+                      barcode: barcode,
+                    ),
+                  ),
+                ).then((_) {
+                  _resetScanState();
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.lightBlue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+              ),
+              icon: const Icon(
+                Icons.camera_alt,
+                color: Colors.white,
+                size: 18,
+              ),
+              label: Text(
+                'Scan Nutrisi',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Reset scan state
+  void _resetScanState() {
+    setState(() {
+      hasScanned = false;
+      isLoading = false;
+      _selectedImage = null;
+      scannedBarcode = '';
+    });
+    cameraController.start();
   }
 
   /// Method privat untuk menangani hasil scan (kode)
@@ -296,23 +419,22 @@ void dispose() {
             builder: (context) => ProductBasePage(product: product),
           ),
         ).then((_) {
-          setState(() {
-            hasScanned = false;
-            isLoading = false;
-            _selectedImage = null; // Reset selected image
-          });
-          cameraController.start();
+          _resetScanState();
         });
       } else {
         throw Exception('Produk tidak ditemukan.');
       }
     } catch (e) {
-      _showErrorMessage('Error: ${e.toString()}');
-      setState(() {
-        isLoading = false;
-        hasScanned = false;
-      });
-      cameraController.start();
+      // Check if error message indicates product not found
+      String errorMessage = e.toString();
+      if (errorMessage.contains('tidak ditemukan') || 
+          errorMessage.contains('not found') ||
+          errorMessage.contains('404')) {
+        _showProductNotFoundDialog(barcode);
+      } else {
+        _showErrorMessage('Error: $errorMessage');
+        _resetScanState();
+      }
     }
   }
 }
