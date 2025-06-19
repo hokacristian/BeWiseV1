@@ -374,5 +374,44 @@ class ApiService {
   }
 }
 
+Future<Map<String, dynamic>> processNutritionImage(String token, String filePath) async {
+  try {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/ocr/process-nutrition'),
+    );
+
+    request.headers['Authorization'] = 'Bearer $token';
+    request.headers['Accept'] = 'application/json';
+    
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'nutrition_image', // Nama field sesuai dengan requirement
+        filePath,
+        contentType: MediaType('image', 'jpeg'),
+      ),
+    );
+
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(responseBody);
+      if (data['status'] == true) {
+        return data;
+      } else {
+        throw Exception(data['message'] ?? 'Failed to process nutrition image');
+      }
+    } else {
+      print('Failed to process nutrition image. Status code: ${response.statusCode}');
+      print('Response body: $responseBody');
+      throw Exception('Failed to process nutrition image');
+    }
+  } catch (e) {
+    print('Error occurred while processing nutrition image: $e');
+    throw Exception('Error processing nutrition image: $e');
+  }
+}
+
 
 }

@@ -3,6 +3,11 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:bewise/core/constans/colors.dart';
 import 'package:bewise/presentation/widgets/custom_button_widget.dart';
+import 'package:bewise/data/services/api_service.dart';
+import 'package:bewise/core/utils/sessionmanager.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:bewise/core/utils/custom_toast.dart';
+
 
 class ScanNutritionPage extends StatefulWidget {
   final String? barcode;
@@ -17,31 +22,129 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
   XFile? _selectedImage;
   bool _isLoading = false;
   final ImagePicker _imagePicker = ImagePicker();
+  final ApiService _apiService = ApiService();
+
+  // State untuk hasil analisis
+  String? _nutritionGrade;
+  String? _nutritionInsight;
+  bool _hasAnalyzed = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.brokenWhite,
       appBar: _buildAppBar(),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeaderSection(),
-                  const SizedBox(height: 24),
-                  _buildImageSection(),
-                  const SizedBox(height: 24),
-                  _buildInstructionSection(),
-                ],
+          Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (!_hasAnalyzed) ...[
+                        _buildHeaderSection(),
+                        const SizedBox(height: 24),
+                        _buildImageSection(),
+                        const SizedBox(height: 24),
+                        _buildInstructionSection(),
+                      ] else ...[
+                        _buildResultSection(),
+                      ],
+                    ],
+                  ),
+                ),
               ),
-            ),
+              if (!_hasAnalyzed) _buildBottomSection(),
+              if (_hasAnalyzed) _buildRetrySection(),
+            ],
           ),
-          _buildBottomSection(),
+          // Custom Loading Overlay dengan discreteCircular
+          if (_isLoading) _buildLoadingOverlay(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingOverlay() {
+    return Container(
+      color: Colors.black.withOpacity(0.7),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 50),
+          padding: const EdgeInsets.all(30),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 15,
+                spreadRadius: 5,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Loading Animation Widget - discreteCircular
+              LoadingAnimationWidget.discreteCircle(
+                color: AppColors.lightBlue,
+                size: 80,
+              ),
+              
+              const SizedBox(height: 24),
+              
+              // Loading Title
+              Text(
+                'Menganalisis Nutrisi',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              
+              const SizedBox(height: 12),
+              
+              // Loading Description
+              Text(
+                'Sedang memproses gambar label nutrisi\nuntuk mendapatkan analisis yang akurat',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                  height: 1.4,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Additional info
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.lightBlue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Mohon tunggu sebentar...',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                    color: AppColors.lightBlue,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -55,7 +158,7 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
-        'Scan Label Nutrisi',
+        _hasAnalyzed ? 'Hasil Analisis Nutrisi' : 'Scan Label Nutrisi',
         style: TextStyle(
           fontFamily: 'Poppins',
           color: Colors.black,
@@ -243,25 +346,26 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
             fit: BoxFit.cover,
           ),
         ),
-        Positioned(
-          top: 12,
-          right: 12,
-          child: Row(
-            children: [
-              _buildActionButton(
-                icon: Icons.edit,
-                onTap: () => _showImageSourceDialog(),
-                color: Colors.blue,
-              ),
-              const SizedBox(width: 8),
-              _buildActionButton(
-                icon: Icons.delete,
-                onTap: _removeImage,
-                color: Colors.red,
-              ),
-            ],
+        if (!_hasAnalyzed)
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Row(
+              children: [
+                _buildActionButton(
+                  icon: Icons.edit,
+                  onTap: () => _showImageSourceDialog(),
+                  color: Colors.blue,
+                ),
+                const SizedBox(width: 8),
+                _buildActionButton(
+                  icon: Icons.delete,
+                  onTap: _removeImage,
+                  color: Colors.red,
+                ),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
@@ -358,6 +462,133 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
     );
   }
 
+  Widget _buildResultSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Foto hasil
+        Container(
+          width: double.infinity,
+          height: 250,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade300),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                blurRadius: 4,
+                spreadRadius: 1,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.file(
+              File(_selectedImage!.path),
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Grade Section
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: _getGradeColor(_nutritionGrade ?? 'C'),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: _getGradeDarkerColor(_nutritionGrade ?? 'C'),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    _nutritionGrade ?? 'C',
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  'Grade Nutrisi: ${_nutritionGrade ?? 'C'}',
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // Insight Section
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.insights,
+                    color: AppColors.lightBlue,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Analisis Nutrisi',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.lightBlue,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                _nutritionInsight ?? 'Tidak ada insight tersedia.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildBottomSection() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -373,15 +604,92 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
       ),
       child: CustomButtonWidget(
         text: 'Analisis Nutrisi',
-        isLoading: _isLoading,
-        onPressed: _selectedImage != null ? _analyzeNutrition : () {},
-        backgroundColor: _selectedImage != null ? AppColors.lightBlue : Colors.grey.shade400,
+        isLoading: false, // Set false karena kita handle loading di overlay
+        onPressed: _selectedImage != null && !_isLoading ? _analyzeNutrition : () {},
+        backgroundColor: _selectedImage != null && !_isLoading ? AppColors.lightBlue : Colors.grey.shade400,
         icon: Icon(
           Icons.analytics_outlined,
           color: Colors.white,
         ),
       ),
     );
+  }
+
+  Widget _buildRetrySection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: CustomButtonWidget(
+              text: 'Analisis Ulang',
+              onPressed: _resetAnalysis,
+              backgroundColor: Colors.grey.shade600,
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: CustomButtonWidget(
+              text: 'Selesai',
+              onPressed: () => Navigator.of(context).pop(),
+              backgroundColor: AppColors.lightBlue,
+              icon: Icon(
+                Icons.check,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getGradeColor(String grade) {
+    switch (grade.toUpperCase()) {
+      case 'A':
+        return const Color(0xFF74AB83);
+      case 'B':
+        return const Color(0xFFBFD789);
+      case 'C':
+        return const Color(0xFFFEE272);
+      case 'D':
+        return const Color(0xFFF6B971);
+      case 'E':
+        return const Color(0xFFF1947A);
+      default:
+        return const Color(0xFFFEE272);
+    }
+  }
+
+  Color _getGradeDarkerColor(String grade) {
+    switch (grade.toUpperCase()) {
+      case 'A':
+        return const Color(0xFF5E8B6B);
+      case 'B':
+        return const Color(0xFF9BC063);
+      case 'C':
+        return const Color(0xFFF4C430);
+      case 'D':
+        return const Color(0xFFE8974F);
+      case 'E':
+        return const Color(0xFFE67E52);
+      default:
+        return const Color(0xFFF4C430);
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -396,6 +704,7 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
       if (image != null) {
         setState(() {
           _selectedImage = image;
+          _hasAnalyzed = false; // Reset jika ada analisis sebelumnya
         });
       }
     } catch (e) {
@@ -467,6 +776,15 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
   void _removeImage() {
     setState(() {
       _selectedImage = null;
+      _hasAnalyzed = false;
+    });
+  }
+
+  void _resetAnalysis() {
+    setState(() {
+      _hasAnalyzed = false;
+      _nutritionGrade = null;
+      _nutritionInsight = null;
     });
   }
 
@@ -478,12 +796,17 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
     });
 
     try {
-      // TODO: Implement nutrition analysis API call
-      // For now, simulate loading
-      await Future.delayed(Duration(seconds: 2));
+      final sessionManager = SessionManager();
+      final token = await sessionManager.getToken();
+      if (token == null) throw Exception('Token tidak tersedia');
+
+      final response = await _apiService.processNutritionImage(token, _selectedImage!.path);
       
-      // TODO: Navigate to nutrition results page
-      _showSuccessMessage('Analisis nutrisi berhasil!');
+      setState(() {
+        _nutritionGrade = response['data']['prediction']['grade'];
+        _nutritionInsight = response['data']['insight'];
+        _hasAnalyzed = true;
+      });
       
     } catch (e) {
       _showErrorMessage('Gagal menganalisis nutrisi: ${e.toString()}');
@@ -494,21 +817,8 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
     }
   }
 
-  void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
+ void _showErrorMessage(String message) {
+  CustomToast.showError(context, message);
+}
 
-  void _showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
 }
