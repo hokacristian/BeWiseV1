@@ -99,7 +99,7 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
               
               // Loading Title
               Text(
-                'Menganalisis Nutrisi',
+                'Memprediksi NutriScore',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 18,
@@ -158,7 +158,7 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
-        _hasAnalyzed ? 'Hasil Analisis Nutrisi' : 'Scan Label Nutrisi',
+        _hasAnalyzed ? 'Hasil Prediksi NutriScore' : 'Scan Label Nutrisi',
         style: TextStyle(
           fontFamily: 'Poppins',
           color: Colors.black,
@@ -562,7 +562,7 @@ class _ScanNutritionPageState extends State<ScanNutritionPage> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Analisis Nutrisi',
+                    'Insight Nutrisi',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,

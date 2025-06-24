@@ -6,6 +6,7 @@ import 'package:bewise/core/constans/colors.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/core/widgets/input_field_widget.dart';
 import 'package:bewise/presentation/widgets/custom_button_widget.dart';
+import 'package:bewise/core/utils/custom_toast.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -118,24 +119,52 @@ class _RegisterPageState extends State<RegisterPage> {
                       text: 'Daftar',
                       isLoading: authProvider.isLoading,
                       onPressed: () async {
-                        await authProvider.register(
-                          _firstNameController.text.trim(),
-                          _lastNameController.text.trim(),
-                          _emailController.text.trim(),
-                          _passwordController.text.trim(),
-                        );
+                        // Validasi input
+                        if (_firstNameController.text.trim().isEmpty) {
+                          CustomToast.showError(context, 'Nama depan tidak boleh kosong');
+                          return;
+                        }
+                        
+                        if (_lastNameController.text.trim().isEmpty) {
+                          CustomToast.showError(context, 'Nama belakang tidak boleh kosong');
+                          return;
+                        }
+                        
+                        if (_emailController.text.trim().isEmpty) {
+                          CustomToast.showError(context, 'Email tidak boleh kosong');
+                          return;
+                        }
+                        
+                        if (_passwordController.text.trim().isEmpty) {
+                          CustomToast.showError(context, 'Password tidak boleh kosong');
+                          return;
+                        }
+                        
+                        if (_passwordController.text.trim().length < 6) {
+                          CustomToast.showError(context, 'Password minimal 6 karakter');
+                          return;
+                        }
 
-                        if (authProvider.errorMessage == null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const LoginPage()),
+                        try {
+                          await authProvider.register(
+                            _firstNameController.text.trim(),
+                            _lastNameController.text.trim(),
+                            _emailController.text.trim(),
+                            _passwordController.text.trim(),
                           );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(authProvider.errorMessage!),
-                            ),
-                          );
+
+                          if (authProvider.errorMessage == null) {
+                            CustomToast.showSuccess(context, 'Registrasi berhasil! Silakan login');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const LoginPage()),
+                            );
+                          } else {
+                            CustomToast.showError(context, authProvider.errorMessage!);
+                          }
+                        } catch (e) {
+                          String errorMessage = authProvider.errorMessage ?? 'Registrasi gagal. Silakan coba lagi.';
+                          CustomToast.showError(context, errorMessage);
                         }
                       },
                       backgroundColor: AppColors.lightBlue,

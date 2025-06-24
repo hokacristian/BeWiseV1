@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:bewise/data/providers/auth_provider.dart';
 import 'package:bewise/core/utils/sessionmanager.dart';
@@ -10,6 +9,8 @@ import 'package:bewise/presentation/widgets/custom_button_widget.dart';
 import 'package:bewise/presentation/page/home/main_screen.dart';
 import 'package:bewise/presentation/page/auth/register_page.dart';
 import 'package:bewise/presentation/page/auth/forget_password_page.dart';
+import 'package:bewise/core/utils/custom_toast.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,6 +18,7 @@ class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
+
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
@@ -150,6 +152,16 @@ class _LoginPageState extends State<LoginPage> {
                       textColor: Colors.black,
                       isLoading: authProvider.isLoading,
                       onPressed: () async {
+                        if (_emailController.text.trim().isEmpty) {
+                          CustomToast.showError(context, 'Email tidak boleh kosong');
+                          return;
+                        }
+                        
+                        if (_passwordController.text.trim().isEmpty) {
+                          CustomToast.showError(context, 'Password tidak boleh kosong');
+                          return;
+                        }
+
                         try {
                           await authProvider.login(
                             _emailController.text.trim(),
@@ -166,17 +178,18 @@ class _LoginPageState extends State<LoginPage> {
                             gender: authProvider.user!.gender,
                             avatarLink: authProvider.user!.avatarLink,
                           );
+                          
+                          // CustomToast.showSuccess(context, 'Login berhasil!');
+                          
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MainScreen()),
                           );
                         } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(authProvider.errorMessage!),
-                            ),
-                          );
+                          // Gunakan error message dari provider jika tersedia
+                          String errorMessage = authProvider.errorMessage ?? 'Login gagal. Silakan coba lagi.';
+                          CustomToast.showError(context, errorMessage);
                         }
                       },
                       backgroundColor: AppColors.yellow,
@@ -249,5 +262,6 @@ class _LoginPageState extends State<LoginPage> {
         },
       ),
     );
+    
   }
 }
